@@ -29,38 +29,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UserController {
     private final UserService userService;
 
-    @RequestMapping({"/","/index"})
-    public String index(){
-        return "index";
-    }
-
-    @RequestMapping("/login")
-    public String login(String username, String password, Model model){
-        Subject subject = SecurityUtils.getSubject();
-        try {
-            subject.login(new UsernamePasswordToken(username, password));
-            return "index";
-        } catch (UnknownAccountException e) {
-            System.out.println("用户名错误!");
-        } catch (IncorrectCredentialsException e){
-            System.out.println("密码错误!");
-        }
-        return "auth/login";
-    }
-
-    @RequestMapping("/register")
-    public String register(User user, Model model){
-        String salt = SaltUtils.getSalt(8);
-        user.setSalt(salt);
-        Md5Hash hashPwd = new Md5Hash(user.getPassword(), salt, 1024);
-        user.setPassword(hashPwd.toHex());
-        userService.save(user);
-        return "auth/login";
-    }
-
-    @RequestMapping("/goRegister")
-    public String goRegister(){
-        return "auth/register";
-    }
 
 }

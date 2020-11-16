@@ -4,6 +4,7 @@ import com.longyue.springboot_shiro_ehcache.realm.UserRealm;
 import lombok.Data;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
@@ -31,18 +32,6 @@ public class ShiroConfig {
 
     private String hashAlgorithm;
     private Integer hashIterations;
-
-    /**
-     * 配置securityManager
-     * @param realm
-     * @return
-     */
-    @Bean
-    public DefaultWebSecurityManager getSecurityManager(Realm realm){
-        DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
-        defaultWebSecurityManager.setRealm(realm);
-        return defaultWebSecurityManager;
-    }
 
     /**
      * 配置shiroFilter
@@ -78,8 +67,20 @@ public class ShiroConfig {
         return shiroFilterFactoryBean;
     }
 
+    /**
+     * 配置securityManager
+     * @param realm
+     * @return
+     */
     @Bean
-    public EhCacheManager ehCacheManager(){
+    public SecurityManager securityManager(Realm realm) {
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        securityManager.setRealm(realm);
+        return securityManager;
+    }
+
+    @Bean
+    public CacheManager cacheManager() {
         return new EhCacheManager();
     }
 
@@ -88,15 +89,17 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public Realm realm(CredentialsMatcher credentialsMatcher, EhCacheManager ehCacheManager){
-        UserRealm userRealm = new UserRealm();
-        userRealm.setCredentialsMatcher(credentialsMatcher);
+    public Realm realm(CredentialsMatcher credentialsMatcher, CacheManager cacheManager){
+        UserRealm realm = new UserRealm();
+        realm.setCredentialsMatcher(credentialsMatcher);
         //开启缓存管理器
-        userRealm.setCachingEnabled(true);
-        userRealm.setAuthorizationCachingEnabled(true);
-        userRealm.setAuthorizationCachingEnabled(true);
-        userRealm.setCacheManager(ehCacheManager);
-        return userRealm;
+        realm.setCacheManager(cacheManager);
+        realm.setCachingEnabled(true);
+        realm.setAuthenticationCachingEnabled(true);
+        realm.setAuthenticationCacheName("authenticationCache");
+        realm.setAuthorizationCachingEnabled(true);
+        realm.setAuthorizationCacheName("authorizationCache");
+        return realm;
     }
 
     /**
@@ -104,11 +107,9 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public CredentialsMatcher hashedCredentialsMatcher(){
+    public CredentialsMatcher credentialsMatcher() {
         HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
-        // 设置加密方式
         credentialsMatcher.setHashAlgorithmName(hashAlgorithm);
-        // 设置散列次数
         credentialsMatcher.setHashIterations(hashIterations);
         return credentialsMatcher;
     }

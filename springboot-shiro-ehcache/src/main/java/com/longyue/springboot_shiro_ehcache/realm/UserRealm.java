@@ -47,14 +47,13 @@ public class UserRealm extends AuthorizingRealm {
         }
         //获取用户信息
         String username = token.getPrincipal().toString();
-        User user = userService.getOne(new QueryWrapper<User>().eq("username",username));
+        User user = userService.getOne(new QueryWrapper<User>().eq("username", username));
         if (ObjectUtils.isEmpty(user)) {
             return null;
         } else {
             //这里验证authenticationToken和simpleAuthenticationInfo的信息
-            SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user.getUsername(),
-                    user.getPassword(), SimpleByteSourceSerializable.Util.bytes(user.getSalt()), getName());
-            return simpleAuthenticationInfo;
+            return new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(),
+                    SimpleByteSourceSerializable.Util.bytes(user.getSalt()), getName());
         }
     }
 }
