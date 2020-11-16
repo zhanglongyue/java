@@ -38,10 +38,11 @@ target/
 
 ### IntelliJ IDEA ###
 .idea
-.idea/
 *.iws
 *.iml
 *.ipr
+out/
+gen/
 
 ### NetBeans ###
 /nbproject/private/
@@ -55,3 +56,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Mac OS ###
+.DS_Store
