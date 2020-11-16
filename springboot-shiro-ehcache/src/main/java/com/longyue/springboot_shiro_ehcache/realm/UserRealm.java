@@ -3,11 +3,13 @@ package com.longyue.springboot_shiro_ehcache.realm;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.longyue.springboot_shiro_ehcache.domain.User;
 import com.longyue.springboot_shiro_ehcache.service.UserService;
+import com.longyue.springboot_shiro_ehcache.utils.SimpleByteSourceSerializable;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
@@ -50,7 +52,8 @@ public class UserRealm extends AuthorizingRealm {
             return null;
         } else {
             //这里验证authenticationToken和simpleAuthenticationInfo的信息
-            SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), getName());
+            SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user.getUsername(),
+                    user.getPassword(), SimpleByteSourceSerializable.Util.bytes(user.getSalt()), getName());
             return simpleAuthenticationInfo;
         }
     }
