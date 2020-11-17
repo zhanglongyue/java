@@ -2,6 +2,7 @@ package com.longyue.springboot_shiro_ehcache.controller;
 
 import com.longyue.springboot_shiro_ehcache.domain.User;
 import com.longyue.springboot_shiro_ehcache.service.UserService;
+import com.longyue.springboot_shiro_ehcache.utils.ResponseUtils;
 import com.longyue.springboot_shiro_ehcache.utils.SaltUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/auth")
 public class AuthController {
     private final UserService userService;
 
@@ -41,9 +42,9 @@ public class AuthController {
             subject.login(new UsernamePasswordToken(username, password));
             return "redirect:/";
         } catch (UnknownAccountException e) {
-            System.out.println("用户名错误!");
+            ResponseUtils.error("0001","用户名错误");
         } catch (IncorrectCredentialsException e){
-            System.out.println("密码错误!");
+            ResponseUtils.error("0002","密码错误");
         }
         return "auth/login";
     }

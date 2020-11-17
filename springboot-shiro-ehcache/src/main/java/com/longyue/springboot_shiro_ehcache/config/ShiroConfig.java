@@ -8,11 +8,15 @@ import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,13 +77,19 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public SecurityManager securityManager(Realm realm) {
+    public SecurityManager securityManager(Realm realm, SessionManager sessionManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        securityManager.setSessionManager(sessionManager);
         securityManager.setRealm(realm);
         return securityManager;
     }
 
+    /**
+     * 加dependson解决热部署 重复Bean问题
+     * @return
+     */
     @Bean
+    @DependsOn("lifecycleBeanPostProcessor")
     public CacheManager cacheManager() {
         return new EhCacheManager();
     }
@@ -112,6 +122,22 @@ public class ShiroConfig {
         credentialsMatcher.setHashAlgorithmName(hashAlgorithm);
         credentialsMatcher.setHashIterations(hashIterations);
         return credentialsMatcher;
+    }
+
+    /**
+     * 处理第一次访问jsessionid 400
+     * @return
+     */
+    @Bean
+    public SessionManager sessionManager(){
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        sessionManager.setSessionIdUrlRewritingEnabled(false);
+        return sessionManager;
+    }
+
+    @Bean(name = "lifecycleBeanPostProcessor")
+    public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+        return new LifecycleBeanPostProcessor();
     }
 
 }

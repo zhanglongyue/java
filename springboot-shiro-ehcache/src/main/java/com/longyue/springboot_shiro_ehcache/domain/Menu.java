@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.util.Date;
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,67 +13,75 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * 系统用户(sys_user)实体类
+ * 系统菜单(sys_menu)实体类
  *
  * @author zly
- * @since 2020-11-16 15:35:00
+ * @since 2020-11-17 15:17:03
  * @description 由 Mybatisplus Code Generator 创建
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@TableName("sys_user")
-public class User extends Model<User> implements Serializable {
+@TableName("sys_menu")
+public class Menu extends Model<Menu> implements Serializable {
     /**
      * ID
      */
     @TableId
-	private Long userId;
+	private Long menuId;
     /**
-     * 部门名称
+     * 上级菜单ID
      */
-    private Long deptId;
+    private Long pid;
     /**
-     * 用户名
+     * 子菜单数目
      */
-    private String username;
+    private Integer subCount;
     /**
-     * 昵称
+     * 菜单类型
      */
-    private String nickName;
+    private Integer type;
     /**
-     * 性别
+     * 菜单标题
      */
-    private String gender;
+    private String title;
     /**
-     * 手机号码
+     * 组件名称
      */
-    private String phone;
+    private String name;
     /**
-     * 邮箱
+     * 组件
      */
-    private String email;
+    private String component;
     /**
-     * 头像地址
+     * 排序
      */
-    private String avatarName;
+    private Integer menuSort;
     /**
-     * 头像真实路径
+     * 图标
      */
-    private String avatarPath;
+    private String icon;
     /**
-     * 密码
+     * 链接地址
      */
-    private String password;
+    private String path;
     /**
-     * 是否为admin账号
+     * 是否外链
      */
-    private Integer isAdmin;
+    private Integer iFrame;
     /**
-     * 状态：1启用、0禁用
+     * 缓存
      */
-    private Long enabled;
+    private Integer cache;
+    /**
+     * 隐藏
+     */
+    private Integer hidden;
+    /**
+     * 权限
+     */
+    private String permission;
     /**
      * 创建者
      */
@@ -84,10 +91,6 @@ public class User extends Model<User> implements Serializable {
      */
     private String updateBy;
     /**
-     * 修改密码的时间
-     */
-    private Date pwdResetTime;
-    /**
      * 创建日期
      */
     private Date createTime;
@@ -96,12 +99,5 @@ public class User extends Model<User> implements Serializable {
      */
     @TableField(update = "now()")
 	private Date updateTime;
-    /**
-     * 盐
-     */
-    private String salt;
-
-    @TableField(exist = false)
-    private List<Role> roles;
 
 }
