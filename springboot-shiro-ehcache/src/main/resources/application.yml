@@ -39,3 +39,7 @@ shiro:
     - /**
   hashAlgorithm: MD5
   hashIterations: 1024
+
+jwt:
+  config:
+    key: Cc%ijAMvodvDl15C6UkUBSsA!E&D%ram^uQ#aK#gZWVx1Yq1TNI!$YS0qaTYd17#

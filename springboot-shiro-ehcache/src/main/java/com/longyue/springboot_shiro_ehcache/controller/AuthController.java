@@ -2,6 +2,7 @@ package com.longyue.springboot_shiro_ehcache.controller;
 
 import com.longyue.springboot_shiro_ehcache.domain.User;
 import com.longyue.springboot_shiro_ehcache.service.UserService;
+import com.longyue.springboot_shiro_ehcache.utils.JwtUtil;
 import com.longyue.springboot_shiro_ehcache.utils.ResponseUtils;
 import com.longyue.springboot_shiro_ehcache.utils.SaltUtils;
 import lombok.AllArgsConstructor;
@@ -28,12 +29,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    private final UserService userService;
 
-    @RequestMapping({"/","/index"})
-    public String index(){
-        return "index";
-    }
+    private JwtUtil jwtUtil;
+    private final UserService userService;
 
     @RequestMapping("/login")
     public String login(String username, String password, Model model){
@@ -57,11 +55,6 @@ public class AuthController {
         user.setPassword(hashPwd.toHex());
         userService.save(user);
         return "auth/login";
-    }
-
-    @RequestMapping("/goRegister")
-    public String goRegister(){
-        return "auth/register";
     }
 
 }

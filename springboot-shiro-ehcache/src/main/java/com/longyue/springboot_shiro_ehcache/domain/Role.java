@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.util.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -64,5 +65,11 @@ public class Role extends Model<Role> implements Serializable {
      */
     @TableField(update = "now()")
 	private Date updateTime;
+
+    @TableField(exist = false)
+    private List<User> users;
+
+    @TableField(exist = false)
+    private List<Menu> menus;
 
 }

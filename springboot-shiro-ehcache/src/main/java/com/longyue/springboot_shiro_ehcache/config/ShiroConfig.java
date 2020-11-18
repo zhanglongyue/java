@@ -1,5 +1,6 @@
 package com.longyue.springboot_shiro_ehcache.config;
 
+import com.longyue.springboot_shiro_ehcache.filter.ShiroFilter;
 import com.longyue.springboot_shiro_ehcache.realm.UserRealm;
 import lombok.Data;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +47,9 @@ public class ShiroConfig {
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager){
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        Map<String, Filter> filters = shiroFilterFactoryBean.getFilters();
+        //将自定义的FormAuthenticationFilter注入shiroFilter中
+        filters.put("authc", new ShiroFilter());
 
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         shiroFilterFactoryBean.setLoginUrl(loginUrl);

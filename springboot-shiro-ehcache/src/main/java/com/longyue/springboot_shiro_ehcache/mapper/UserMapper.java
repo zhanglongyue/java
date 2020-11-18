@@ -1,7 +1,7 @@
 package com.longyue.springboot_shiro_ehcache.mapper;
 
-import com.longyue.springboot_shiro_ehcache.domain.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.longyue.springboot_shiro_ehcache.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -13,5 +13,5 @@ import org.apache.ibatis.annotations.Mapper;
 */
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
-
+    int setRole(Integer userId, Integer roleId);
 }

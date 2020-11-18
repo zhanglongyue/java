@@ -104,4 +104,7 @@ public class User extends Model<User> implements Serializable {
     @TableField(exist = false)
     private List<Role> roles;
 
+    @TableField(exist = false)
+    private List<Menu> menus;
+
 }
