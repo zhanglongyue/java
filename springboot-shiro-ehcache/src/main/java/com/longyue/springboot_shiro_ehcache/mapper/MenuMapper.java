@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.longyue.springboot_shiro_ehcache.domain.Menu;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 系统菜单(sys_menu)数据Mapper
  *
@@ -13,5 +15,7 @@ import org.apache.ibatis.annotations.Mapper;
 */
 @Mapper
 public interface MenuMapper extends BaseMapper<Menu> {
+    List<Menu> getAllSubMenu(Integer pid);
 
+    List<Menu> getMenuByRole(Integer roleId);
 }

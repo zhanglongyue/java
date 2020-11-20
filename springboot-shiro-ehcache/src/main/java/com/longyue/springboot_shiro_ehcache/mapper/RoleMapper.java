@@ -4,6 +4,8 @@ import com.longyue.springboot_shiro_ehcache.domain.Role;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 角色表(sys_role)数据Mapper
  *
@@ -14,4 +16,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface RoleMapper extends BaseMapper<Role> {
 
+    List<Role> getUserRoles(Integer userId);
 }

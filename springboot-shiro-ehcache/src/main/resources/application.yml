@@ -6,9 +6,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/spring_shiro?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/adminly?useUnicode=true&characterEncoding=UTF-8
     username: root
-    password: root
+    password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
   thymeleaf:
     cache: false
@@ -18,7 +18,6 @@ spring:
     encoding: UTF-8
   redis:
     port: 6379
-    password: 123456
     host: 127.0.0.1
     connect-timeout: 5000
 
@@ -40,6 +39,6 @@ shiro:
   hashAlgorithm: MD5
   hashIterations: 1024
 
-jwt:
-  config:
-    key: Cc%ijAMvodvDl15C6UkUBSsA!E&D%ram^uQ#aK#gZWVx1Yq1TNI!$YS0qaTYd17#
+#jwt:
+#  config:
+#    key: Cc%ijAMvodvDl15C6UkUBSsA!E&D%ram^uQ#aK#gZWVx1Yq1TNI!$YS0qaTYd17#

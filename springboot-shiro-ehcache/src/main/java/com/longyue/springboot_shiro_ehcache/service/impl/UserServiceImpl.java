@@ -23,4 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+    private UserMapper userMapper;
+
+    public User getUserById(Integer userId){
+        return userMapper.getUserById(userId);
+    }
 }

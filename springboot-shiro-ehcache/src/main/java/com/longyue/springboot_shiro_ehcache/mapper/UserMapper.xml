@@ -13,4 +13,14 @@
         insert into sys_user_role values (#{userId}, #{roleId});
     </insert>
 
+    <resultMap id="user" type="com.longyue.springboot_shiro_ehcache.domain.User">
+        <collection property="roles" ofType="com.longyue.springboot_shiro_ehcache.domain.Role"
+                    select="com.longyue.springboot_shiro_ehcache.mapper.RoleMapper.getUserRoles"
+                    column="user_id" />
+    </resultMap>
+
+    <select id="getUserById" resultType="com.longyue.springboot_shiro_ehcache.domain.User" >
+        select * from sys_user where user_id = #{id}
+    </select>
+
 </mapper>

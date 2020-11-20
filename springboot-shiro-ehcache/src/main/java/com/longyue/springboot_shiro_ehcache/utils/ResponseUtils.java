@@ -1,24 +1,40 @@
 package com.longyue.springboot_shiro_ehcache.utils;
 
-import com.longyue.springboot_shiro_ehcache.vo.Response;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 
+import java.time.LocalDateTime;
+
+@Data
 public class ResponseUtils {
-    public static Response success(Object object) {
-        Response result = new Response();
-        result.setCode("0000");
-        result.setMsg("成功");
-        result.setData(object);
-        return result;
+
+    private Integer status;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime timestamp;
+    private String message;
+    private Object data;
+
+    private ResponseUtils() {
+        timestamp = LocalDateTime.now();
     }
 
-    public static Response success() {
-        return success(null);
+    public static ResponseUtils ok(String message){
+        ResponseUtils responseUtils = new ResponseUtils();
+        responseUtils.setMessage(message);
+        return responseUtils;
     }
 
-    public static Response error(String code, String msg) {
-        Response result = new Response();
-        result.setCode(code);
-        result.setMsg(msg);
-        return result;
+    public static ResponseUtils error(String message){
+        ResponseUtils responseUtils = new ResponseUtils();
+        responseUtils.setMessage(message);
+        return responseUtils;
+    }
+
+    public static ResponseUtils error(Integer status, String message){
+        ResponseUtils responseUtils = new ResponseUtils();
+        responseUtils.setStatus(status);
+        responseUtils.setMessage(message);
+        return responseUtils;
     }
 }
+

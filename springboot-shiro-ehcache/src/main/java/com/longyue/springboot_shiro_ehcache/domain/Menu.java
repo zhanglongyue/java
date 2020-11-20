@@ -1,11 +1,14 @@
 package com.longyue.springboot_shiro_ehcache.domain;
 
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.util.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +31,7 @@ public class Menu extends Model<Menu> implements Serializable {
     /**
      * ID
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
 	private Long menuId;
     /**
      * 上级菜单ID
@@ -99,5 +102,8 @@ public class Menu extends Model<Menu> implements Serializable {
      */
     @TableField(update = "now()")
 	private Date updateTime;
+
+    @TableField(exist = false)
+    private List<Menu> subMenu;
 
 }

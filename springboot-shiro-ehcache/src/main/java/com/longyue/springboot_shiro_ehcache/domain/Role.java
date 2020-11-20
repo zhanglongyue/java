@@ -2,6 +2,8 @@ package com.longyue.springboot_shiro_ehcache.domain;
 
 
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -30,7 +32,7 @@ public class Role extends Model<Role> implements Serializable {
     /**
      * ID
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
 	private Long roleId;
     /**
      * 名称

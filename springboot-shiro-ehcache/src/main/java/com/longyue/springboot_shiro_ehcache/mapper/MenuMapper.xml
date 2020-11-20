@@ -9,4 +9,34 @@
         menu_id,pid,sub_count,type,title,name,component,menu_sort,icon,path,i_frame,cache,hidden,permission,create_by,update_by,create_time,update_time
     </sql>
 
+    <resultMap id="menu" type="com.longyue.springboot_shiro_ehcache.domain.Menu">
+        <id property="menuId" column="menu_id" />
+        <result property="name" column="name" />
+        <result property="log" column="log" />
+        <result property="updateTime" column="update_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="cache" column="cache" />
+        <result property="component" column="component" />
+        <result property="hidden" column="hidden" />
+        <result property="icon" column="icon" />
+        <result property="iFrame" column="i_frame" />
+        <result property="menuSort" column="menu_sort" />
+        <result property="path" column="path" />
+        <result property="permission" column="permission" />
+        <result property="pid" column="pid" />
+        <result property="subCount" column="subCount" />
+        <result property="title" column="title" />
+        <result property="type" column="type" />
+        <collection property="subMenu" ofType="com.longyue.springboot_shiro_ehcache.domain.Menu" select="getAllSubMenu" column="pid" />
+    </resultMap>
+
+    <select id="getAllSubMenu" resultType="com.longyue.springboot_shiro_ehcache.domain.Menu">
+        select * from sys_menu where pid = #{pid}
+   </select>
+
+    <select id="getMenuByRole" resultType="com.longyue.springboot_shiro_ehcache.domain.Menu">
+        select a.* from sys_menu a,sys_role_menu b where a.menu_id = b.menu_id and b.role_id = #{roleId}
+    </select>
 </mapper>

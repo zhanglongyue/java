@@ -1,6 +1,8 @@
 package com.longyue.springboot_shiro_ehcache.domain;
 
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -29,7 +31,7 @@ public class User extends Model<User> implements Serializable {
     /**
      * ID
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
 	private Long userId;
     /**
      * 部门名称
@@ -74,7 +76,7 @@ public class User extends Model<User> implements Serializable {
     /**
      * 状态：1启用、0禁用
      */
-    private Long enabled;
+    private Integer enabled;
     /**
      * 创建者
      */

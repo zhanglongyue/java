@@ -1,15 +1,22 @@
 package com.longyue.springboot_shiro_ehcache.filter;
 
 import com.alibaba.fastjson.JSONObject;
-import com.longyue.springboot_shiro_ehcache.common.R;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ShiroFilter extends FormAuthenticationFilter {
+
+    @Override
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        return super.isAccessAllowed(request, response, mappedValue);
+    }
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
@@ -19,7 +26,12 @@ public class ShiroFilter extends FormAuthenticationFilter {
 //        httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setContentType("application/json");
-        httpServletResponse.getWriter().write(JSONObject.toJSON(R.fail(500, "用户未登录")).toString());
+        Map<String, String> authInfo = new HashMap<String, String>(2) {{
+            put("msg", "用户未登录");
+        }};
+        httpServletResponse.getWriter().write(JSONObject.toJSON(new ResponseEntity(authInfo, HttpStatus.BAD_REQUEST)).toString());
         return false;
     }
+
+
 }

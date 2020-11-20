@@ -29,15 +29,12 @@ public class JwtUtil {
 
     /**
      * 设置认证token
-     *      id:用户id
      *      subject:用户名
      */
-    public String createJwt(String id, String subject, Boolean rememberMe, Map<String,Object> map) {
+    public String createJwt(String subject, Boolean rememberMe) {
         Date now = new Date();
         JwtBuilder jwtBuilder = Jwts.builder();
         //当设置的是整个map时，就需放在最前面，下面的setId等参数才会有效，否则会把前面set的值置空
-        jwtBuilder.setClaims(map);
-        jwtBuilder.setId(id);
         jwtBuilder.setSubject(subject);
         jwtBuilder.setIssuedAt(new Date());//设置当前时间
         jwtBuilder.signWith(SignatureAlgorithm.HS256, jwtConfig.getKey());//设置加密方式

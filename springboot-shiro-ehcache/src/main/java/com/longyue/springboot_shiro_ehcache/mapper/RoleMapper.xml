@@ -9,4 +9,24 @@
         role_id,name,level,description,data_scope,create_by,update_by,create_time,update_time
     </sql>
 
+    <resultMap id="role" type="com.longyue.springboot_shiro_ehcache.domain.Role">
+        <id property="roleId" column="role_id" />
+        <result property="level" column="level" />
+        <result property="dataScope" column="data_scope" />
+        <result property="createTime" column="create_time" />
+        <result property="createBy" column="create_by" />
+        <result property="description" column="description" />
+        <result property="name" column="name" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="log" column="log" />
+        <collection property="menus" ofType="com.longyue.springboot_shiro_ehcache.domain.Menu"
+                    select="com.longyue.springboot_shiro_ehcache.mapper.MenuMapper.getMenuByRole"
+                    column="role_id" />
+    </resultMap>
+
+    <select id="getUserRoles" resultType="com.longyue.springboot_shiro_ehcache.domain.Role">
+        select a.* from sys_role a,sys_user_role b where a.role_id = b.role_id and b.user_id = #{userId}
+    </select>
+
 </mapper>
