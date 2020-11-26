@@ -17,5 +17,5 @@ import java.util.List;
 public interface MenuMapper extends BaseMapper<Menu> {
     List<Menu> getAllSubMenu(Integer pid);
 
-    List<Menu> getMenuByRole(Integer roleId);
+    List<Menu> getRoleMenu(Integer roleId);
 }

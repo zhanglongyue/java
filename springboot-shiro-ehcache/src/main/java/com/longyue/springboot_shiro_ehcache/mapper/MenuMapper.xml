@@ -12,7 +12,6 @@
     <resultMap id="menu" type="com.longyue.springboot_shiro_ehcache.domain.Menu">
         <id property="menuId" column="menu_id" />
         <result property="name" column="name" />
-        <result property="log" column="log" />
         <result property="updateTime" column="update_time" />
         <result property="updateBy" column="update_by" />
         <result property="createBy" column="create_by" />
@@ -26,7 +25,7 @@
         <result property="path" column="path" />
         <result property="permission" column="permission" />
         <result property="pid" column="pid" />
-        <result property="subCount" column="subCount" />
+        <result property="subCount" column="sub_count" />
         <result property="title" column="title" />
         <result property="type" column="type" />
         <collection property="subMenu" ofType="com.longyue.springboot_shiro_ehcache.domain.Menu" select="getAllSubMenu" column="pid" />
@@ -36,7 +35,11 @@
         select * from sys_menu where pid = #{pid}
    </select>
 
-    <select id="getMenuByRole" resultType="com.longyue.springboot_shiro_ehcache.domain.Menu">
-        select a.* from sys_menu a,sys_role_menu b where a.menu_id = b.menu_id and b.role_id = #{roleId}
+    <select id="getRoleMenu" resultMap="menu">
+        select a.menu_id menu_id,a.update_time update_time,a.update_by update_by,
+         a.create_by create_by,a.create_time create_time,a.cache cache,
+         a.component component,a.hidden hidden,a.icon icon,a.i_frame i_frame,
+         a.menu_sort menu_sort,a.path path,a.permission permission,a.pid pid,
+         a.sub_count sub_count,a.title title,a.type type from sys_menu a,sys_role_menu b where a.menu_id = b.menu_id and b.role_id = #{roleId}
     </select>
 </mapper>

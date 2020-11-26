@@ -2,7 +2,7 @@ package com.longyue.springboot_shiro_ehcache.utils;
 
 import cn.hutool.core.date.DateUtil;
 import com.longyue.springboot_shiro_ehcache.common.Consts;
-import com.longyue.springboot_shiro_ehcache.config.JwtConfig;
+import com.longyue.springboot_shiro_ehcache.auth.config.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 

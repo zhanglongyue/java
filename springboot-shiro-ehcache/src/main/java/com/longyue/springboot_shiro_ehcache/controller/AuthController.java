@@ -1,10 +1,12 @@
 package com.longyue.springboot_shiro_ehcache.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.longyue.springboot_shiro_ehcache.common.RestResponse;
 import com.longyue.springboot_shiro_ehcache.domain.User;
 import com.longyue.springboot_shiro_ehcache.exception.BadRequestException;
 import com.longyue.springboot_shiro_ehcache.service.UserService;
 import com.longyue.springboot_shiro_ehcache.service.dto.AuthUserDto;
+import com.longyue.springboot_shiro_ehcache.utils.RedisUtil;
 import com.longyue.springboot_shiro_ehcache.utils.SaltUtils;
 import com.longyue.springboot_shiro_ehcache.utils.TokenUtils;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 系统用户服务控制器
@@ -46,7 +49,8 @@ public class AuthController {
         subject.login(new UsernamePasswordToken(authUserDto.getUsername(), authUserDto.getPassword()));
         User user = (User) subject.getPrincipal();
         String token = TokenUtils.getToken(user.getUserId());
-        return RestResponse.success(new HashMap<String, Object>(2) {{
+        RedisUtil.StringOps.setEx(token, JSONObject.toJSON(user).toString(), 30, TimeUnit.MINUTES);
+        return RestResponse.success(new HashMap<String, Object>() {{
             put("token", token);
             put("user", user);
         }});
@@ -61,7 +65,7 @@ public class AuthController {
         user.setEnabled(1);
         user.setCreateTime(new Date());
         userService.save(user);
-        return ResponseEntity.ok(new HashMap<String, Object>(2) {{
+        return ResponseEntity.ok(new HashMap<String, Object>() {{
             put("user", user);
         }});
     }

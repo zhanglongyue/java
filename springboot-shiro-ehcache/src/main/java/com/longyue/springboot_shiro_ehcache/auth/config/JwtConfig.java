@@ -1,4 +1,4 @@
-package com.longyue.springboot_shiro_ehcache.config;
+package com.longyue.springboot_shiro_ehcache.auth.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,4 +1,4 @@
-package com.longyue.springboot_shiro_ehcache.token;
+package com.longyue.springboot_shiro_ehcache.auth.token;
 
 import org.apache.shiro.authc.AuthenticationToken;
 

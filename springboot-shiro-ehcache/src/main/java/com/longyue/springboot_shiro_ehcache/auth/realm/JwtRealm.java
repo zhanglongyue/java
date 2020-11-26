@@ -1,19 +1,15 @@
-package com.longyue.springboot_shiro_ehcache.realm;
+package com.longyue.springboot_shiro_ehcache.auth.realm;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.longyue.springboot_shiro_ehcache.domain.User;
 import com.longyue.springboot_shiro_ehcache.service.UserService;
-import com.longyue.springboot_shiro_ehcache.token.JwtToken;
+import com.longyue.springboot_shiro_ehcache.auth.token.JwtToken;
 import com.longyue.springboot_shiro_ehcache.utils.JwtUtil;
 import com.longyue.springboot_shiro_ehcache.utils.RedisUtil;
-import com.longyue.springboot_shiro_ehcache.utils.SimpleByteSourceSerializable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ObjectUtils;
 
 @Slf4j
 public class JwtRealm extends AuthorizingRealm {

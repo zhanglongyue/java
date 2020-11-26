@@ -1,9 +1,11 @@
 package com.longyue.springboot_shiro_ehcache.controller;
 
+import com.longyue.springboot_shiro_ehcache.common.RestResponse;
 import com.longyue.springboot_shiro_ehcache.domain.User;
 import com.longyue.springboot_shiro_ehcache.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +26,12 @@ public class UserController {
     private final UserService userService;
 
     @RequestMapping("/list")
-    public List<User> list(){
-        return userService.list();
+    public RestResponse<Object> list(){
+        return RestResponse.success(userService.list());
+    }
+
+    @GetMapping("/get")
+    public RestResponse<Object> getUser(Integer id){
+        return RestResponse.success(userService.getUserById(id));
     }
 }

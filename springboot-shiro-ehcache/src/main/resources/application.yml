@@ -38,6 +38,8 @@ shiro:
     - /**
   hashAlgorithm: MD5
   hashIterations: 1024
+  redisHost: ${spring.redis.host}:${spring.redis.port}
+  redisTimeOut: ${spring.redis.connect-timeout}
 
 #jwt:
 #  config:
