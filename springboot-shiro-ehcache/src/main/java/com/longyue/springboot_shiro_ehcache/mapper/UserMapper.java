@@ -15,4 +15,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserMapper extends BaseMapper<User> {
     int setRole(Integer userId, Integer roleId);
     User getUserById(Integer id);
+    User getUserByName(String username);
 }

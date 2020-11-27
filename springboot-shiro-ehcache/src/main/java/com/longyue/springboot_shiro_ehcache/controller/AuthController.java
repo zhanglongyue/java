@@ -1,21 +1,17 @@
 package com.longyue.springboot_shiro_ehcache.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.longyue.springboot_shiro_ehcache.auth.token.UserToken;
 import com.longyue.springboot_shiro_ehcache.common.RestResponse;
 import com.longyue.springboot_shiro_ehcache.domain.User;
-import com.longyue.springboot_shiro_ehcache.exception.BadRequestException;
 import com.longyue.springboot_shiro_ehcache.service.UserService;
 import com.longyue.springboot_shiro_ehcache.service.dto.AuthUserDto;
-import com.longyue.springboot_shiro_ehcache.utils.RedisUtil;
+import com.longyue.springboot_shiro_ehcache.utils.RedisUtils;
 import com.longyue.springboot_shiro_ehcache.utils.SaltUtils;
 import com.longyue.springboot_shiro_ehcache.utils.TokenUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,13 +38,26 @@ public class AuthController {
 
     private final UserService userService;
 
+//    @PostMapping("/login")
+//    public RestResponse<Object> login(AuthUserDto authUserDto){
+//        Subject subject = SecurityUtils.getSubject();
+//        subject.login(new UsernamePasswordToken(authUserDto.getUsername(), authUserDto.getPassword()));
+//        User user = (User) subject.getPrincipal();
+//        String token = TokenUtils.getToken(user.getUserId());
+//        RedisUtil.StringOps.setEx(token, JSONObject.toJSON(user).toString(), 30, TimeUnit.MINUTES);
+//        return RestResponse.success(new HashMap<String, Object>() {{
+//            put("token", token);
+//            put("user", user);
+//        }});
+//    }
+
     @PostMapping("/login")
     public RestResponse<Object> login(AuthUserDto authUserDto){
         Subject subject = SecurityUtils.getSubject();
-        subject.login(new UsernamePasswordToken(authUserDto.getUsername(), authUserDto.getPassword()));
-        User user = (User) subject.getPrincipal();
+        User user = userService.checkUser(authUserDto.getUsername(), authUserDto.getPassword());
         String token = TokenUtils.getToken(user.getUserId());
-        RedisUtil.StringOps.setEx(token, JSONObject.toJSON(user).toString(), 30, TimeUnit.MINUTES);
+        subject.login(new UserToken(token));
+        RedisUtils.StringOps.setEx(token, JSONObject.toJSON(user).toString(), 30, TimeUnit.MINUTES);
         return RestResponse.success(new HashMap<String, Object>() {{
             put("token", token);
             put("user", user);

@@ -1,11 +1,15 @@
 package com.longyue.springboot_shiro_ehcache.auth.realm;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.longyue.springboot_shiro_ehcache.domain.Menu;
+import com.longyue.springboot_shiro_ehcache.domain.Role;
 import com.longyue.springboot_shiro_ehcache.domain.User;
 import com.longyue.springboot_shiro_ehcache.service.UserService;
 import com.longyue.springboot_shiro_ehcache.utils.SimpleByteSourceSerializable;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +22,24 @@ public class UserRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-//        //获取登录用户名
-//        String name = (String) principalCollection.getPrimaryPrincipal();
-//        //查询用户名称
-//        User user = loginService.findByName(name);
-//        //添加角色和权限
-//        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-//        for (Role role:user.getRoles()) {
-//            //添加角色
-//            simpleAuthorizationInfo.addRole(role.getRoleName());
-//            for (Permission permission:role.getPermissions()) {
-//                //添加权限
-//                simpleAuthorizationInfo.addStringPermission(permission.getPermission());
-//            }
-//        }
-//        return simpleAuthorizationInfo;
-        return null;
+        //获取登录用户名
+        String username = (String) principals.getPrimaryPrincipal();
+        //查询用户名称
+        User user = userService.getUserByName(username);
+        //添加角色和权限
+        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+        for (Role role:user.getRoles()) {
+            //添加角色
+            simpleAuthorizationInfo.addRole(role.getName());
+            for (Menu menu:role.getMenus()) {
+                //添加权限
+                String permission = menu.getPermission();
+                if(StrUtil.isNotBlank(permission)) {
+                    simpleAuthorizationInfo.addStringPermission(menu.getPermission());
+                }
+            }
+        }
+        return simpleAuthorizationInfo;
     }
 
     @Override
@@ -42,7 +48,7 @@ public class UserRealm extends AuthorizingRealm {
             return null;
         }
         String username = token.getPrincipal().toString();
-        User user = userService.getOne(new QueryWrapper<User>().eq("username", username));
+        User user = userService.getUserByName(username);
         if (ObjectUtils.isEmpty(user)) {
             return null;
         } else {

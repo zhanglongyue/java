@@ -2,8 +2,8 @@ package com.longyue.springboot_shiro_ehcache.auth.realm;
 
 import com.longyue.springboot_shiro_ehcache.service.UserService;
 import com.longyue.springboot_shiro_ehcache.auth.token.JwtToken;
-import com.longyue.springboot_shiro_ehcache.utils.JwtUtil;
-import com.longyue.springboot_shiro_ehcache.utils.RedisUtil;
+import com.longyue.springboot_shiro_ehcache.utils.JwtUtils;
+import com.longyue.springboot_shiro_ehcache.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -15,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class JwtRealm extends AuthorizingRealm {
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private JwtUtils jwtUtils;
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
     @Autowired
     private UserService userService;
 

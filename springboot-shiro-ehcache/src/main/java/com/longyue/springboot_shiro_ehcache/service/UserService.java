@@ -13,4 +13,6 @@ import com.longyue.springboot_shiro_ehcache.domain.User;
  */
 public interface UserService extends IService<User> {
     User getUserById(Integer userId);
+    User getUserByName(String username);
+    User checkUser(String username, String password);
 }

@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @Slf4j
 @AllArgsConstructor
-public class JwtUtil {
+public class JwtUtils {
 
     private JwtConfig jwtConfig;
     private StringRedisTemplate stringRedisTemplate;

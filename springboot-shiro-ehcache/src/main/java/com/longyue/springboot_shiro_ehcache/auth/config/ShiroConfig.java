@@ -18,8 +18,6 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.crazycake.shiro.RedisCacheManager;
-import org.crazycake.shiro.RedisManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -46,36 +44,29 @@ public class ShiroConfig {
     private String hashAlgorithm;
     private Integer hashIterations;
 
-    private String redisHost;
-    private String redisPwd;
-    private Integer redisTimeOut;
-
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager redisSecurityManager){
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager){
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         Map<String, Filter> filters = shiroFilterFactoryBean.getFilters();
-        //将自定义的FormAuthenticationFilter注入shiroFilter中
-//        filters.put("kickout", kickoutSessionControlFilter());
         filters.put("authc", new TokenFilter());
 
-        shiroFilterFactoryBean.setSecurityManager(redisSecurityManager);
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
         shiroFilterFactoryBean.setLoginUrl(loginUrl);
         shiroFilterFactoryBean.setUnauthorizedUrl(unauthorizedUrl);
         shiroFilterFactoryBean.setSuccessUrl(successUrl);
 
         Map<String,String> filterMap = new HashMap<>();
-
         if(null != logoutUrl){
-            filterMap.put(loginUrl,"logout");
+            filterMap.put(loginUrl, "logout");
         }
         if(anons!=null && anons.length>0){
             for(String anon:anons){
-                filterMap.put(anon,"anon");
+                filterMap.put(anon, "anon");
             }
         }
         if(authcs!=null && authcs.length>0){
             for(String authc:authcs){
-                filterMap.put(authc,"authc");
+                filterMap.put(authc, "authc");
             }
         }
 
@@ -84,15 +75,15 @@ public class ShiroConfig {
     }
 
     /**
-     * 配置securityManager
-     * @param realm
-     * @return
+     * 配置SecurityManager
+     * @param tokenRealm 自定义realm
+     * @return SecurityManager
      */
     @Bean
-    public SecurityManager redisSecurityManager(Realm realm, CacheManager redisCacheManager) {
+    public SecurityManager securityManager(Realm tokenRealm, SessionManager sessionManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setCacheManager(redisCacheManager);
-        securityManager.setRealm(realm);
+//        securityManager.setSessionManager(sessionManager);
+        securityManager.setRealm(tokenRealm);
         /*
          * 关闭shiro自带的session，详情见文档
          * http://shiro.apache.org/session-management.html#SessionManagement-StatelessApplications%28Sessionless%29
@@ -106,82 +97,18 @@ public class ShiroConfig {
     }
 
     /**
-     * cacheManager 缓存 redis实现
-     * 使用的是shiro-redis开源插件
+     * 身份认证TokenRealm
      *
-     * @return
-     */
-    @Bean
-    public CacheManager redisCacheManager(RedisManager redisManager) {
-        RedisCacheManager redisCacheManager = new RedisCacheManager();
-        redisCacheManager.setRedisManager(redisManager);
-        return redisCacheManager;
-    }
-//
-//    /**
-//     * RedisSessionDAO shiro sessionDao层的实现 通过redis
-//     * 使用的是shiro-redis开源插件
-//     */
-//    @Bean
-//    public RedisSessionDAO redisSessionDAO(RedisManager redisManager) {
-//        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
-//        redisSessionDAO.setRedisManager(redisManager);
-//        return redisSessionDAO;
-//    }
-//
-//    /**
-//     * Session Manager
-//     * 使用的是shiro-redis开源插件
-//     */
-//    @Bean
-//    public SessionManager redisSessionManager(RedisSessionDAO redisSessionDAO) {
-//        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-//        sessionManager.setSessionDAO(redisSessionDAO);
-//        return sessionManager;
-//    }
-
-    /**
-     * 配置shiro redisManager
-     * 使用的是shiro-redis开源插件
-     *
-     * @return
-     */
-    @Bean
-    public RedisManager redisManager() {
-        RedisManager redisManager = new RedisManager();
-        redisManager.setHost(redisHost);
-        redisManager.setTimeout(redisTimeOut);
-        redisManager.setPassword(redisPwd);
-        return redisManager;
-    }
-
-    /**
-     * 身份认证realm; (这个需要自己写，账号密码校验；权限等)
-     *
-     * @return
+     * @return TokenRealm
      */
     @Bean
     public TokenRealm tokenRealm() {
         return new TokenRealm();
     }
 
-
-    /**
-     * 配置securityManager
-     * @param realm
-     * @return
-     */
-    @Bean
-    public SecurityManager securityManager(Realm realm, SessionManager sessionManager) {
-        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setSessionManager(sessionManager);
-        securityManager.setRealm(realm);
-        return securityManager;
-    }
-
     /**
      * 加dependson解决热部署 重复Bean问题
-     * @return
+     * @return CacheManager
      */
     @Bean
     @DependsOn("lifecycleBeanPostProcessor")
@@ -191,13 +118,13 @@ public class ShiroConfig {
 
     /**
      * 配置自定义Realm
-     * @return
+     * @return Realm
      */
     @Bean
     public Realm realm(CredentialsMatcher credentialsMatcher, CacheManager cacheManager){
         UserRealm realm = new UserRealm();
         realm.setCredentialsMatcher(credentialsMatcher);
-        //开启缓存管理器
+        // 开启缓存管理器
         realm.setCacheManager(cacheManager);
         realm.setCachingEnabled(true);
         realm.setAuthenticationCachingEnabled(true);
@@ -208,8 +135,8 @@ public class ShiroConfig {
     }
 
     /**
-     * 配置凭证匹配器
-     * @return
+     * 配置凭证匹配器,用于做密码散列
+     * @return CredentialsMatcher
      */
     @Bean
     public CredentialsMatcher credentialsMatcher() {
@@ -236,15 +163,15 @@ public class ShiroConfig {
     }
 
     @Bean
-    public static DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator(){
-        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator=new DefaultAdvisorAutoProxyCreator();
+    public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
+        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
         /**
          * setUsePrefix(false)用于解决一个奇怪的bug。在引入spring aop的情况下。
          * 在@Controller注解的类的方法中加入@RequiresRole等shiro注解，会导致该方法无法映射请求，导致返回404。
          * 加入这项配置能解决这个bug
          */
-        defaultAdvisorAutoProxyCreator.setUsePrefix(true);
+        // defaultAdvisorAutoProxyCreator.setUsePrefix(true);
         return defaultAdvisorAutoProxyCreator;
     }
 
@@ -254,4 +181,5 @@ public class ShiroConfig {
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
     }
+
 }

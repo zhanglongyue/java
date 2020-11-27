@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -68,6 +69,7 @@ public class User extends Model<User> implements Serializable {
     /**
      * 密码
      */
+    @JsonIgnore
     private String password;
     /**
      * 是否为admin账号
@@ -101,6 +103,7 @@ public class User extends Model<User> implements Serializable {
     /**
      * 盐
      */
+    @JsonIgnore
     private String salt;
 
     @TableField(exist = false)

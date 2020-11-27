@@ -3,9 +3,10 @@ package com.longyue.springboot_shiro_ehcache.auth.filter;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.longyue.springboot_shiro_ehcache.auth.token.UserToken;
 import com.longyue.springboot_shiro_ehcache.common.RestResponse;
 import com.longyue.springboot_shiro_ehcache.domain.User;
-import com.longyue.springboot_shiro_ehcache.utils.RedisUtil;
+import com.longyue.springboot_shiro_ehcache.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class TokenFilter extends FormAuthenticationFilter {
         log.info("token: " + token);
         User user = null;
         try {
-            user = JSON.parseObject(RedisUtil.StringOps.get(token), User.class);
+            user = JSON.parseObject(RedisUtils.StringOps.get(token), User.class);
         } catch (Exception e) {
             return false;
         }
@@ -41,11 +42,8 @@ public class TokenFilter extends FormAuthenticationFilter {
             return false;
         }
         //刷新超时时间
-        RedisUtil.KeyOps.expire(token,30, TimeUnit.MINUTES);
-//        YtoooToken token = new YtoooToken(sid);
-        // 提交给realm进行登入，如果错误他会抛出异常并被捕获
-//        getSubject(request, response).login(token);
-        // 如果没有抛出异常则代表登入成功，返回true
+        RedisUtils.KeyOps.expire(token,30, TimeUnit.MINUTES);
+        getSubject(request, response).login(new UserToken(token));
         return true;
     }
 

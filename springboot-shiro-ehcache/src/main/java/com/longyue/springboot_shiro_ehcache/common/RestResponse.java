@@ -11,7 +11,7 @@ public class RestResponse<T> implements Serializable {
     private static final long serialVersionUID = 3728877563912075885L;
 
     private int code;
-    private String msg;
+    private String message;
     private T data;
 
     public RestResponse(){
@@ -20,7 +20,7 @@ public class RestResponse<T> implements Serializable {
 
     public RestResponse(int code, String message, T data) {
         this.code = code;
-        this.setMsg(message);
+        this.setMessage(message);
         this.data = data;
     }
 
@@ -31,7 +31,7 @@ public class RestResponse<T> implements Serializable {
 
     public RestResponse(int code, String message) {
         this.code = code;
-        this.setMsg(message);
+        this.setMessage(message);
     }
 
     /**
@@ -48,8 +48,8 @@ public class RestResponse<T> implements Serializable {
      * @param <T>
      * @return
      */
-    public static <T> RestResponse<T> success(String msg){
-        return new RestResponse<T>(200, msg);
+    public static <T> RestResponse<T> success(String message){
+        return new RestResponse<T>(200, message);
     }
 
     /**
@@ -57,8 +57,8 @@ public class RestResponse<T> implements Serializable {
      * @param <T>
      * @return
      */
-    public static <T> RestResponse<T> success(String msg, T data){
-        return new RestResponse<T>(200, msg, data);
+    public static <T> RestResponse<T> success(String message, T data){
+        return new RestResponse<T>(200, message, data);
     }
 
     /**
@@ -66,8 +66,8 @@ public class RestResponse<T> implements Serializable {
      * @param <T>
      * @return
      */
-    public static <T> RestResponse<T> fail(String msg){
-        return new RestResponse<T>(500, msg,null);
+    public static <T> RestResponse<T> fail(String message){
+        return new RestResponse<T>(500, message,null);
     }
 
     /**
@@ -75,8 +75,8 @@ public class RestResponse<T> implements Serializable {
      * @param <T>
      * @return
      */
-    public static <T> RestResponse<T> fail(int code, String msg){
-        return new RestResponse<T>(code, msg,null);
+    public static <T> RestResponse<T> fail(int code, String message){
+        return new RestResponse<T>(code, message,null);
     }
 
 
@@ -84,8 +84,8 @@ public class RestResponse<T> implements Serializable {
         return code;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getMessage() {
+        return message;
     }
 
 
@@ -97,8 +97,8 @@ public class RestResponse<T> implements Serializable {
         this.code = code;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public void setData(T data) {
@@ -107,6 +107,6 @@ public class RestResponse<T> implements Serializable {
 
     @Override
     public String toString() {
-        return "RestResponse{" + "code=" + code + ", msg='" + msg + '\'' +", data=" + data +'}';
+        return "RestResponse{" + "code=" + code + ", message='" + message + '\'' +", data=" + data +'}';
     }
 }

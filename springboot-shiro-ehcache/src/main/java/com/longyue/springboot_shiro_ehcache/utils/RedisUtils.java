@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * 声明: 此工具只简单包装了redisTemplate的大部分常用的api, 没有包装redisTemplate所有的api。
  *      如果对此工具类中的功能不太满意, 或对StringRedisTemplate提供的api不太满意，
  *      那么可自行实现相应的{@link StringRedisTemplate}类中的对应execute方法, 以达
- *      到自己想要的效果; 至于如何实现,则可参考源码或{@link RedisUtil.LockOps}中的方法。
+ *      到自己想要的效果; 至于如何实现,则可参考源码或{@link RedisUtils.LockOps}中的方法。
  *
  * 注: 此工具类依赖spring-boot-starter-data-redis类库、以及可选的lombok、fastjson
  * 注: 更多javadoc细节，可详见{@link RedisOperations}
@@ -44,14 +44,14 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component
-public class RedisUtil implements ApplicationContextAware {
+public class RedisUtils implements ApplicationContextAware {
 
     /** 使用StringRedisTemplate(，其是RedisTemplate的定制化升级) */
     private static StringRedisTemplate redisTemplate;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        RedisUtil.redisTemplate = applicationContext.getBean(StringRedisTemplate.class);
+        RedisUtils.redisTemplate = applicationContext.getBean(StringRedisTemplate.class);
     }
 
     /**
@@ -3029,7 +3029,7 @@ public class RedisUtil implements ApplicationContextAware {
          *
          * 注: 获取结果是即时返回的、是非阻塞的。
          *
-         * @see RedisUtil.LockOps#getLock(String, String, long, TimeUnit)
+         * @see RedisUtils.LockOps#getLock(String, String, long, TimeUnit)
          */
         public static boolean getLock(final String key, final String value) {
             return getLock(key, value, DEFAULT_LOCK_TIMEOUT, DEFAULT_TIMEOUT_UNIT);
@@ -3045,7 +3045,7 @@ public class RedisUtil implements ApplicationContextAware {
          * @param retryTimeoutLimit
          *            重试的超时时长(ms)
          * 其它参数可详见:
-         *    @see RedisUtil.LockOps#getLock(String, String, long, TimeUnit)
+         *    @see RedisUtils.LockOps#getLock(String, String, long, TimeUnit)
          *
          * @return 是否成功
          */
@@ -3064,7 +3064,7 @@ public class RedisUtil implements ApplicationContextAware {
          * @param retryTimeoutLimit
          *            重试的超时时长(ms)
          * 其它参数可详见:
-         *    @see RedisUtil.LockOps#getLock(String, String, long, TimeUnit, boolean)
+         *    @see RedisUtils.LockOps#getLock(String, String, long, TimeUnit, boolean)
          *
          * @return 是否成功
          */
@@ -3097,7 +3097,7 @@ public class RedisUtil implements ApplicationContextAware {
          *
          * 注: 获取结果是即时返回的、是非阻塞的。
          *
-         * @see RedisUtil.LockOps#getLock(String, String, long, TimeUnit, boolean)
+         * @see RedisUtils.LockOps#getLock(String, String, long, TimeUnit, boolean)
          */
         public static boolean getLock(final String key, final String value,
                                       final long timeout, final TimeUnit unit) {
@@ -3191,7 +3191,7 @@ public class RedisUtil implements ApplicationContextAware {
          */
         @Deprecated
         public static void releaseLock(final String key) {
-            RedisUtil.KeyOps.delete(key);
+            RedisUtils.KeyOps.delete(key);
         }
     }
 
