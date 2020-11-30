@@ -18,29 +18,36 @@ public class TokenUtils {
     private static Integer Q_Random = 16;
 
     public static void main(String[] args) {
-        Long userId = 20L;
-        System.out.println("原始ID加密："+getUseridOnBase(userId));
-        String userID = getUseridOnBase(userId);
-        System.out.println("ID解密："+getBaseOnUserid(userID));
-        System.out.println("Id移位："+changeForId(userId));
-        Long restoreForIdNum = changeForId(userId);
-        System.out.println("Id归位："+restoreForId(restoreForIdNum));
-        Long confusionOperationIdNum = restoreForId(restoreForIdNum);
-        System.out.println("Id混淆："+confusionOperationId(restoreForIdNum));
-        Long confusionId = confusionOperationId(restoreForIdNum);
-        System.out.println("Id还原："+reductionOperationId(confusionId));
-        System.out.println("Y随机数："+getYRandomString(Y_Random));
-        System.out.println("Q随机数："+getQRandomString(Q_Random));
-//        System.out.println("token：117:VYX0NA==4T9 的用户ID是："+JudgementToken("117:VYX0NA==4T9"));
-        Long begin = System.currentTimeMillis();
-        for(int num = 0;num<3000000;num++){
-            getToken(userId);
-        }
-        Long end = System.currentTimeMillis();
-        Long time = end - begin;
-        System.out.println("time:"+time);
-        Long V = 3000000L/time;
-        System.out.println("token---"+getToken(userId)+"---V:"+V*1000L);
+
+        String token = getToken(3L);
+        System.out.println(token);
+        System.out.println(JudgementToken(token));
+//
+//        Integer userId = 10;
+//        System.out.println("原始ID加密："+getUseridOnBase(userId));
+//        String userID = getUseridOnBase(userId);
+//        System.out.println("ID解密："+getBaseOnUserid(userID));
+//        System.out.println("Id移位："+changeForId(userId));
+//        Long restoreForIdNum = changeForId(userId);
+//        System.out.println("Id归位："+restoreForId(restoreForIdNum));
+//        Long confusionOperationIdNum = restoreForId(restoreForIdNum);
+//        System.out.println("Id混淆："+confusionOperationId(restoreForIdNum));
+//        Long confusionId = confusionOperationId(restoreForIdNum);
+//        System.out.println("Id还原："+reductionOperationId(confusionId));
+//        System.out.println("Y随机数："+getYRandomString(Y_Random));
+//        System.out.println("Q随机数："+getQRandomString(Q_Random));
+////        System.out.println("token：117:VYX0NA==4T9 的用户ID是："+JudgementToken("117:VYX0NA==4T9"));
+//        Long begin = System.currentTimeMillis();
+//        for(int num = 0;num<3000000;num++){
+//            getToken(userId);
+//        }
+//        Long end = System.currentTimeMillis();
+//        Long time = end - begin;
+//        System.out.println("time:"+time);
+//        Long V = 3000000L/time;
+//        String token = getToken(userId);
+//        System.out.println("token---"+token+"---V:"+V*1000L);
+//        System.out.println(JudgementToken(token));
     }
 
     //通过Id生成Token串

@@ -1,7 +1,7 @@
 package com.longyue.springboot_shiro_ehcache.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.longyue.springboot_shiro_ehcache.auth.token.UserToken;
+import com.longyue.springboot_shiro_ehcache.auth.token.DefaultToken;
 import com.longyue.springboot_shiro_ehcache.common.RestResponse;
 import com.longyue.springboot_shiro_ehcache.domain.User;
 import com.longyue.springboot_shiro_ehcache.service.UserService;
@@ -12,6 +12,7 @@ import com.longyue.springboot_shiro_ehcache.utils.TokenUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.http.ResponseEntity;
@@ -54,9 +55,9 @@ public class AuthController {
     @PostMapping("/login")
     public RestResponse<Object> login(AuthUserDto authUserDto){
         Subject subject = SecurityUtils.getSubject();
-        User user = userService.checkUser(authUserDto.getUsername(), authUserDto.getPassword());
+        subject.login(new UsernamePasswordToken(authUserDto.getUsername(), authUserDto.getPassword()));
+        User user = (User) subject.getPrincipal();
         String token = TokenUtils.getToken(user.getUserId());
-        subject.login(new UserToken(token));
         RedisUtils.StringOps.setEx(token, JSONObject.toJSON(user).toString(), 30, TimeUnit.MINUTES);
         return RestResponse.success(new HashMap<String, Object>() {{
             put("token", token);
@@ -65,7 +66,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> register(User user){
+    public RestResponse<Object> register(User user){
         String salt = SaltUtils.getSalt(8);
         user.setSalt(salt);
         Md5Hash hashPwd = new Md5Hash(user.getPassword(), salt, 1024);
@@ -73,9 +74,15 @@ public class AuthController {
         user.setEnabled(1);
         user.setCreateTime(new Date());
         userService.save(user);
-        return ResponseEntity.ok(new HashMap<String, Object>() {{
+        return RestResponse.success(new HashMap<String, Object>() {{
             put("user", user);
         }});
+    }
+
+    @PostMapping("/logout")
+    public RestResponse<Object> logout(){
+        SecurityUtils.getSubject().logout();
+        return RestResponse.success();
     }
 
 }

@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UnknownAccountException.class)
     public ResponseEntity<ApiError> badCredentialsException(UnknownAccountException e){
-        return buildResponseEntity(ApiError.error(HttpStatus.UNAUTHORIZED.value(),"用户名或密码错误"));
+        return buildResponseEntity(ApiError.error(HttpStatus.UNAUTHORIZED.value(),"用户名或密码不正确"));
     }
 
     /**
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(IncorrectCredentialsException.class)
     public ResponseEntity<ApiError> badCredentialsException(IncorrectCredentialsException e){
-        return buildResponseEntity(ApiError.error(HttpStatus.UNAUTHORIZED.value(),"用户名或密码错误"));
+        return buildResponseEntity(ApiError.error(HttpStatus.UNAUTHORIZED.value(),"用户名或密码不正确"));
     }
 
     /**

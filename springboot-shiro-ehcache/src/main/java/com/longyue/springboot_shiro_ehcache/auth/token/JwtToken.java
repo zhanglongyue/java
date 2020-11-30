@@ -10,14 +10,13 @@ public class JwtToken implements AuthenticationToken {
         this.jwt = jwt;
     }
 
-    @Override//类似是用户名
+    @Override
     public Object getPrincipal() {
         return jwt;
     }
 
-    @Override//类似密码
+    @Override
     public Object getCredentials() {
         return jwt;
     }
-    //返回的都是jwt
 }

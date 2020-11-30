@@ -1,5 +1,7 @@
 package com.longyue.springboot_shiro_ehcache.common;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,7 @@ public class RestResponse<T> implements Serializable {
 
     private int code;
     private String message;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
     public RestResponse(){
@@ -33,6 +36,8 @@ public class RestResponse<T> implements Serializable {
         this.code = code;
         this.setMessage(message);
     }
+
+    public static <T> RestResponse<T> success() { return new RestResponse<T>(200, "success"); }
 
     /**
      * 成功时-返回data

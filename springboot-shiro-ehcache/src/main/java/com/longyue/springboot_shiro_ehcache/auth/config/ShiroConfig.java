@@ -1,11 +1,14 @@
 package com.longyue.springboot_shiro_ehcache.auth.config;
 
 import com.longyue.springboot_shiro_ehcache.auth.filter.TokenFilter;
+import com.longyue.springboot_shiro_ehcache.auth.pam.DefaultModularRealmAuthenticator;
 import com.longyue.springboot_shiro_ehcache.auth.realm.TokenRealm;
 import com.longyue.springboot_shiro_ehcache.auth.realm.UserRealm;
 import lombok.Data;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
@@ -25,7 +28,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import javax.servlet.Filter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -75,15 +80,30 @@ public class ShiroConfig {
     }
 
     /**
+     * 自定义Realm管理，主要针对多realm
+     * */
+    @Bean
+    public ModularRealmAuthenticator modularRealmAuthenticator(){
+        DefaultModularRealmAuthenticator modularRealmAuthenticator = new DefaultModularRealmAuthenticator();
+        modularRealmAuthenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
+        return modularRealmAuthenticator;
+    }
+
+    /**
      * 配置SecurityManager
      * @param tokenRealm 自定义realm
      * @return SecurityManager
      */
     @Bean
-    public SecurityManager securityManager(Realm tokenRealm, SessionManager sessionManager) {
+    public SecurityManager securityManager(Realm tokenRealm, Realm userRealm, SessionManager sessionManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 //        securityManager.setSessionManager(sessionManager);
-        securityManager.setRealm(tokenRealm);
+        securityManager.setAuthenticator(modularRealmAuthenticator());
+        List<Realm> realms = new ArrayList<>();
+        //添加多个Realm
+        realms.add(tokenRealm);
+        realms.add(userRealm);
+        securityManager.setRealms(realms);
         /*
          * 关闭shiro自带的session，详情见文档
          * http://shiro.apache.org/session-management.html#SessionManagement-StatelessApplications%28Sessionless%29
@@ -102,7 +122,7 @@ public class ShiroConfig {
      * @return TokenRealm
      */
     @Bean
-    public TokenRealm tokenRealm() {
+    public Realm tokenRealm() {
         return new TokenRealm();
     }
 
@@ -121,16 +141,17 @@ public class ShiroConfig {
      * @return Realm
      */
     @Bean
-    public Realm realm(CredentialsMatcher credentialsMatcher, CacheManager cacheManager){
+    public Realm userRealm(CredentialsMatcher credentialsMatcher, CacheManager cacheManager){
         UserRealm realm = new UserRealm();
         realm.setCredentialsMatcher(credentialsMatcher);
-        // 开启缓存管理器
+        /*// 开启缓存管理器
         realm.setCacheManager(cacheManager);
         realm.setCachingEnabled(true);
         realm.setAuthenticationCachingEnabled(true);
         realm.setAuthenticationCacheName("authenticationCache");
         realm.setAuthorizationCachingEnabled(true);
         realm.setAuthorizationCacheName("authorizationCache");
+        */
         return realm;
     }
 
@@ -162,6 +183,9 @@ public class ShiroConfig {
         return new LifecycleBeanPostProcessor();
     }
 
+    /**
+     * 以下配置开启shiro注解
+     */
     @Bean
     public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
         DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
