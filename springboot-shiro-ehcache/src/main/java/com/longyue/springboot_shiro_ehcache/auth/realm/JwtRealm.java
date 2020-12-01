@@ -21,14 +21,8 @@ public class JwtRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
 
-    /*
-     * 多重写一个support
-     * 标识这个Realm是专门用来验证JwtToken
-     * 不负责验证其他的token（UsernamePasswordToken）
-     * */
     @Override
     public boolean supports(AuthenticationToken token) {
-        //这个token就是从过滤器中传入的jwtToken
         return token instanceof JwtToken;
     }
 
@@ -39,7 +33,6 @@ public class JwtRealm extends AuthorizingRealm {
     }
 
     //认证
-    //这个token就是从过滤器中传入的jwtToken
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         return null;

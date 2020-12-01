@@ -62,7 +62,7 @@ public class ShiroConfig {
 
         Map<String,String> filterMap = new HashMap<>();
         if(null != logoutUrl){
-            filterMap.put(loginUrl, "logout");
+            filterMap.put(logoutUrl, "logout");
         }
         if(anons!=null && anons.length>0){
             for(String anon:anons){
@@ -80,7 +80,7 @@ public class ShiroConfig {
     }
 
     /**
-     * 自定义Realm管理，主要针对多realm
+     * 自定义Realm管理，针对多realm
      * */
     @Bean
     public ModularRealmAuthenticator modularRealmAuthenticator(){
@@ -89,20 +89,26 @@ public class ShiroConfig {
         return modularRealmAuthenticator;
     }
 
-    /**
-     * 配置SecurityManager
-     * @param tokenRealm 自定义realm
-     * @return SecurityManager
-     */
     @Bean
-    public SecurityManager securityManager(Realm tokenRealm, Realm userRealm, SessionManager sessionManager) {
-        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-//        securityManager.setSessionManager(sessionManager);
-        securityManager.setAuthenticator(modularRealmAuthenticator());
+    public List<Realm> realms(Realm tokenRealm, Realm userRealm){
         List<Realm> realms = new ArrayList<>();
         //添加多个Realm
         realms.add(tokenRealm);
         realms.add(userRealm);
+        return realms;
+    }
+
+    /**
+     * 配置SecurityManager
+     * @param realms 自定义realm
+     * @return SecurityManager
+     */
+    @Bean
+    public SecurityManager securityManager(List<Realm> realms, SessionManager sessionManager) {
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+//        securityManager.setSessionManager(sessionManager);
+
+        securityManager.setAuthenticator(modularRealmAuthenticator());
         securityManager.setRealms(realms);
         /*
          * 关闭shiro自带的session，详情见文档

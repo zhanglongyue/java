@@ -1,12 +1,14 @@
 package com.longyue.springboot_shiro_ehcache.auth.filter;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.longyue.springboot_shiro_ehcache.auth.token.DefaultToken;
 import com.longyue.springboot_shiro_ehcache.domain.User;
 import com.longyue.springboot_shiro_ehcache.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authc.AuthenticationToken;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -38,4 +40,20 @@ public class TokenFilter extends DefaultFilter {
         getSubject(request, response).login(new DefaultToken(token));
         return true;
     }
+
+    /**
+     * 创建shiro token
+     * @param request
+     * @param response
+     * @return
+     */
+    @Override
+    protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
+        String token = ((HttpServletRequest)request).getHeader("token");
+        if(StrUtil.isNotBlank(token)) {
+            return new DefaultToken(token);
+        }
+        return null;
+    }
+
 }

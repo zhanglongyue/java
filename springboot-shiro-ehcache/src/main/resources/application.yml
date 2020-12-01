@@ -31,7 +31,6 @@ shiro:
     - auth/login.html
     - index.html
     - /auth/login
-    - /auth/logout
     - /auth/register
     - /auth/goRegister
     - auth/register.html
