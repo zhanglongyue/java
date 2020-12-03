@@ -14,6 +14,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.SimpleByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
@@ -43,8 +44,10 @@ public class UserRealm extends AuthRealm {
             return null;
         } else {
             //这里验证authenticationToken和simpleAuthenticationInfo的信息
+//            return new SimpleAuthenticationInfo(user, user.getPassword(),
+//                    SimpleByteSourceSerializable.Util.bytes(user.getSalt()), getName());
             return new SimpleAuthenticationInfo(user, user.getPassword(),
-                    SimpleByteSourceSerializable.Util.bytes(user.getSalt()), getName());
+                    new SimpleByteSource(user.getSalt()), getName());
         }
     }
 }

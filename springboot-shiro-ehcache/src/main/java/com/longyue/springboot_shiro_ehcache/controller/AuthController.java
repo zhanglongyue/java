@@ -1,6 +1,7 @@
 package com.longyue.springboot_shiro_ehcache.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.longyue.springboot_shiro_ehcache.common.Consts;
 import com.longyue.springboot_shiro_ehcache.common.RestResponse;
 import com.longyue.springboot_shiro_ehcache.domain.User;
 import com.longyue.springboot_shiro_ehcache.service.UserService;
@@ -18,9 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
@@ -47,7 +46,8 @@ public class AuthController {
         subject.login(new UsernamePasswordToken(authUserDto.getUsername(), authUserDto.getPassword()));
         User user = (User) subject.getPrincipal();
         String token = UUID.randomUUID().toString();
-        RedisUtils.StringOps.setEx(token, JSONObject.toJSON(user).toString(), 30, TimeUnit.MINUTES);
+        RedisUtils.StringOps.setEx(Consts.TOKEN_PREFIX + token, JSONObject.toJSON(user).toString(),
+                30, TimeUnit.MINUTES);
         return RestResponse.success(new HashMap<String, Object>() {{
             put("user", user);
             put("token", token);
@@ -69,10 +69,10 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public RestResponse<Object> logout(ServletRequest request, ServletResponse response){
+    public RestResponse<Object> logout(ServletRequest request){
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String token = httpServletRequest.getHeader("token");
-        RedisUtils.KeyOps.delete(token);
+        RedisUtils.KeyOps.delete(Consts.TOKEN_PREFIX + token);
         return RestResponse.success();
     }
 

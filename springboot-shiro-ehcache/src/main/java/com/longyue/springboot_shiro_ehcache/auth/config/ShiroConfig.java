@@ -21,7 +21,11 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisManager;
+import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -80,6 +84,34 @@ public class ShiroConfig {
     }
 
     /**
+     * 配置SecurityManager
+     * @param realms 自定义realm
+     * @return SecurityManager
+     */
+    @Bean
+    public SecurityManager securityManager(List<Realm> realms, ModularRealmAuthenticator modularRealmAuthenticator,
+                                           @Qualifier("sessionManager") SessionManager sessionManager,
+                                           CacheManager cacheManager) {
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        securityManager.setAuthenticator(modularRealmAuthenticator);
+        securityManager.setRealms(realms);
+
+//        securityManager.setSessionManager(sessionManager);
+//        securityManager.setCacheManager(cacheManager);
+
+        /*
+         * 关闭shiro自带的session，详情见文档
+         * http://shiro.apache.org/session-management.html#SessionManagement-StatelessApplications%28Sessionless%29
+         */
+        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+        defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
+        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
+        securityManager.setSubjectDAO(subjectDAO);
+        return securityManager;
+    }
+
+    /**
      * 自定义Realm管理，针对多realm
      * */
     @Bean
@@ -96,30 +128,6 @@ public class ShiroConfig {
         realms.add(tokenRealm);
         realms.add(userRealm);
         return realms;
-    }
-
-    /**
-     * 配置SecurityManager
-     * @param realms 自定义realm
-     * @return SecurityManager
-     */
-    @Bean
-    public SecurityManager securityManager(List<Realm> realms, SessionManager sessionManager) {
-        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-//        securityManager.setSessionManager(sessionManager);
-
-        securityManager.setAuthenticator(modularRealmAuthenticator());
-        securityManager.setRealms(realms);
-        /*
-         * 关闭shiro自带的session，详情见文档
-         * http://shiro.apache.org/session-management.html#SessionManagement-StatelessApplications%28Sessionless%29
-         */
-        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
-        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
-        defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
-        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
-        securityManager.setSubjectDAO(subjectDAO);
-        return securityManager;
     }
 
     /**
@@ -150,14 +158,13 @@ public class ShiroConfig {
     public Realm userRealm(CredentialsMatcher credentialsMatcher, CacheManager cacheManager){
         UserRealm realm = new UserRealm();
         realm.setCredentialsMatcher(credentialsMatcher);
-        /*// 开启缓存管理器
-        realm.setCacheManager(cacheManager);
-        realm.setCachingEnabled(true);
-        realm.setAuthenticationCachingEnabled(true);
-        realm.setAuthenticationCacheName("authenticationCache");
-        realm.setAuthorizationCachingEnabled(true);
-        realm.setAuthorizationCacheName("authorizationCache");
-        */
+        // 开启缓存管理器
+//        realm.setCacheManager(cacheManager);
+//        realm.setCachingEnabled(true);
+//        realm.setAuthenticationCachingEnabled(true);
+//        realm.setAuthenticationCacheName("authenticationCache");
+//        realm.setAuthorizationCachingEnabled(true);
+//        realm.setAuthorizationCacheName("authorizationCache");
         return realm;
     }
 
@@ -184,10 +191,14 @@ public class ShiroConfig {
         return sessionManager;
     }
 
+    /**
+     * 解决热部署 cacheManager重复Bean问题
+     */
     @Bean(name = "lifecycleBeanPostProcessor")
     public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
     }
+
 
     /**
      * 以下配置开启shiro注解
@@ -204,12 +215,66 @@ public class ShiroConfig {
         // defaultAdvisorAutoProxyCreator.setUsePrefix(true);
         return defaultAdvisorAutoProxyCreator;
     }
-
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
+    }
+
+
+
+    // ****************** 使用redis管理session与cache ****************** //
+    // 使用时需要在securityManager中装配
+
+    /**
+     * cacheManager 缓存 redis实现
+     * 使用的是shiro-redis开源插件
+     *
+     * @return
+     */
+    @Bean
+    public CacheManager redisCacheManager(RedisManager redisManager) {
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        redisCacheManager.setRedisManager(redisManager);
+        return redisCacheManager;
+    }
+
+    /**
+     * 配置shiro redisManager
+     * 使用的是shiro-redis开源插件
+     *
+     * @return
+     */
+    @Bean
+    public RedisManager redisManager() {
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost("localhost:6379");
+        // redisManager.setPassword(password);
+        return redisManager;
+    }
+
+    /**
+     * Session Manager
+     * 使用的是shiro-redis开源插件
+     */
+    @Bean
+    public SessionManager redisSessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        sessionManager.setSessionIdUrlRewritingEnabled(false);
+        sessionManager.setSessionDAO(redisSessionDAO());
+        return sessionManager;
+    }
+
+    /**
+     * RedisSessionDAO shiro sessionDao层的实现 通过redis
+     * 使用的是shiro-redis开源插件
+     */
+    @Bean
+    public RedisSessionDAO redisSessionDAO() {
+        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+        redisSessionDAO.setRedisManager(redisManager());
+        return redisSessionDAO;
     }
 
 }
