@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="priv.yue.sboot.mapper.MenuMapper">
+    <sql id="tableName">
+        sys_menu
+    </sql>
+
+    <sql id="baseColumn">
+        menu_id,pid,sub_count,type,title,name,component,menu_sort,icon,path,i_frame,cache,hidden,permission,create_by,update_by,create_time,update_time
+    </sql>
+
+    <resultMap id="menu" type="priv.yue.sboot.domain.Menu">
+        <id property="menuId" column="menu_id" />
+        <collection property="subMenu" ofType="priv.yue.sboot.domain.Menu" select="getAllSubMenu" column="menu_id" />
+    </resultMap>
+
+    <select id="getAllSubMenu" resultMap="menu">
+        select * from sys_menu where pid = #{id}
+    </select>
+
+    <select id="getRoleMenu" resultMap="menu">
+        select a.menu_id menu_id,a.update_time update_time,a.update_by update_by,
+         a.create_by create_by,a.create_time create_time,a.cache cache,
+         a.component component,a.hidden hidden,a.icon icon,a.i_frame i_frame,
+         a.menu_sort menu_sort,a.path path,a.permission permission,a.pid pid,
+         a.sub_count sub_count,a.title title,a.type type from sys_menu a,sys_role_menu b where a.menu_id = b.menu_id and b.role_id = #{roleId}
+    </select>
+</mapper>
