@@ -27,6 +27,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("sys_dept")
 public class Dept extends Model<Dept> implements Serializable {
+    private static final long serialVersionUID = 6458696231145940196L;
     /**
      * ID
      */

@@ -1,8 +1,11 @@
 package priv.yue.sboot.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import priv.yue.sboot.domain.Role;
 import priv.yue.sboot.domain.User;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * 系统用户(sys_user)数据Mapper
@@ -13,7 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 */
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
-    int setRole(Integer userId, Integer roleId);
+    int setRoles(Integer userId, List<Role> roles);
     User getUserById(Integer id);
     User getUserByName(String username);
 }

@@ -28,6 +28,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("sys_menu")
 public class Menu extends Model<Menu> implements Serializable {
+    private static final long serialVersionUID = -3020590519313641349L;
     /**
      * ID
      */

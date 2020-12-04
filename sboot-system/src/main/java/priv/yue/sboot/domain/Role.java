@@ -29,6 +29,7 @@ import java.util.List;
 @Accessors(chain = true)
 @TableName("sys_role")
 public class Role extends Model<Role> implements Serializable {
+    private static final long serialVersionUID = -233265023942259698L;
     /**
      * ID
      */

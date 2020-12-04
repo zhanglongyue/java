@@ -28,6 +28,7 @@ import java.util.List;
 @Accessors(chain = true)
 @TableName("sys_user")
 public class User extends Model<User> implements Serializable {
+    private static final long serialVersionUID = 9182410311625719198L;
     /**
      * ID
      */
