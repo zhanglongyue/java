@@ -5,7 +5,9 @@ import com.longyue.springboot_shiro_ehcache.domain.User;
 import com.longyue.springboot_shiro_ehcache.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +31,9 @@ public class UserController {
     @RequestMapping("/list")
     @RequiresPermissions("user:list")
     public RestResponse<Object> list(){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+        System.out.println(user);
         return RestResponse.success(userService.list());
     }
 

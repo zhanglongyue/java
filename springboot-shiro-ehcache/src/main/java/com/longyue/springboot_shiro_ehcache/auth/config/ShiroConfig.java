@@ -85,6 +85,7 @@ public class ShiroConfig {
 
     /**
      * 配置SecurityManager
+     * 注意这里的List<Realm>会由spring自动封装，spring支持将接口的多实现封装为List或Map
      * @param realms 自定义realm
      * @return SecurityManager
      */
@@ -121,38 +122,17 @@ public class ShiroConfig {
         return modularRealmAuthenticator;
     }
 
-    @Bean
-    public List<Realm> realms(Realm tokenRealm, Realm userRealm){
-        List<Realm> realms = new ArrayList<>();
-        //添加多个Realm
-        realms.add(tokenRealm);
-        realms.add(userRealm);
-        return realms;
-    }
-
     /**
-     * 身份认证TokenRealm
-     *
-     * @return TokenRealm
+     * TokenRealm
+     * 注意这2个realm顺序不能改变，会影响spring封装List顺序
+     * 优先使用tokenRealm从redis中获取认证及授权信息
      */
     @Bean
     public Realm tokenRealm() {
         return new TokenRealm();
     }
-
     /**
-     * 加dependson解决热部署 重复Bean问题
-     * @return CacheManager
-     */
-    @Bean
-    @DependsOn("lifecycleBeanPostProcessor")
-    public CacheManager cacheManager() {
-        return new EhCacheManager();
-    }
-
-    /**
-     * 配置自定义Realm
-     * @return Realm
+     * 用户名密码Realm
      */
     @Bean
     public Realm userRealm(CredentialsMatcher credentialsMatcher, CacheManager cacheManager){
@@ -166,6 +146,16 @@ public class ShiroConfig {
 //        realm.setAuthorizationCachingEnabled(true);
 //        realm.setAuthorizationCacheName("authorizationCache");
         return realm;
+    }
+
+    /**
+     * 加dependson解决热部署 重复Bean问题
+     * @return CacheManager
+     */
+    @Bean
+    @DependsOn("lifecycleBeanPostProcessor")
+    public CacheManager cacheManager() {
+        return new EhCacheManager();
     }
 
     /**
@@ -202,19 +192,20 @@ public class ShiroConfig {
 
     /**
      * 以下配置开启shiro注解
+     * springboot在2.X后默认使用cglib代理，不需要开启以下配置，否则会导致二次代理
      */
-    @Bean
-    public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
-        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
-        defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
-        /**
-         * setUsePrefix(false)用于解决一个奇怪的bug。在引入spring aop的情况下。
-         * 在@Controller注解的类的方法中加入@RequiresRole等shiro注解，会导致该方法无法映射请求，导致返回404。
-         * 加入这项配置能解决这个bug
-         */
-        // defaultAdvisorAutoProxyCreator.setUsePrefix(true);
-        return defaultAdvisorAutoProxyCreator;
-    }
+//    @Bean
+//    public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
+//        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+//        defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
+//        /**
+//         * setUsePrefix(false)用于解决一个奇怪的bug。在引入spring aop的情况下。
+//         * 在@Controller注解的类的方法中加入@RequiresRole等shiro注解，会导致该方法无法映射请求，导致返回404。
+//         * 加入这项配置能解决这个bug
+//         */
+//        // defaultAdvisorAutoProxyCreator.setUsePrefix(true);
+//        return defaultAdvisorAutoProxyCreator;
+//    }
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();

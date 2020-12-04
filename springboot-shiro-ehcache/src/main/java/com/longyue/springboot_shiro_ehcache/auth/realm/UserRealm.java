@@ -28,9 +28,9 @@ public class UserRealm extends AuthRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         //获取登录用户名
-        String username = (String) principals.getPrimaryPrincipal();
+        User user = (User) principals.getPrimaryPrincipal();
         //调用父类方法设置角色和权限
-        return setRolesAndPermissions(userService.getUserByName(username));
+        return setRolesAndPermissions(user);
     }
 
     @Override
@@ -44,10 +44,8 @@ public class UserRealm extends AuthRealm {
             return null;
         } else {
             //这里验证authenticationToken和simpleAuthenticationInfo的信息
-//            return new SimpleAuthenticationInfo(user, user.getPassword(),
-//                    SimpleByteSourceSerializable.Util.bytes(user.getSalt()), getName());
             return new SimpleAuthenticationInfo(user, user.getPassword(),
-                    new SimpleByteSource(user.getSalt()), getName());
+                    SimpleByteSourceSerializable.Util.bytes(user.getSalt()), getName());
         }
     }
 }

@@ -27,17 +27,11 @@ public class TokenFilter extends DefaultFilter {
         if (StringUtils.isBlank(token)) {
             return false;
         }
-        User user = null;
-        try {
-            user = JSON.parseObject(RedisUtils.StringOps.get(Consts.TOKEN_PREFIX + token), User.class);
-        } catch (Exception e) {
-            return false;
-        }
-        if (ObjectUtil.isEmpty(user)) {
+        if (!RedisUtils.KeyOps.hasKey(Consts.TOKEN_PREFIX + token)){
             return false;
         }
         //刷新超时时间
-        RedisUtils.KeyOps.expire(token,30, TimeUnit.MINUTES);
+        RedisUtils.KeyOps.expire(Consts.TOKEN_PREFIX + token,30, TimeUnit.MINUTES);
         getSubject(request, response).login(new DefaultToken(token));
         return true;
     }

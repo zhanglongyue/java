@@ -28,18 +28,12 @@ mybatis-plus:
 shiro:
   login-url: /auth/login
   anons:
-    - auth/login.html
-    - index.html
     - /auth/login
     - /auth/register
-    - /auth/goRegister
-    - auth/register.html
   authcs:
     - /**
   hashAlgorithm: MD5
   hashIterations: 1024
-  redisHost: ${spring.redis.host}:${spring.redis.port}
-  redisTimeOut: ${spring.redis.connect-timeout}
 
 #jwt:
 #  config:

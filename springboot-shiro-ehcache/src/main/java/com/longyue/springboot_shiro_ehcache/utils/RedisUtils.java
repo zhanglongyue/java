@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisUtils implements ApplicationContextAware {
 
-    /** 使用StringRedisTemplate(，其是RedisTemplate的定制化升级) */
+    /** 使用StringRedisTemplate(其是RedisTemplate的定制化升级) */
     private static StringRedisTemplate redisTemplate;
 
     @Override

@@ -10,15 +10,6 @@
     </sql>
 
     <resultMap id="role" type="com.longyue.springboot_shiro_ehcache.domain.Role">
-        <id property="roleId" column="role_id" />
-        <result property="level" column="level" />
-        <result property="dataScope" column="data_scope" />
-        <result property="createTime" column="create_time" />
-        <result property="createBy" column="create_by" />
-        <result property="description" column="description" />
-        <result property="name" column="name" />
-        <result property="updateBy" column="update_by" />
-        <result property="updateTime" column="update_time" />
         <collection property="menus" ofType="com.longyue.springboot_shiro_ehcache.domain.Menu"
                     select="com.longyue.springboot_shiro_ehcache.mapper.MenuMapper.getRoleMenu"
                     column="role_id" />

@@ -14,9 +14,6 @@
     </insert>
 
     <resultMap id="user" type="com.longyue.springboot_shiro_ehcache.domain.User">
-        <id property="userId" column="user_id" />
-        <result property="username" column="username" />
-        <result property="email" column="email" />
         <collection property="roles" ofType="com.longyue.springboot_shiro_ehcache.domain.Role"
                     select="com.longyue.springboot_shiro_ehcache.mapper.RoleMapper.getUserRoles"
                     column="user_id" />
