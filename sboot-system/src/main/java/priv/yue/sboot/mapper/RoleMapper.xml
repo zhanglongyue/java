@@ -9,18 +9,19 @@
         role_id,name,level,description,data_scope,create_by,update_by,create_time,update_time
     </sql>
 
-    <resultMap id="role" type="priv.yue.sboot.domain.Role">
+    <resultMap id="roleWithMenu" type="priv.yue.sboot.domain.Role">
         <id property="roleId" column="role_id" />
         <collection property="menus" ofType="priv.yue.sboot.domain.Menu"
                     select="priv.yue.sboot.mapper.MenuMapper.getRoleMenu"
                     column="role_id" />
     </resultMap>
 
-    <select id="getUserRoles" resultMap="role">
-        select a.role_id role_id,a.level level,a.data_scope data_scope,
-         a.create_time create_time, a.create_by create_by,
-         a.description descripition,a.name name,a.update_time update_time
-         from sys_role a,sys_user_role b where a.role_id = b.role_id and b.user_id = #{userId}
+    <select id="getUserRoles" resultMap="roleWithMenu">
+        select a.* from sys_role a, sys_user_role b where a.role_id = b.role_id and b.user_id = #{userId}
+    </select>
+
+    <select id="getUserRolesNoMenus" resultType="priv.yue.sboot.domain.Role">
+        select a.* from sys_role a, sys_user_role b where a.role_id = b.role_id and b.user_id = #{userId}
     </select>
 
 </mapper>

@@ -1,6 +1,7 @@
 package priv.yue.sboot.auth.realm;
 
 import priv.yue.sboot.domain.User;
+import priv.yue.sboot.domain.vo.LoginVo;
 import priv.yue.sboot.service.UserService;
 import priv.yue.sboot.utils.SimpleByteSourceSerializable;
 import lombok.extern.slf4j.Slf4j;
@@ -21,22 +22,18 @@ public class UserRealm extends AuthRealm {
     private UserService userService;
 
     @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        return getAuthorizationInfoByUser((User) principals.getPrimaryPrincipal());
-    }
-
-    @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         if (token.getPrincipal() == null) {
             return null;
         }
         String username = token.getPrincipal().toString();
-        User user = userService.getUserByName(username);
+        LoginVo loginVo = userService.getLoginUserByName(username);
+        User user = loginVo.getUser();
         if (ObjectUtils.isEmpty(user)) {
             return null;
         } else {
             // 验证authenticationToken和simpleAuthenticationInfo的信息
-            return new SimpleAuthenticationInfo(user, user.getPassword(),
+            return new SimpleAuthenticationInfo(loginVo, user.getPassword(),
                     SimpleByteSourceSerializable.Util.bytes(user.getSalt()), getName());
         }
     }

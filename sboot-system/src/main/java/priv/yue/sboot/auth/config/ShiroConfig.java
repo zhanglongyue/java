@@ -1,5 +1,6 @@
 package priv.yue.sboot.auth.config;
 
+import lombok.Setter;
 import priv.yue.sboot.auth.filter.TokenFilter;
 import priv.yue.sboot.auth.pam.DefaultModularRealmAuthenticator;
 import priv.yue.sboot.auth.realm.TokenRealm;
@@ -37,7 +38,7 @@ import java.util.Map;
 
 @Configuration
 @ConfigurationProperties(prefix = "shiro")
-@Data
+@Setter
 public class ShiroConfig {
 
     private String loginUrl;

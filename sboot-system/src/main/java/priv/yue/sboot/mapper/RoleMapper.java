@@ -16,5 +16,7 @@ import java.util.List;
 @Mapper
 public interface RoleMapper extends BaseMapper<Role> {
 
-    List<Role> getUserRoles(Integer userId);
+    List<Role> getUserRoles(long userId);
+
+    List<Role> getUserRolesNoMenus(long userId);
 }

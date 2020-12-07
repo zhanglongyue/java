@@ -2,8 +2,6 @@ package priv.yue.sboot.auth.token;
 
 import org.apache.shiro.authc.AuthenticationToken;
 
-import java.util.concurrent.TimeUnit;
-
 
 public class DefaultToken implements AuthenticationToken {
 

@@ -4,6 +4,8 @@ package priv.yue.sboot.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import priv.yue.sboot.domain.Menu;
 
+import java.util.List;
+
 /**
  * 系统菜单服务接口
  *
@@ -13,4 +15,5 @@ import priv.yue.sboot.domain.Menu;
  */
 public interface MenuService extends IService<Menu> {
 
+    List<Menu> buildMenuTree(List<Menu> menus);
 }

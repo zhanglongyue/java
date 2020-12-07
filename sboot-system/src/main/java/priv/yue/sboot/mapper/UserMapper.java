@@ -16,7 +16,14 @@ import java.util.List;
 */
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
-    int setRoles(Integer userId, List<Role> roles);
-    User getUserById(Integer id);
-    User getUserByName(String username);
+
+    User getById(long id);
+
+    User getByName(String username);
+
+    User getByNameNoRoles(String username);
+
+    int deleteById(long id);
+
+    int setRoles(long userId, List<Role> roles);
 }

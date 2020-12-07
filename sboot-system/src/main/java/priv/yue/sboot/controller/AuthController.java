@@ -3,6 +3,7 @@ package priv.yue.sboot.controller;
 import priv.yue.sboot.common.Consts;
 import priv.yue.sboot.common.RestResponse;
 import priv.yue.sboot.domain.User;
+import priv.yue.sboot.domain.vo.LoginVo;
 import priv.yue.sboot.service.UserService;
 import priv.yue.sboot.service.dto.AuthUserDto;
 import priv.yue.sboot.utils.JsonUtils;
@@ -25,13 +26,6 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-/**
- * 系统用户服务控制器
- *
- * @author zly
- * @since 2020-11-16 15:35:00
- * @description 由 Mybatisplus Code Generator 创建
- */
 @Slf4j
 @AllArgsConstructor
 @RestController
@@ -44,13 +38,15 @@ public class AuthController {
     public RestResponse<Object> login(AuthUserDto authUserDto){
         Subject subject = SecurityUtils.getSubject();
         subject.login(new UsernamePasswordToken(authUserDto.getUsername(), authUserDto.getPassword()));
-        User user = (User) subject.getPrincipal();
+        LoginVo loginVo = (LoginVo) subject.getPrincipal();
         String token = UUID.randomUUID().toString();
-        RedisUtils.StringOps.setEx(Consts.TOKEN_PREFIX + token, JsonUtils.toJsonString(user),
+        RedisUtils.StringOps.setEx(Consts.TOKEN_PREFIX + token, JsonUtils.toJsonString(loginVo),
                 30, TimeUnit.MINUTES);
         return RestResponse.success(new HashMap<String, Object>() {{
-            put("user", user);
             put("token", token);
+            put("user", loginVo.getUser());
+            put("roles", loginVo.getRoles());
+            put("menus", loginVo.getMenus());
         }});
     }
 
