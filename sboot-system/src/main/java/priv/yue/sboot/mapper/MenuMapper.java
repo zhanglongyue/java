@@ -13,12 +13,12 @@ import java.util.List;
  * @since 2020-11-17 15:17:03
  * @description 由 Mybatisplus Code Generator 创建
 */
-@Mapper
 public interface MenuMapper extends BaseMapper<Menu> {
-    List<Menu> getSubMenu(long pid);
+    List<Menu> getSubMenus(long pid);
 
-    List<Menu> getRoleMenu(long roleId);
+    List<Menu> getMenusByRole(long roleId);
 
     List<Menu> getMenusByUser(long userId);
 
+    List<Menu> getPermissionsByUser(long userId);
 }

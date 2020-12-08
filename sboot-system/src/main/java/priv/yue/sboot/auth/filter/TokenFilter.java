@@ -2,7 +2,7 @@ package priv.yue.sboot.auth.filter;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import priv.yue.sboot.auth.token.DefaultToken;
-import priv.yue.sboot.common.Consts;
+import priv.yue.sboot.common.constant.Consts;
 import priv.yue.sboot.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 

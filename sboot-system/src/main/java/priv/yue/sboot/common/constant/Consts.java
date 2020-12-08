@@ -1,4 +1,4 @@
-package priv.yue.sboot.common;
+package priv.yue.sboot.common.constant;
 
 /**
  * <p>

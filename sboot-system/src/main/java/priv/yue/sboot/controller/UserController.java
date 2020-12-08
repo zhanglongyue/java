@@ -1,7 +1,11 @@
 package priv.yue.sboot.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.web.bind.annotation.RequestParam;
 import priv.yue.sboot.common.RestResponse;
 import priv.yue.sboot.domain.User;
+import priv.yue.sboot.domain.vo.LoginVo;
 import priv.yue.sboot.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +14,9 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 系统用户服务控制器
@@ -27,11 +34,12 @@ public class UserController {
 
     @RequestMapping("/list")
     @RequiresPermissions("user:query")
-    public RestResponse<Object> list(){
-        Subject subject = SecurityUtils.getSubject();
-        User user = (User) subject.getPrincipal();
-        System.out.println(user);
-        return RestResponse.success(userService.list());
+    public RestResponse<Object> list(User user, @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                     @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+                                     HttpServletRequest req){
+        IPage<User> page = new Page<>(pageNo, pageSize);
+        page = userService.page(page);
+        return RestResponse.success(page);
     }
 
     @RequestMapping("/get")

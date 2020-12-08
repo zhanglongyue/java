@@ -14,7 +14,6 @@ import java.util.List;
  * @since 2020-11-16 15:35:00
  * @description 由 Mybatisplus Code Generator 创建
 */
-@Mapper
 public interface UserMapper extends BaseMapper<User> {
 
     User getById(long id);

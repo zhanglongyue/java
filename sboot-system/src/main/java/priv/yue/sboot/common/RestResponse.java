@@ -13,7 +13,7 @@ public class RestResponse<T> implements Serializable {
     private static final long serialVersionUID = 3728877563912075885L;
 
     private int code;
-    private String message;
+    private String msg;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
@@ -21,9 +21,9 @@ public class RestResponse<T> implements Serializable {
 
     }
 
-    public RestResponse(int code, String message, T data) {
+    public RestResponse(int code, String msg, T data) {
         this.code = code;
-        this.setMessage(message);
+        this.setMsg(msg);
         this.data = data;
     }
 
@@ -32,9 +32,9 @@ public class RestResponse<T> implements Serializable {
         this.data = data;
     }
 
-    public RestResponse(int code, String message) {
+    public RestResponse(int code, String msg) {
         this.code = code;
-        this.setMessage(message);
+        this.setMsg(msg);
     }
 
     public static <T> RestResponse<T> success() { return new RestResponse<T>(200, "success"); }
@@ -89,8 +89,8 @@ public class RestResponse<T> implements Serializable {
         return code;
     }
 
-    public String getMessage() {
-        return message;
+    public String getMsg() {
+        return msg;
     }
 
 
@@ -102,8 +102,8 @@ public class RestResponse<T> implements Serializable {
         this.code = code;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     public void setData(T data) {
@@ -112,6 +112,6 @@ public class RestResponse<T> implements Serializable {
 
     @Override
     public String toString() {
-        return "RestResponse{" + "code=" + code + ", message='" + message + '\'' +", data=" + data +'}';
+        return "RestResponse{" + "code=" + code + ", message='" + msg + '\'' +", data=" + data +'}';
     }
 }

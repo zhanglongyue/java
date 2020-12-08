@@ -1,50 +1,47 @@
 package priv.yue.sboot.auth.realm;
 
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
-import org.apache.shiro.subject.PrincipalCollection;
-import priv.yue.sboot.domain.Menu;
-import priv.yue.sboot.domain.Role;
-import priv.yue.sboot.domain.User;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
-import priv.yue.sboot.domain.vo.LoginVo;
+import org.apache.shiro.subject.PrincipalCollection;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+/**
+ * 该类完成realm的获取授权信息，实现其doGetAuthorizationInfo方法
+ */
+@Slf4j
 public abstract class AuthRealm extends AuthorizingRealm {
 
-    @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        return getAuthorizationByUser((LoginVo) principals.getPrimaryPrincipal());
-    }
-
     /**
-     * 根据登录信息给realm设置角色权限
-     * @param loginVo 包含用户角色权限的登录信息
-     * @return AuthorizationInfo
+     * shiro通过该方法获取用户权限信息
+     * @param principals 该参数为doGetAuthenticationInfo方法中返回的认证信息，即用户信息
+     * @return 授权信息
      */
-    protected AuthorizationInfo getAuthorizationByUser(LoginVo loginVo){
-        return getAuthorization(loginVo.getRoles().stream().map(Role::getName).collect(Collectors.toSet()),
-                                loginVo.getMenus().stream().map(Menu::getName).collect(Collectors.toSet()));
+    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        Object p = principals.getPrimaryPrincipal();
+        if (p instanceof GetAuthorizationAble) {
+            return getAuthorization((GetAuthorizationAble) p);
+        }
+        return null;
     }
 
-
-    protected AuthorizationInfo getAuthorization(List<String> roles, List<String> menus){
-        return getAuthorization(new HashSet<>(roles), new HashSet<>(menus));
+    protected AuthorizationInfo getAuthorization(GetAuthorizationAble principals){
+        return getAuthorization(new HashSet<>(principals.getRolesStr()),
+                                new HashSet<>(principals.getPermissionsStr()));
     }
 
-    protected AuthorizationInfo getAuthorization(Set<String> roles, Set<String> menus){
-        if (ObjectUtil.isEmpty(roles) && ObjectUtil.isEmpty(menus)){
+    protected AuthorizationInfo getAuthorization(Set<String> roles, Set<String> Permissions){
+        if (ObjectUtil.isEmpty(roles) && ObjectUtil.isEmpty(Permissions)){
             return null;
         }
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.setRoles(roles);
-        simpleAuthorizationInfo.setStringPermissions(menus);
+        simpleAuthorizationInfo.setStringPermissions(Permissions);
         return simpleAuthorizationInfo;
     }
+
 }

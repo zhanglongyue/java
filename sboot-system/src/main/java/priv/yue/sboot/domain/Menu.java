@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -106,6 +107,7 @@ public class Menu extends Model<Menu> implements Serializable {
     /**
      * 子菜单集合
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @TableField(exist = false)
     private List<Menu> subMenu;
 

@@ -13,11 +13,8 @@ public class DefaultModularRealmAuthenticator extends ModularRealmAuthenticator 
      * 管理多token和多realm，在使用subject.login()时，不同的token将使用不同的realm
      * UsernamePasswordToken将使用UserRealm查询数据库获取用户信息，在调用login方法时使用
      * DefaultToken将使用TokenRealm获取用户信息
-     * @param authenticationToken
-     * @return
-     * @throws AuthenticationException
+     * @param authenticationToken 调用subject.login传入的token
      */
-    @Override
     protected AuthenticationInfo doAuthenticate(AuthenticationToken authenticationToken) throws AuthenticationException {
         assertRealmsConfigured();
         Collection<Realm> realms = getRealms();

@@ -42,7 +42,14 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
                 parentMenu.setSubMenu(v);
             }
         });
-        return pidGroupMenusMap.get(0);
+        return pidGroupMenusMap.get(0L);
+    }
+
+    public List<String> getPermissions(long userId){
+        return menuMapper.getPermissionsByUser(userId)
+                .stream()
+                .map(Menu::getPermission)
+                .collect(Collectors.toList());
     }
 
     public  List<Menu> getMenusByUser(long userId){

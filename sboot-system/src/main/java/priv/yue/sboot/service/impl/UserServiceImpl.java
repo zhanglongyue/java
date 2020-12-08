@@ -1,5 +1,6 @@
 package priv.yue.sboot.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import priv.yue.sboot.domain.Menu;
 import priv.yue.sboot.domain.Role;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 系统用户服务接口实现
@@ -52,10 +55,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(user == null){
             throw new UnknownAccountException();
         }
-        List<Role> roles = roleMapper.getUserRolesNoMenus(user.getUserId());
+        List<Role> roles = roleMapper.getRolesNoMenusByUser(user.getUserId());
         List<Menu> menus = menuMapper.getMenusByUser(user.getUserId());
+        Set<String> permissions = menus.stream()
+                .filter(m -> StrUtil.isNotBlank(m.getPermission()))
+                .map(Menu::getPermission)
+                .collect(Collectors.toSet());
         loginVo.setUser(user);
         loginVo.setRoles(roles);
+        loginVo.setPermissions(permissions);
         loginVo.setMenus(menuService.buildMenuTree(menus));
         return loginVo;
     }

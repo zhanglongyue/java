@@ -11,10 +11,10 @@
 
     <resultMap id="menu" type="priv.yue.sboot.domain.Menu">
         <id property="menuId" column="menu_id" />
-        <collection property="subMenu" ofType="priv.yue.sboot.domain.Menu" select="getSubMenu" column="menu_id" />
+        <collection property="subMenu" ofType="priv.yue.sboot.domain.Menu" select="getSubMenus" column="menu_id" />
     </resultMap>
 
-    <select id="getSubMenu" resultMap="menu">
+    <select id="getSubMenus" resultMap="menu">
         select * from sys_menu where pid = #{id}
     </select>
 
@@ -23,7 +23,12 @@
         on b.role_id = c.role_id where c.user_id = #{userId} group by a.menu_id
     </select>
 
-    <select id="getRoleMenu" resultMap="menu">
+    <select id="getPermissionsByUser" resultType="priv.yue.sboot.domain.Menu">
+        select a.permisson from sys_menu a left join sys_role_menu b on a.menu_id = b.menu_id left join sys_user_role c
+        on b.role_id = c.role_id where c.user_id = #{userId} and a.permission != null group by a.menu_id
+    </select>
+
+    <select id="getMenusByRole" resultMap="menu">
         select a.menu_id menu_id,a.update_time update_time,a.update_by update_by,
          a.create_by create_by,a.create_time create_time,a.cache cache,
          a.component component,a.hidden hidden,a.icon icon,a.i_frame i_frame,

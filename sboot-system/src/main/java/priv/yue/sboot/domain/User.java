@@ -6,8 +6,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -23,8 +26,6 @@ import java.util.List;
  * @description 由 Mybatisplus Code Generator 创建
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Accessors(chain = true)
 @TableName("sys_user")
 public class User extends Model<User> implements Serializable {
@@ -33,7 +34,7 @@ public class User extends Model<User> implements Serializable {
      * ID
      */
     @TableId(type = IdType.AUTO)
-	private Long userId;
+    private Long userId;
     /**
      * 部门名称
      */
@@ -69,7 +70,7 @@ public class User extends Model<User> implements Serializable {
     /**
      * 密码
      */
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     /**
      * 是否为admin账号
@@ -108,6 +109,7 @@ public class User extends Model<User> implements Serializable {
     /**
      * 角色集合
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @TableField(exist = false)
     private List<Role> roles;
 }

@@ -1,18 +1,16 @@
 package priv.yue.sboot.auth.realm;
 
-import priv.yue.sboot.domain.User;
-import priv.yue.sboot.domain.vo.LoginVo;
-import priv.yue.sboot.service.UserService;
-import priv.yue.sboot.utils.SimpleByteSourceSerializable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
+import priv.yue.sboot.domain.User;
+import priv.yue.sboot.domain.vo.LoginVo;
+import priv.yue.sboot.service.UserService;
+import priv.yue.sboot.utils.SimpleByteSourceSerializable;
 
 @Slf4j
 public class UserRealm extends AuthRealm {
@@ -21,7 +19,6 @@ public class UserRealm extends AuthRealm {
     @Autowired
     private UserService userService;
 
-    @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         if (token.getPrincipal() == null) {
             return null;

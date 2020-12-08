@@ -16,7 +16,7 @@
     <resultMap id="user" type="priv.yue.sboot.domain.User">
         <id property="userId" column="user_id" />
         <collection property="roles" ofType="priv.yue.sboot.domain.Role"
-                    select="priv.yue.sboot.mapper.RoleMapper.getUserRolesWithoutMenus"
+                    select="priv.yue.sboot.mapper.RoleMapper.getRolesNoMenusByUser"
                     column="user_id" />
     </resultMap>
 

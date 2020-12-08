@@ -1,6 +1,6 @@
 package priv.yue.sboot.controller;
 
-import priv.yue.sboot.common.Consts;
+import priv.yue.sboot.common.constant.Consts;
 import priv.yue.sboot.common.RestResponse;
 import priv.yue.sboot.domain.User;
 import priv.yue.sboot.domain.vo.LoginVo;
@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class LoginController {
 
     private final UserService userService;
 
@@ -38,8 +38,11 @@ public class AuthController {
     public RestResponse<Object> login(AuthUserDto authUserDto){
         Subject subject = SecurityUtils.getSubject();
         subject.login(new UsernamePasswordToken(authUserDto.getUsername(), authUserDto.getPassword()));
+
         LoginVo loginVo = (LoginVo) subject.getPrincipal();
         String token = UUID.randomUUID().toString();
+        loginVo.setToken(token);
+
         RedisUtils.StringOps.setEx(Consts.TOKEN_PREFIX + token, JsonUtils.toJsonString(loginVo),
                 30, TimeUnit.MINUTES);
         return RestResponse.success(new HashMap<String, Object>() {{
@@ -47,6 +50,7 @@ public class AuthController {
             put("user", loginVo.getUser());
             put("roles", loginVo.getRoles());
             put("menus", loginVo.getMenus());
+            put("permissions", loginVo.getPermissions());
         }});
     }
 
