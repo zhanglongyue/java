@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  * @author zly
  * @since 2020-11-17 15:07:40
- * @description 由 Mybatisplus Code Generator 创建
  */
 @Slf4j
 @AllArgsConstructor

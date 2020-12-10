@@ -1,14 +1,11 @@
 package priv.yue.sboot.auth.config;
 
 import lombok.Setter;
-import priv.yue.sboot.auth.filter.TokenFilter;
-import priv.yue.sboot.auth.pam.DefaultModularRealmAuthenticator;
-import priv.yue.sboot.auth.realm.TokenRealm;
-import priv.yue.sboot.auth.realm.UserRealm;
-import lombok.Data;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.authc.pam.AllSuccessfulStrategy;
 import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
+import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
@@ -30,6 +27,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import priv.yue.sboot.auth.filter.TokenFilter;
+import priv.yue.sboot.auth.pam.DefaultModularRealmAuthenticator;
+import priv.yue.sboot.auth.realm.TokenRealm;
+import priv.yue.sboot.auth.realm.UserRealm;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
@@ -117,7 +118,12 @@ public class ShiroConfig {
     @Bean
     public ModularRealmAuthenticator modularRealmAuthenticator(){
         DefaultModularRealmAuthenticator modularRealmAuthenticator = new DefaultModularRealmAuthenticator();
-        modularRealmAuthenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
+
+        // DefaultModularRealmAuthenticator中已经自定义验证逻辑，不使用shiro提供的
+        // 以下为shiro提供的3种认证策略
+        /*modularRealmAuthenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
+        modularRealmAuthenticator.setAuthenticationStrategy(new AllSuccessfulStrategy());
+        modularRealmAuthenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());*/
         return modularRealmAuthenticator;
     }
 

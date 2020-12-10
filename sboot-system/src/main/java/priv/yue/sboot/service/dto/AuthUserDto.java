@@ -17,5 +17,5 @@ public class AuthUserDto {
 
     private String code;
 
-    private String uuid = "";
+    private boolean rememberMe = false;
 }

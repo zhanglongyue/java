@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 @Setter
 public class LoginVo implements GetAuthorizationAble {
 
-    private String token;
-
     private User user;
 
     private List<Menu> menus;

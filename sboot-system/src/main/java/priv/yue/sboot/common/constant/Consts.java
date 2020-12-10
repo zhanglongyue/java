@@ -56,7 +56,12 @@ public interface Consts {
     String ANONYMOUS_NAME = "匿名用户";
 
     /**
-     * token前缀
+     * token信息前缀, key:token,value:user_info
      */
-    String TOKEN_PREFIX = "SHIRO:TOKEN:";
+    String SHIRO_TOKEN_PREFIX = "SHIRO:TOKEN:";
+
+    /**
+     * 用户token前缀, key:user_id,value:token
+     */
+    String SHIRO_USER_PREFIX = "SHIRO:USER:";
 }

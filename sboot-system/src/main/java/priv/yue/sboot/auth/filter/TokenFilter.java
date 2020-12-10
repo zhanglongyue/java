@@ -1,10 +1,10 @@
 package priv.yue.sboot.auth.filter;
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 import priv.yue.sboot.auth.token.DefaultToken;
 import priv.yue.sboot.common.constant.Consts;
 import priv.yue.sboot.utils.RedisUtils;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -19,14 +19,14 @@ public class TokenFilter extends DefaultFilter {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String token = httpServletRequest.getHeader("token");
-        if (StringUtils.isBlank(token)) {
+        if (StrUtil.isBlank(token)) {
             return false;
         }
-        if (!RedisUtils.KeyOps.hasKey(Consts.TOKEN_PREFIX + token)){
+        if (!RedisUtils.KeyOps.hasKey(Consts.SHIRO_TOKEN_PREFIX + token)){
             return false;
         }
         //刷新超时时间
-        RedisUtils.KeyOps.expire(Consts.TOKEN_PREFIX + token,30, TimeUnit.MINUTES);
+        RedisUtils.KeyOps.expire(Consts.SHIRO_TOKEN_PREFIX + token,30, TimeUnit.MINUTES);
         getSubject(request, response).login(new DefaultToken(token));
         return true;
     }

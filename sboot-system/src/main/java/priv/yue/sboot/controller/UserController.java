@@ -23,7 +23,6 @@ import java.util.List;
  *
  * @author zly
  * @since 2020-11-16 15:35:00
- * @description 由 Mybatisplus Code Generator 创建
  */
 @Slf4j
 @AllArgsConstructor

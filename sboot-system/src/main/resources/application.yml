@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    context-path: /shiro
+    context-path: /sboot
 
 spring:
   datasource:
@@ -26,7 +26,6 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     aggressive-lazy-loading: true
 
-
 shiro:
   login-url: /auth/login
   anons:
@@ -34,8 +33,12 @@ shiro:
     - /auth/register
   authcs:
     - /**
-  hashAlgorithm: MD5
-  hashIterations: 1024
+  hash-algorithm: MD5
+  hash-iterations: 1024
+
+sboot:
+  single-login: false
+
 
 
 #jwt:
