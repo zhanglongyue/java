@@ -3,9 +3,6 @@ package priv.yue.sboot.auth.config;
 import lombok.Setter;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.authc.pam.AllSuccessfulStrategy;
-import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
-import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
@@ -36,6 +33,12 @@ import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+/**
+ * @author  ZhangLongYue
+ * @date  ${DATE} ${TIME}
+ * @version 1.0
+ */
 
 @Configuration
 @ConfigurationProperties(prefix = "shiro")

@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * 角色表(sys_role)实体类
  *
- * @author zly
+ * @author ZhangLongYue
  * @since 2020-11-17 15:07:40
  * @description 由 Mybatisplus Code Generator 创建
  */
@@ -34,7 +34,7 @@ public class Role extends Model<Role> implements Serializable {
     /**
      * ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
 	private Long roleId;
     /**
      * 名称

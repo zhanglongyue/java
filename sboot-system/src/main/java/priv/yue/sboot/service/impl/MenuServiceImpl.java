@@ -52,8 +52,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
                 .collect(Collectors.toList());
     }
 
-    public  List<Menu> getMenusByUser(long userId){
-        return menuMapper.getMenusByUser(userId);
+    public List<Menu> getMenusByUserId(long userId){
+        return menuMapper.getMenusByUserId(userId);
+    }
+
+    public List<Menu> queryMenusWithUser(Map<String, Object> queryMap) {
+        return menuMapper.queryMenusWithUser(queryMap);
     }
 
 }

@@ -12,7 +12,7 @@
     <resultMap id="role" type="priv.yue.sboot.domain.Role">
         <id property="roleId" column="role_id" />
         <collection property="menus" ofType="priv.yue.sboot.domain.Menu"
-                    select="priv.yue.sboot.mapper.MenuMapper.getMenusByRole"
+                    select="priv.yue.sboot.mapper.MenuMapper.getAllMenusByRole"
                     column="role_id" />
     </resultMap>
 

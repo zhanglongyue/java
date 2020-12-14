@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "sboot")
 public class SbootConfig {
 
+    /**
+     * 设置是否单一登录，一个用户只能有一个生效token
+     */
     private Boolean singleLogin = false;
 
 }

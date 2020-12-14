@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * 系统用户(sys_user)实体类
  *
- * @author zly
+ * @author ZhangLongYue
  * @since 2020-11-16 15:35:00
  * @description 由 Mybatisplus Code Generator 创建
  */
@@ -33,7 +33,7 @@ public class User extends Model<User> implements Serializable {
     /**
      * ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long userId;
     /**
      * 部门名称

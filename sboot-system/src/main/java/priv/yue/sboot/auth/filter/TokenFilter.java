@@ -18,7 +18,7 @@ public class TokenFilter extends DefaultFilter {
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String token = httpServletRequest.getHeader("token");
+        String token = httpServletRequest.getHeader("Access-Token");
         if (StrUtil.isBlank(token)) {
             return false;
         }

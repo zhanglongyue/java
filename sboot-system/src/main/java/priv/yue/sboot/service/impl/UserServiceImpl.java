@@ -56,7 +56,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new UnknownAccountException();
         }
         List<Role> roles = roleMapper.getRolesNoMenusByUser(user.getUserId());
-        List<Menu> menus = menuMapper.getMenusByUser(user.getUserId());
+        List<Menu> menus = menuMapper.getMenusByUserId(user.getUserId());
         Set<String> permissions = menus.stream()
                 .filter(m -> StrUtil.isNotBlank(m.getPermission()))
                 .map(Menu::getPermission)

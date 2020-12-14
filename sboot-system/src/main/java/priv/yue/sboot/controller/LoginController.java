@@ -1,6 +1,8 @@
 package priv.yue.sboot.controller;
 
 import cn.hutool.core.util.StrUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -27,6 +29,14 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 系统认证控制器
+ *
+ * @author ZhangLongYue
+ * @since 2020-11-17 15:17:03
+ * @description
+ */
+@Api(tags = "认证")
 @Slf4j
 @AllArgsConstructor
 @RestController
@@ -37,6 +47,7 @@ public class LoginController {
 
     private UserService userService;
 
+    @ApiOperation("登录")
     @PostMapping("/login")
     public RestResponse<Object> login(AuthUserDto authUserDto){
         // 获取suject主体，并使用用户名、密码方式登录
@@ -87,10 +98,11 @@ public class LoginController {
         }});
     }
 
+    @ApiOperation("登出")
     @PostMapping("/logout")
     public RestResponse<Object> logout(HttpServletRequest request){
         User user = ((LoginVo) SecurityUtils.getSubject().getPrincipal()).getUser();
-        String token = request.getHeader("token");
+        String token = request.getHeader("Access-Token");
         if (RedisUtils.KeyOps.delete(Consts.SHIRO_TOKEN_PREFIX + token)) {
             if (sbootConfig.getSingleLogin()) {
                 RedisUtils.KeyOps.delete(Consts.SHIRO_USER_PREFIX + user.getUserId());

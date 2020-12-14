@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 /**
  * 系统菜单(sys_menu)实体类
  *
- * @author zly
+ * @author ZhangLongYue
  * @since 2020-11-17 15:17:03
  * @description 由 Mybatisplus Code Generator 创建
  */
@@ -33,7 +33,7 @@ public class Menu extends Model<Menu> implements Serializable {
     /**
      * ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
 	private Long menuId;
     /**
      * 上级菜单ID

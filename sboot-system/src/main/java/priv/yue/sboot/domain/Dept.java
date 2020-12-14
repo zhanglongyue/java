@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 /**
  * 部门(sys_dept)实体类
  *
- * @author zly
+ * @author ZhangLongYue
  * @since 2020-11-17 15:13:41
  * @description 由 Mybatisplus Code Generator 创建
  */
@@ -31,7 +31,7 @@ public class Dept extends Model<Dept> implements Serializable {
     /**
      * ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
 	private Long deptId;
     /**
      * 上级部门

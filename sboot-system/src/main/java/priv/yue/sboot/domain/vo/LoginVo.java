@@ -12,6 +12,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * 登录用户信息包装vo
+ *
+ * @author ZhangLongYue
+ * @since 2020-11-17 15:17:03
+ * @description
+ */
 @Getter
 @Setter
 public class LoginVo implements GetAuthorizationAble {
