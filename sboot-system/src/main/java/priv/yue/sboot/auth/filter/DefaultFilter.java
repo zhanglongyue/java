@@ -1,13 +1,12 @@
 package priv.yue.sboot.auth.filter;
 
-import priv.yue.sboot.common.RestResponse;
-import priv.yue.sboot.utils.JsonUtils;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.springframework.http.HttpStatus;
+import priv.yue.sboot.common.RestResponse;
+import priv.yue.sboot.utils.JsonUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class DefaultFilter extends FormAuthenticationFilter {
@@ -24,6 +23,7 @@ public class DefaultFilter extends FormAuthenticationFilter {
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "*");*/
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setContentType("application/json");
+        httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
         httpServletResponse.getWriter().write(JsonUtils.toJsonString(RestResponse.fail(HttpStatus.UNAUTHORIZED.value(), "用户未登录")).toString());
         return false;
     }

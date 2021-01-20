@@ -1,20 +1,18 @@
 package priv.yue.sboot.domain;
 
-import java.io.Serializable;
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import java.util.Date;
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 系统菜单(sys_menu)实体类
@@ -29,22 +27,20 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("sys_menu")
 public class Menu extends Model<Menu> implements Serializable {
-    private static final long serialVersionUID = -3020590519313641349L;
+
     /**
      * ID
      */
     @TableId(type = IdType.ASSIGN_ID)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
 	private Long menuId;
     /**
      * 上级菜单ID
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long pid;
     /**
-     * 子菜单数目
-     */
-    private Integer subCount;
-    /**
-     * 菜单类型
+     * 菜单类型 0-菜单 1-页面 2-按钮
      */
     private Integer type;
     /**
@@ -62,7 +58,7 @@ public class Menu extends Model<Menu> implements Serializable {
     /**
      * 排序
      */
-    private Integer menuSort;
+    private Integer sort;
     /**
      * 图标
      */
@@ -74,7 +70,7 @@ public class Menu extends Model<Menu> implements Serializable {
     /**
      * 是否外链
      */
-    private Integer iFrame;
+    private Integer iframe;
     /**
      * 缓存
      */
@@ -104,6 +100,17 @@ public class Menu extends Model<Menu> implements Serializable {
      */
     @TableField(update = "now()")
 	private Date updateTime;
+    /**
+     * 是否删除
+     */
+    @JsonIgnore
+    @TableLogic
+    private Integer deleted;
+    /**
+     * 上级菜单
+     */
+    @TableField(exist = false)
+    private Menu parentMenu;
     /**
      * 子菜单集合
      */

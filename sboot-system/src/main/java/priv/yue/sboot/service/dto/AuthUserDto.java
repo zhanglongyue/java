@@ -4,10 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 @Getter
 @Setter
-public class AuthUserDto {
+public class AuthUserDto implements Serializable {
+
+    private static final long serialVersionUID = 685998961226965202L;
 
     @NotBlank
     private String username;

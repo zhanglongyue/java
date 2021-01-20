@@ -1,11 +1,9 @@
 package priv.yue.sboot.domain;
 
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -30,20 +28,21 @@ import java.util.List;
 @Accessors(chain = true)
 @TableName("sys_role")
 public class Role extends Model<Role> implements Serializable {
-    private static final long serialVersionUID = -233265023942259698L;
+
     /**
      * ID
      */
     @TableId(type = IdType.ASSIGN_ID)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
 	private Long roleId;
     /**
      * 名称
      */
     private String name;
     /**
-     * 角色级别
+     * 父角色id
      */
-    private Integer level;
+    private Long pid;
     /**
      * 描述
      */
@@ -70,11 +69,28 @@ public class Role extends Model<Role> implements Serializable {
     @TableField(update = "now()")
 	private Date updateTime;
     /**
+     * 是否删除
+     */
+    @JsonIgnore
+    @TableLogic
+    private Integer deleted;
+    /**
      * 用户集合
      */
     @JsonIgnore
     @TableField(exist = false)
     private List<User> users;
+    /**
+     * 上级角色或分类
+     */
+    @TableField(exist = false)
+    private Role parentRole;
+    /**
+     * 子角色集合
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @TableField(exist = false)
+    private List<Role> subRole;
     /**
      * 资源集合
      */

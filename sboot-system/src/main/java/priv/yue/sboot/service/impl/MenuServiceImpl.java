@@ -1,8 +1,11 @@
 package priv.yue.sboot.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import priv.yue.sboot.domain.Dept;
 import priv.yue.sboot.domain.Menu;
+import priv.yue.sboot.domain.User;
 import priv.yue.sboot.mapper.MenuMapper;
 import priv.yue.sboot.service.MenuService;
 import lombok.AllArgsConstructor;
@@ -10,10 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 系统菜单服务接口实现
@@ -26,38 +29,50 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Service
 @Transactional
-public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
+public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implements MenuService {
 
     private MenuMapper menuMapper;
 
-    public List<Menu> buildMenuTree(List<Menu> menus){
-        if (ObjectUtil.isEmpty(menus)) {
-            return Collections.emptyList();
-        }
-        Map<Long, Menu> idMap = menus.parallelStream().collect(Collectors.toMap(Menu::getMenuId, m -> m));
-        Map<Long, List<Menu>> pidGroupMenusMap = menus.parallelStream().collect(Collectors.groupingBy(Menu::getPid));
-        pidGroupMenusMap.forEach((k, v) -> {
-            Menu parentMenu = idMap.get(k);
-            if (parentMenu != null) {
-                parentMenu.setSubMenu(v);
-            }
-        });
-        return pidGroupMenusMap.get(0L);
+    public List<Menu> buildTree(List<Menu> menus){
+        return buildTree(0L, menus, Menu::getMenuId, Menu::getPid, m -> m::setSubMenu);
     }
 
-    public List<String> getPermissions(long userId){
-        return menuMapper.getPermissionsByUser(userId)
-                .stream()
-                .map(Menu::getPermission)
-                .collect(Collectors.toList());
+    public List<Long> getMenuAndChildrensIds(Long menuId) {
+        List<Menu> menus = menuMapper.selectAllByPid(menuId);
+        return Stream.concat(Stream.of(menuId),
+                flat(menus, Menu::getSubMenu).stream().map(Menu::getMenuId)).collect(Collectors.toList());
     }
 
-    public List<Menu> getMenusByUserId(long userId){
-        return menuMapper.getMenusByUserId(userId);
+    public List<Menu> selectTreeByUser(Long userId){
+        return buildTree(selectByUser(userId));
     }
 
-    public List<Menu> queryMenusWithUser(Map<String, Object> queryMap) {
-        return menuMapper.queryMenusWithUser(queryMap);
+    /**
+     * 查询用户拥有的所有menu
+     */
+    public List<Menu> selectByUser(Long userId){
+        List<Menu> menus = menuMapper.selectByUser(userId, null, null);
+        return menus;
+    }
+
+    /**
+     * 查询用户拥有的menu,可根据hidden筛选 1-隐藏 0-显示
+     */
+    public List<Menu> selectByUser(Long userId, Integer hidden){
+        List<Menu> menus = menuMapper.selectByUser(userId, hidden, null);
+        return menus;
+    }
+
+    /**
+     * 查询用户拥有的menu,可根据hidden筛选 1-隐藏 0-显示,可根据类型筛选 in (type[])
+     */
+    public List<Menu> selectByUser(Long userId, Integer hidden, Integer[] type){
+        List<Menu> menus = menuMapper.selectByUser(userId, hidden, type);
+        return menus;
+    }
+
+    public Menu selectByPrimaryKey(Long menuId) {
+        return menuMapper.selectByPrimaryKey(menuId);
     }
 
 }

@@ -8,7 +8,7 @@ import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import priv.yue.sboot.domain.User;
-import priv.yue.sboot.domain.vo.LoginVo;
+import priv.yue.sboot.vo.LoginVo;
 import priv.yue.sboot.service.UserService;
 import priv.yue.sboot.utils.SimpleByteSourceSerializable;
 

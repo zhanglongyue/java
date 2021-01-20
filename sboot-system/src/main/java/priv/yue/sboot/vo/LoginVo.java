@@ -1,4 +1,4 @@
-package priv.yue.sboot.domain.vo;
+package priv.yue.sboot.vo;
 
 import lombok.Getter;
 import lombok.Setter;

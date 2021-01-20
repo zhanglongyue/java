@@ -14,11 +14,13 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class TokenFilter extends DefaultFilter {
 
+    private static final String AUTHORIZATION = "Authorization";
+
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String token = httpServletRequest.getHeader("Access-Token");
+        String token = httpServletRequest.getHeader(AUTHORIZATION);
         if (StrUtil.isBlank(token)) {
             return false;
         }

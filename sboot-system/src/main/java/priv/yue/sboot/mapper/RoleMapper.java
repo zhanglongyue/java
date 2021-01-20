@@ -1,10 +1,10 @@
 package priv.yue.sboot.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import priv.yue.sboot.domain.Menu;
 import priv.yue.sboot.domain.Role;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -17,9 +17,12 @@ import java.util.List;
 */
 public interface RoleMapper extends BaseMapper<Role> {
 
-    IPage<Role> selectPage(Page<?> page, Integer state);
+    Role selectByPrimaryKey(Long roleId);
 
-    List<Role> getRolesByUser(long userId);
+    List<Role> selectRolesByUser(Long userId);
 
-    List<Role> getRolesNoMenusByUser(long userId);
+    List<Role> selectRolesTreeByUser(Long userId);
+
+    List<Role> selectAllByPid(Long pid);
+
 }

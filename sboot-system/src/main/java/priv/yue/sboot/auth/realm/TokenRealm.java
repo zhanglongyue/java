@@ -8,7 +8,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAccount;
 import priv.yue.sboot.auth.token.DefaultToken;
 import priv.yue.sboot.common.constant.Consts;
-import priv.yue.sboot.domain.vo.LoginVo;
+import priv.yue.sboot.vo.LoginVo;
 import priv.yue.sboot.utils.JsonUtils;
 import priv.yue.sboot.utils.RedisUtils;
 

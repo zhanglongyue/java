@@ -16,4 +16,14 @@ public class SbootConfig {
      */
     private Boolean singleLogin = false;
 
+    /**
+     * token默认超时时间30分
+     */
+    private Long defaultTokenTimeout = 1000L * 60 * 30;
+
+    /**
+     * 记住我默认超时时间7天
+     */
+    private Long remeberMeTimeout = 1000L * 60 * 60 * 24 * 7;
+
 }

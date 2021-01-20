@@ -53,8 +53,8 @@ public class RestResponse<T> implements Serializable {
      * @param <T>
      * @return
      */
-    public static <T> RestResponse<T> success(String message){
-        return new RestResponse<T>(200, message);
+    public static <T> RestResponse<T> success(String msg){
+        return new RestResponse<T>(200, msg);
     }
 
     /**
@@ -62,8 +62,8 @@ public class RestResponse<T> implements Serializable {
      * @param <T>
      * @return
      */
-    public static <T> RestResponse<T> success(String message, T data){
-        return new RestResponse<T>(200, message, data);
+    public static <T> RestResponse<T> success(String msg, T data){
+        return new RestResponse<T>(200, msg, data);
     }
 
     /**
@@ -71,8 +71,17 @@ public class RestResponse<T> implements Serializable {
      * @param <T>
      * @return
      */
-    public static <T> RestResponse<T> fail(String message){
-        return new RestResponse<T>(500, message,null);
+    public static <T> RestResponse<T> fail(String msg){
+        return new RestResponse<T>(500, msg,null);
+    }
+
+    /**
+     * 失败-返回data
+     * @param <T>
+     * @return
+     */
+    public static <T> RestResponse<T> fail(String msg, T data){
+        return new RestResponse<T>(500, "参数不正确", data);
     }
 
     /**
@@ -80,8 +89,8 @@ public class RestResponse<T> implements Serializable {
      * @param <T>
      * @return
      */
-    public static <T> RestResponse<T> fail(int code, String message){
-        return new RestResponse<T>(code, message,null);
+    public static <T> RestResponse<T> fail(int code, String msg){
+        return new RestResponse<T>(code, msg,null);
     }
 
 
@@ -92,7 +101,6 @@ public class RestResponse<T> implements Serializable {
     public String getMsg() {
         return msg;
     }
-
 
     public T getData() {
         return data;
@@ -110,8 +118,4 @@ public class RestResponse<T> implements Serializable {
         this.data = data;
     }
 
-    @Override
-    public String toString() {
-        return "RestResponse{" + "code=" + code + ", message='" + msg + '\'' +", data=" + data +'}';
-    }
 }

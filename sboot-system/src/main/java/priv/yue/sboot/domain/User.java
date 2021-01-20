@@ -1,17 +1,12 @@
 package priv.yue.sboot.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -29,15 +24,17 @@ import java.util.List;
 @Accessors(chain = true)
 @TableName("sys_user")
 public class User extends Model<User> implements Serializable {
-    private static final long serialVersionUID = 9182410311625719198L;
+
     /**
      * ID
      */
     @TableId(type = IdType.ASSIGN_ID)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long userId;
     /**
-     * 部门名称
+     * 部门id
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long deptId;
     /**
      * 用户名
@@ -95,6 +92,7 @@ public class User extends Model<User> implements Serializable {
     /**
      * 创建日期
      */
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
     /**
      * 更新时间
@@ -107,9 +105,26 @@ public class User extends Model<User> implements Serializable {
     @JsonIgnore
     private String salt;
     /**
+     * 是否删除
+     */
+    @JsonIgnore
+    @TableLogic
+    private Integer deleted;
+    /**
+     * 登录失败次数
+     */
+    @JsonIgnore
+    private Integer fails;
+    /**
+     * 部门
+     */
+    @TableField(exist = false)
+    private Dept dept;
+    /**
      * 角色集合
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @TableField(exist = false)
     private List<Role> roles;
+
 }

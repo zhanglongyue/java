@@ -1,28 +1,37 @@
 package priv.yue.sboot.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import priv.yue.sboot.domain.Role;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Param;
 import priv.yue.sboot.domain.User;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 系统用户(sys_user)数据Mapper
  *
  * @author zly
  * @since 2020-11-16 15:35:00
- * @description 由 Mybatisplus Code Generator 创建
+ * @description
 */
 public interface UserMapper extends BaseMapper<User> {
 
-    User getById(long id);
+    int setRole(Long userId, Long roleId);
 
-    User getByName(String username);
+    int deleteRole(Long userId);
 
-    User getByNameNoRoles(String username);
+    User selectByPrimaryKey(Long id);
 
-    int deleteById(long id);
+    User selectByName(String username);
 
-    int setRoles(long userId, List<Role> roles);
+    User selectByNameNoRoles(String username);
+
+    Page<User> selectByUser(Page<User> page, @Param("map") Map<String, Object> map);
+
+    List<User> selectByUserOnce(@Param("map") Map<String, Object> map);
+
+    Long selectByUserCount(@Param("map") Map<String, Object> map);
+
 }

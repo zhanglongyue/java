@@ -1,75 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="priv.yue.sboot.mapper.MenuMapper">
-    <sql id="tableName">
-        sys_menu
+    <sql id="Base_Column_List">
+        menu_id, pid, `type`, title, `name`, component, sort, icon, `path`,
+        iframe, `cache`, hidden, permission, create_by, update_by, create_time, update_time
     </sql>
 
-    <sql id="baseColumn">
-        menu_id,pid,sub_count,type,title,name,component,menu_sort,icon,path,i_frame,cache,hidden,permission,create_by,update_by,create_time,update_time
-    </sql>
-
-    <resultMap id="menu" type="priv.yue.sboot.domain.Menu">
-        <id property="menuId" column="menu_id" />
-        <collection property="subMenu" ofType="priv.yue.sboot.domain.Menu" select="getSubMenus" column="menu_id" />
+    <resultMap id="BaseResultMap" type="priv.yue.sboot.domain.Menu">
+        <id column="menu_id" jdbcType="BIGINT" property="menuId" />
+        <result column="pid" jdbcType="BIGINT" property="pid" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="component" jdbcType="VARCHAR" property="component" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+        <result column="iframe" jdbcType="BIT" property="iframe" />
+        <result column="cache" jdbcType="BIT" property="cache" />
+        <result column="hidden" jdbcType="BIT" property="hidden" />
+        <result column="permission" jdbcType="VARCHAR" property="permission" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     </resultMap>
 
-    <select id="getSubMenus" resultMap="menu">
-        select * from sys_menu where pid = #{id}
+    <resultMap id="FullResultMap" type="priv.yue.sboot.domain.Menu" extends="BaseResultMap">
+        <association property="parentMenu" javaType="priv.yue.sboot.domain.Menu" select="selectById" column="pid"/>
+        <collection property="subMenu" ofType="priv.yue.sboot.domain.Menu" select="selectAllByPid" column="menu_id" />
+    </resultMap>
+
+    <resultMap id="PartResultMap" type="priv.yue.sboot.domain.Menu" extends="BaseResultMap">
+        <association property="parentMenu" javaType="priv.yue.sboot.domain.Dept" select="selectById" column="pid"/>
+    </resultMap>
+
+    <select id="selectByPrimaryKey" resultMap="PartResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from sys_menu
+        where menu_id = #{menuId}
+        and deleted = 0
     </select>
 
-    <select id="getMenusByUserId" resultType="priv.yue.sboot.domain.Menu">
-        SELECT
-            a.*
-        FROM
-            sys_menu a
-            LEFT JOIN sys_role_menu b ON a.menu_id = b.menu_id
-            LEFT JOIN sys_user_role c ON b.role_id = c.role_id
-        WHERE
-            c.user_id = #{userId} group by a.menu_id
+    <select id="selectAllByPid" resultMap="FullResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_menu
+        where pid = #{pid}
+        and deleted = 0
+        order by sort
     </select>
 
-    <select id="queryMenusWithUser" resultMap="menu">
-        SELECT
-            a.*
-        FROM
-            sys_menu a
-            LEFT JOIN sys_role_menu b ON a.menu_id = b.menu_id
-            LEFT JOIN sys_user_role c ON b.role_id = c.role_id
+    <select id="selectAll" resultMap="FullResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_menu
+        where deleted = 0
+        order by sort
+    </select>
+
+    <select id="selectByUser" resultType="priv.yue.sboot.domain.Menu">
+        select menu.*
+        from sys_menu menu
+             left join sys_role_menu srm on menu.menu_id = srm.menu_id
+             left join sys_user_role sur on srm.role_id = sur.role_id
         <where>
-            <if test='title != null and title != ""' >
-                AND c.user_id = #{userId}
+            <if test="hidden != null">
+                and hidden = #{hidden}
             </if>
-            <if test='title != null and title != ""' >
-                AND a.title LIKE "%"#{title}"%"
+            <if test="type != null and type.length > 0">
+                and type in
+                <foreach collection="type" index="index" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
             </if>
+            and sur.user_id = #{userId}
+            and deleted = 0
         </where>
-        GROUP BY
-            a.menu_id
+        group by menu.menu_id
+        order by sort
     </select>
 
-    <select id="getPermissionsByUser" resultType="priv.yue.sboot.domain.Menu">
-        SELECT
-            a.permisson
-        FROM
-            sys_menu a
-            LEFT JOIN sys_role_menu b ON a.menu_id = b.menu_id
-            LEFT JOIN sys_user_role c ON b.role_id = c.role_id
-        WHERE
-            c.user_id = #{userId} and a.permission != null
-        GROUP BY
-            a.menu_id
+    <select id="selectPermissionsByUser" resultType="priv.yue.sboot.domain.Menu">
+        select
+            menu.permission
+        from
+            sys_menu menu
+                left join sys_role_menu srm on menu.menu_id = srm.menu_id
+                left join sys_user_role sur on srm.role_id = sur.role_id
+                left join sys_user user on user.user_id = sur.user_id
+        where
+            user.user_id = #{userid}
+          and menu.permission is not null
+          and menu.deleted = 0
+          and user.deleted = 0
+        group by
+            menu.menu_id
     </select>
 
-    <select id="getAllMenusByRole" resultMap="menu">
-        SELECT
-            a.*
-        FROM
-            sys_menu a,
-            sys_role_menu b
-        WHERE
-            a.menu_id = b.menu_id
-            AND b.role_id = #{roleId}
+    <select id="selectByRole" resultMap="PartResultMap">
+        select
+            menu.*
+        from
+            sys_menu menu
+                left join sys_role_menu srm on menu.menu_id = srm.menu_id
+                left join sys_role role on srm.role_id = role.role_id
+        where
+            srm.role_id = #{roleid}
+            and menu.deleted = 0
+            and role.deleted = 0
+        order by sort
     </select>
 
 </mapper>

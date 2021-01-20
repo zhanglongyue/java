@@ -2,13 +2,15 @@ package priv.yue.sboot.domain;
 
 import java.io.Serializable;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.util.Date;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,20 +29,23 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("sys_dept")
 public class Dept extends Model<Dept> implements Serializable {
-    private static final long serialVersionUID = 6458696231145940196L;
+
     /**
      * ID
      */
     @TableId(type = IdType.ASSIGN_ID)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
 	private Long deptId;
     /**
      * 上级部门
      */
+    @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long pid;
     /**
-     * 子部门数目
+     * 树形路径
      */
-    private Integer subCount;
+    private String path;
     /**
      * 名称
      */
@@ -48,27 +53,50 @@ public class Dept extends Model<Dept> implements Serializable {
     /**
      * 排序
      */
-    private Integer deptSort;
+    @TableField(fill = FieldFill.INSERT)
+    private Integer sort;
     /**
      * 状态
      */
+    @TableField(fill = FieldFill.INSERT)
     private Integer enabled;
     /**
      * 创建者
      */
+    @TableField(fill = FieldFill.INSERT)
     private String createBy;
     /**
      * 更新者
      */
+    @TableField(fill = FieldFill.UPDATE)
     private String updateBy;
     /**
      * 创建日期
      */
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
     /**
      * 更新时间
      */
-    @TableField(update = "now()")
+    @TableField(fill = FieldFill.UPDATE)
 	private Date updateTime;
+    /**
+     * 是否删除
+     */
+    @JsonIgnore
+    @TableLogic
+    @TableField(fill = FieldFill.INSERT)
+    private Integer deleted;
+    /**
+     * 上级部门
+     */
+    @TableField(exist = false)
+    private Dept parentDept;
+    /**
+     * 子部门集合
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @TableField(exist = false)
+    private List<Dept> subDept;
 
 }

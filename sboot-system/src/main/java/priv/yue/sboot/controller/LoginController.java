@@ -10,13 +10,14 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import priv.yue.sboot.common.RestResponse;
 import priv.yue.sboot.common.constant.Consts;
 import priv.yue.sboot.config.SbootConfig;
 import priv.yue.sboot.domain.User;
-import priv.yue.sboot.domain.vo.LoginVo;
+import priv.yue.sboot.vo.LoginVo;
 import priv.yue.sboot.service.UserService;
 import priv.yue.sboot.service.dto.AuthUserDto;
 import priv.yue.sboot.utils.JsonUtils;
@@ -41,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
-public class LoginController {
+public class LoginController extends BaseController{
 
     private SbootConfig sbootConfig;
 
@@ -60,7 +61,7 @@ public class LoginController {
         // 保存token及登录信息
         String newToken = UUID.randomUUID().toString();
         RedisUtils.StringOps.setEx(Consts.SHIRO_TOKEN_PREFIX + newToken, JsonUtils.toJsonString(loginVo),
-                30, TimeUnit.MINUTES);
+                sbootConfig.getDefaultTokenTimeout(), TimeUnit.MILLISECONDS);
 
         // 单一登录处理
         if (sbootConfig.getSingleLogin()) {
@@ -73,7 +74,7 @@ public class LoginController {
                 RedisUtils.KeyOps.delete(oldToken);
             }
             // 给用户设置一个新token
-            RedisUtils.StringOps.setEx(tokenKey, newToken, 30, TimeUnit.MINUTES);
+            RedisUtils.StringOps.setEx(tokenKey, newToken, sbootConfig.getDefaultTokenTimeout(), TimeUnit.MILLISECONDS);
         }
         return RestResponse.success(new HashMap<String, Object>() {{
             put("token", newToken);
@@ -84,28 +85,31 @@ public class LoginController {
         }});
     }
 
+    @ApiOperation(value = "获取当前登录用户信息")
+    @PostMapping("/getLoginInfo")
+    public RestResponse<Object> getLoginInfo(){
+        return RestResponse.success(getLoginVo());
+    }
+
     @PostMapping("/register")
     public RestResponse<Object> register(User user){
         String salt = SaltUtils.getSalt(8);
-        user.setSalt(salt);
         Md5Hash hashPwd = new Md5Hash(user.getPassword(), salt, 1024);
-        user.setPassword(hashPwd.toHex());
-        user.setEnabled(1);
-        user.setCreateTime(new Date());
+        user.setPassword(hashPwd.toHex())
+            .setSalt(salt)
+            .setEnabled(1)
+            .setCreateTime(new Date());
         userService.save(user);
-        return RestResponse.success(new HashMap<String, Object>() {{
-            put("user", user);
-        }});
+        return RestResponse.success(user);
     }
 
     @ApiOperation("登出")
     @PostMapping("/logout")
     public RestResponse<Object> logout(HttpServletRequest request){
-        User user = ((LoginVo) SecurityUtils.getSubject().getPrincipal()).getUser();
         String token = request.getHeader("Access-Token");
         if (RedisUtils.KeyOps.delete(Consts.SHIRO_TOKEN_PREFIX + token)) {
             if (sbootConfig.getSingleLogin()) {
-                RedisUtils.KeyOps.delete(Consts.SHIRO_USER_PREFIX + user.getUserId());
+                RedisUtils.KeyOps.delete(Consts.SHIRO_USER_PREFIX + getUser().getUserId());
             }
         }
         return RestResponse.success();

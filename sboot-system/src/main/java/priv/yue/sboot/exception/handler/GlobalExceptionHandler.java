@@ -1,20 +1,32 @@
 package priv.yue.sboot.exception.handler;
 
-import priv.yue.sboot.exception.BadRequestException;
-import priv.yue.sboot.exception.EntityExistException;
-import priv.yue.sboot.exception.EntityNotFoundException;
-import priv.yue.sboot.utils.ThrowableUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import priv.yue.sboot.common.RestResponse;
+import priv.yue.sboot.exception.BadRequestException;
+import priv.yue.sboot.exception.EntityExistException;
+import priv.yue.sboot.exception.EntityNotFoundException;
+import priv.yue.sboot.utils.ThrowableUtils;
+import priv.yue.sboot.vo.ValidateVo;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -47,7 +59,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UnknownAccountException.class)
     public ResponseEntity<ApiError> badCredentialsException(UnknownAccountException e){
-        return buildResponseEntity(ApiError.error(HttpStatus.UNAUTHORIZED.value(),"用户名或密码不正确"));
+        return buildResponseEntity(ApiError.error(HttpStatus.BAD_REQUEST.value(),"用户名或密码不正确"));
     }
 
     /**
@@ -55,7 +67,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(IncorrectCredentialsException.class)
     public ResponseEntity<ApiError> badCredentialsException(IncorrectCredentialsException e){
-        return buildResponseEntity(ApiError.error(HttpStatus.UNAUTHORIZED.value(),"用户名或密码不正确"));
+        return buildResponseEntity(ApiError.error(HttpStatus.BAD_REQUEST.value(),"用户名或密码不正确"));
     }
 
     /**
@@ -89,19 +101,25 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 处理所有接口数据验证异常
+     * 验证异常
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
-        // 打印堆栈信息
-        log.error(ThrowableUtils.getStackTrace(e));
-        String[] str = Objects.requireNonNull(e.getBindingResult().getAllErrors().get(0).getCodes())[1].split("\\.");
-        String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        String msg = "不能为空";
-        if(msg.equals(message)){
-            message = str[1] + ":" + message;
-        }
-        return buildResponseEntity(ApiError.error(message));
+    @ExceptionHandler(BindException.class)
+    public RestResponse<Object> handleBindException(BindException e) {
+        List<ValidateVo> validateVos = e.getBindingResult()
+                .getFieldErrors()
+                .parallelStream()
+                .map(error -> new ValidateVo(error.getField(), error.getDefaultMessage()))
+                .collect(Collectors.toList());
+        return RestResponse.fail("参数不正确", new HashMap() {{
+                    put("fieldError", validateVos);
+                }});
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class, ServletRequestBindingException.class})
+    public RestResponse<Object> handleValidationException(Exception e) {
+        return RestResponse.fail("参数不正确", new HashMap() {{
+            put("fieldError", "参数校验不通过");
+        }});
     }
 
     /**

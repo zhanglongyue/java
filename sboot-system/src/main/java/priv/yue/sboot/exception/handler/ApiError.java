@@ -1,9 +1,6 @@
 package priv.yue.sboot.exception.handler;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 /**
  * @author Zheng Jie
@@ -13,24 +10,24 @@ import java.time.LocalDateTime;
 class ApiError {
 
     private Integer code = 400;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime timestamp;
-    private String message;
+    /*@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime timestamp;*/
+    private String msg;
 
     private ApiError() {
-        timestamp = LocalDateTime.now();
+        /*timestamp = LocalDateTime.now();*/
     }
 
-    public static ApiError error(String message){
+    public static ApiError error(String msg){
         ApiError apiError = new ApiError();
-        apiError.setMessage(message);
+        apiError.setMsg(msg);
         return apiError;
     }
 
-    public static ApiError error(Integer code, String message){
+    public static ApiError error(Integer code, String msg){
         ApiError apiError = new ApiError();
         apiError.setCode(code);
-        apiError.setMessage(message);
+        apiError.setMsg(msg);
         return apiError;
     }
 }
