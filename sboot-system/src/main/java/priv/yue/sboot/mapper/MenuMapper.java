@@ -15,7 +15,7 @@ import java.util.List;
 */
 public interface MenuMapper extends BaseMapper<Menu> {
 
-    Menu selectByPrimaryKey(Long menuId);
+    Menu selectByPK(Long menuId);
 
     List<Menu> selectByRole(Long roleId);
 

@@ -6,7 +6,7 @@
         iframe, `cache`, hidden, permission, create_by, update_by, create_time, update_time
     </sql>
 
-    <resultMap id="BaseResultMap" type="priv.yue.sboot.domain.Menu">
+    <resultMap id="BaseRM" type="priv.yue.sboot.domain.Menu">
         <id column="menu_id" jdbcType="BIGINT" property="menuId" />
         <result column="pid" jdbcType="BIGINT" property="pid" />
         <result column="type" jdbcType="INTEGER" property="type" />
@@ -26,16 +26,16 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     </resultMap>
 
-    <resultMap id="FullResultMap" type="priv.yue.sboot.domain.Menu" extends="BaseResultMap">
+    <resultMap id="FullRM" type="priv.yue.sboot.domain.Menu" extends="BaseRM">
         <association property="parentMenu" javaType="priv.yue.sboot.domain.Menu" select="selectById" column="pid"/>
         <collection property="subMenu" ofType="priv.yue.sboot.domain.Menu" select="selectAllByPid" column="menu_id" />
     </resultMap>
 
-    <resultMap id="PartResultMap" type="priv.yue.sboot.domain.Menu" extends="BaseResultMap">
-        <association property="parentMenu" javaType="priv.yue.sboot.domain.Dept" select="selectById" column="pid"/>
+    <resultMap id="SimpleRM" type="priv.yue.sboot.domain.Menu" extends="BaseRM">
+        <association property="parentMenu" javaType="priv.yue.sboot.domain.Menu" select="selectById" column="pid"/>
     </resultMap>
 
-    <select id="selectByPrimaryKey" resultMap="PartResultMap">
+    <select id="selectByPK" resultMap="SimpleRM">
         select
         <include refid="Base_Column_List" />
         from sys_menu
@@ -43,7 +43,7 @@
         and deleted = 0
     </select>
 
-    <select id="selectAllByPid" resultMap="FullResultMap">
+    <select id="selectAllByPid" resultMap="FullRM">
         select
         <include refid="Base_Column_List"/>
         from sys_menu
@@ -52,7 +52,7 @@
         order by sort
     </select>
 
-    <select id="selectAll" resultMap="FullResultMap">
+    <select id="selectAll" resultMap="FullRM">
         select
         <include refid="Base_Column_List"/>
         from sys_menu
@@ -60,7 +60,7 @@
         order by sort
     </select>
 
-    <select id="selectByUser" resultType="priv.yue.sboot.domain.Menu">
+    <select id="selectByUser" resultMap="SimpleRM">
         select menu.*
         from sys_menu menu
              left join sys_role_menu srm on menu.menu_id = srm.menu_id
@@ -82,7 +82,7 @@
         order by sort
     </select>
 
-    <select id="selectPermissionsByUser" resultType="priv.yue.sboot.domain.Menu">
+    <select id="selectPermissionsByUser" resultMap="BaseRM">
         select
             menu.permission
         from
@@ -99,7 +99,7 @@
             menu.menu_id
     </select>
 
-    <select id="selectByRole" resultMap="PartResultMap">
+    <select id="selectByRole" resultMap="SimpleRM">
         select
             menu.*
         from

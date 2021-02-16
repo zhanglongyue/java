@@ -2,12 +2,9 @@ package priv.yue.sboot.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -20,7 +17,6 @@ import priv.yue.sboot.domain.Role;
 import priv.yue.sboot.domain.User;
 import priv.yue.sboot.domain.maps.UserMap;
 import priv.yue.sboot.exception.BadRequestException;
-import priv.yue.sboot.mapper.MenuMapper;
 import priv.yue.sboot.mapper.RoleMapper;
 import priv.yue.sboot.mapper.UserMapper;
 import priv.yue.sboot.service.DeptService;
@@ -37,8 +33,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static cn.hutool.core.date.DateTime.now;
-
 /**
  * 系统用户服务接口实现
  *
@@ -54,17 +48,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
     private UserMapper userMapper;
     private RoleMapper roleMapper;
-    private MenuMapper menuMapper;
     private MenuService menuService;
     private DeptService deptService;
     private RoleService roleService;
     private UserMap userMap;
 
-    public User getUserById(Long userId){
-        return userMapper.selectByPrimaryKey(userId);
+    public User selectByPK(Long userId){
+        return userMapper.selectByPK(userId);
     }
 
-    public User getUserByName(String username) {
+    public User selectByName(String username) {
         return userMapper.selectByName(username);
     }
 
@@ -77,7 +70,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         if(user.getEnabled() == 0){
             throw new AuthenticationException("账号被禁用");
         }
-        List<Role> roles = roleMapper.selectRolesByUser(user.getUserId());
+        List<Role> roles = roleMapper.selectByUser(user.getUserId());
         List<Menu> menus = menuService.selectByUser(user.getUserId());
         Set<String> permissions = new HashSet<>();
         if (menus.size() > 0) {
@@ -95,7 +88,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         return loginVo;
     }
 
-    public User insertUser(UserDto userDto) {
+    public User save(UserDto userDto) {
         if (checkUsernameExist(userDto.getUsername())) {
             throw new BadRequestException("用户名[" + userDto.getUsername() + "]已存在" );
         }
@@ -105,21 +98,18 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         User currUser = loginVo.getUser();
 
         // 保存用户
-        user.setCreateBy(currUser.getUsername());
-        user.setCreateTime(now());
-        user.setEnabled(1);
         user.setSalt(SaltUtils.getSalt(8));
         user.setPassword(new Md5Hash(user.getPassword(), user.getSalt(), 1024).toHex());
         save(user);
 
         // 保存关联的角色信息
         for (Role role : new HashSet<>(user.getRoles())) {
-            userMapper.setRole(user.getUserId(), role.getRoleId());
+            userMapper.insertUserRole(user.getUserId(), role.getRoleId());
         }
         return user;
     }
 
-    public User updateUser(UserDto userDto) {
+    public User update(UserDto userDto) {
         User user = getById(userDto.getUserId());
         if (!user.getUsername().equals(userDto.getUsername())
                 && checkUsernameExist(userDto.getUsername())) {
@@ -131,33 +121,27 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         User currUser = loginVo.getUser();
 
         // 更新用户
-        user.setUpdateBy(currUser.getUsername())
-            .setUpdateTime(now());
         updateById(user);
 
         // 先删除角色
-        deleteRole(user.getUserId());
+        userMapper.deleteUserRole(user.getUserId());
         // 再保存角色信息
         for (Role role : user.getRoles()) {
-            userMapper.setRole(user.getUserId(), role.getRoleId());
+            userMapper.insertUserRole(user.getUserId(), role.getRoleId());
         }
         return user;
     }
 
-    public int deleteRole(Long userId) {
-        return userMapper.deleteRole(userId);
+    public Page<User> selectPage(Page<User> page, Map<String, Object> map) {
+        return userMapper.selectPage(page, map);
     }
 
-    public Page<User> selectByUser(Page<User> page, Map<String, Object> map) {
-        return userMapper.selectByUser(page, map);
+    public List<User> selectPageOnce(Map<String, Object> map) {
+        return userMapper.selectPageOnce(map);
     }
 
-    public List<User> selectByUserOnce(Map<String, Object> map) {
-        return userMapper.selectByUserOnce(map);
-    }
-
-    public Long selectByUserCount(Map<String, Object> map){
-        return userMapper.selectByUserCount(map);
+    public int selectPageCount(Map<String, Object> map){
+        return userMapper.selectPageCount(map);
     }
 
     public User checkInsertAndUpdate(UserDto userDto) {
@@ -179,7 +163,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     }
 
     public User checkUser(String username, String password) {
-        User user = getUserByName(username);
+        User user = selectByName(username);
         if(user == null){
             throw new UnknownAccountException();
         }

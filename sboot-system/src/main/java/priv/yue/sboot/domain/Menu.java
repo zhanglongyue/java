@@ -58,6 +58,7 @@ public class Menu extends Model<Menu> implements Serializable {
     /**
      * 排序
      */
+    @TableField(fill = FieldFill.INSERT)
     private Integer sort;
     /**
      * 图标
@@ -86,25 +87,29 @@ public class Menu extends Model<Menu> implements Serializable {
     /**
      * 创建者
      */
+    @TableField(fill = FieldFill.INSERT)
     private String createBy;
     /**
      * 更新者
      */
+    @TableField(fill = FieldFill.UPDATE)
     private String updateBy;
     /**
      * 创建日期
      */
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
     /**
      * 更新时间
      */
-    @TableField(update = "now()")
+    @TableField(fill = FieldFill.UPDATE)
 	private Date updateTime;
     /**
      * 是否删除
      */
     @JsonIgnore
     @TableLogic
+    @TableField(fill = FieldFill.INSERT)
     private Integer deleted;
     /**
      * 上级菜单

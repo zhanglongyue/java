@@ -32,15 +32,14 @@ public class RoleDto extends BaseDto implements Serializable {
     @NotNull(groups = Update.class, message = "id不能为空")
 	private Long roleId;
     /**
+     * 上级角色
+     */
+    private Long pid;
+    /**
      * 名称
      */
     @NotBlank(groups = Create.class, message = "名称不能为空")
     private String name;
-    /**
-     * 角色级别
-     */
-    @NotNull(groups = Create.class, message = "级别不能为空")
-    private Integer level;
     /**
      * 描述
      */

@@ -1,22 +1,16 @@
 package priv.yue.sboot.service.impl;
 
-import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import priv.yue.sboot.domain.Dept;
-import priv.yue.sboot.domain.Menu;
-import priv.yue.sboot.domain.User;
-import priv.yue.sboot.mapper.MenuMapper;
-import priv.yue.sboot.service.MenuService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import priv.yue.sboot.domain.Dept;
+import priv.yue.sboot.domain.Menu;
+import priv.yue.sboot.mapper.MenuMapper;
+import priv.yue.sboot.service.MenuService;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 系统菜单服务接口实现
@@ -37,10 +31,20 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
         return buildTree(0L, menus, Menu::getMenuId, Menu::getPid, m -> m::setSubMenu);
     }
 
-    public List<Long> getMenuAndChildrensIds(Long menuId) {
+    public List<Long> getChildrensIdsIncludeSelf(Long menuId) {
+        List<Long> ids = getChildrensIds(menuId);
+        ids.add(menuId);
+        return ids;
+    }
+
+    public List<Long> getChildrensIds(Long menuId) {
         List<Menu> menus = menuMapper.selectAllByPid(menuId);
-        return Stream.concat(Stream.of(menuId),
-                flat(menus, Menu::getSubMenu).stream().map(Menu::getMenuId)).collect(Collectors.toList());
+        return flat(menus, Menu::getSubMenu).stream().map(Menu::getMenuId).collect(Collectors.toList());
+    }
+
+    public List<Dept> getChildrens(Long menuId) {
+        // TODO 暂时没用到
+        return null;
     }
 
     public List<Menu> selectTreeByUser(Long userId){
@@ -51,28 +55,25 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
      * 查询用户拥有的所有menu
      */
     public List<Menu> selectByUser(Long userId){
-        List<Menu> menus = menuMapper.selectByUser(userId, null, null);
-        return menus;
+        return menuMapper.selectByUser(userId, null, null);
     }
 
     /**
      * 查询用户拥有的menu,可根据hidden筛选 1-隐藏 0-显示
      */
     public List<Menu> selectByUser(Long userId, Integer hidden){
-        List<Menu> menus = menuMapper.selectByUser(userId, hidden, null);
-        return menus;
+        return menuMapper.selectByUser(userId, hidden, null);
     }
 
     /**
      * 查询用户拥有的menu,可根据hidden筛选 1-隐藏 0-显示,可根据类型筛选 in (type[])
      */
     public List<Menu> selectByUser(Long userId, Integer hidden, Integer[] type){
-        List<Menu> menus = menuMapper.selectByUser(userId, hidden, type);
-        return menus;
+        return menuMapper.selectByUser(userId, hidden, type);
     }
 
-    public Menu selectByPrimaryKey(Long menuId) {
-        return menuMapper.selectByPrimaryKey(menuId);
+    public Menu selectByPK(Long menuId) {
+        return menuMapper.selectByPK(menuId);
     }
 
 }

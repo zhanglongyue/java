@@ -4,8 +4,6 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import priv.yue.sboot.domain.Menu;
-import priv.yue.sboot.domain.Role;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,10 +22,10 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, 
 
     /**
      * 将一个集合转换成树结构，支持多根节点
-     * id   pid             id
-     * 1    0               1
-     * 2    0       =>        |-3
-     * 3    1               2
+     * <p>
+     * [{id:1,pid:0,sub:[]},{id:2,pid:0,sun[]},{id:3:pid:1,sub[]}]
+     * <p>↓↓↓</p>
+     * [{id:1,pid:0,sub:[{id:3:pid:1,sub[]}]},{id:2,pid:0,sun[]}]
      * @param root 根节点的父节点，例如根节点的pid可能是-1，null，0等等
      * @param collection 包含每一个树节点的集合
      * @param getId 获取节点id的方法
@@ -75,10 +73,10 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, 
      * 将mybatis递归查出来的多节点tree进行重构，去除重复节点
      * 场景：
      *  一个用户存在多个角色，角色表是树形结构，查询用户可查看的角色，如果用户拥有的2个角色存在父子关系，
-     *  按mybatis递归查询，会查询2个树，但是子角色树被包含在父角色树种，需要去除这类重复树
+     *  按mybatis递归查询，会查询2个树，但是子角色树被包含在父角色树中，需要去除这类重复树
      * 其他方法：
      *  在保存时对树形结构做处理，如果勾选了父子关系的角色，子角色权限由于被父角色完全涵盖，可以不保存子角色
-     *  前端在勾选角色树时最好增加逻辑判断，在勾选父角色后，不可以勾选子角色
+     *  前端在勾选角色树时可以增加逻辑判断，在勾选父角色后，不可以勾选子角色
      * @param collection 多个树的集合
      * @param getId 获取节点id的方法
      * @param getSub 获取子节点的方法

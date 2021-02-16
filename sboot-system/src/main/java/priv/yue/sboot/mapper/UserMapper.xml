@@ -8,7 +8,7 @@
     update_time, salt, deleted
 	</sql>
 
-	<resultMap id="BaseResultMap" type="priv.yue.sboot.domain.User">
+	<resultMap id="BaseRM" type="priv.yue.sboot.domain.User">
 		<id column="user_id" jdbcType="BIGINT" property="userId"/>
 		<result column="dept_id" jdbcType="BIGINT" property="deptId"/>
 		<result column="username" jdbcType="VARCHAR" property="username"/>
@@ -30,18 +30,18 @@
 		<result column="deleted" jdbcType="INTEGER" property="deleted"/>
 	</resultMap>
 
-	<resultMap id="PartResultMap" type="priv.yue.sboot.domain.User" extends="BaseResultMap">
+	<resultMap id="SimpleRM" type="priv.yue.sboot.domain.User" extends="BaseRM">
 		<association property="dept" select="priv.yue.sboot.mapper.DeptMapper.selectById" column="dept_id"/>
 	</resultMap>
 
-	<resultMap id="FullResultMap" type="priv.yue.sboot.domain.User" extends="BaseResultMap">
+	<resultMap id="FullRM" type="priv.yue.sboot.domain.User" extends="BaseRM">
 		<association property="dept" select="priv.yue.sboot.mapper.DeptMapper.selectById" column="dept_id"/>
 		<collection property="roles" ofType="priv.yue.sboot.domain.Role"
-		            select="priv.yue.sboot.mapper.RoleMapper.selectRolesByUser"
+		            select="priv.yue.sboot.mapper.RoleMapper.selectByUser"
 		            column="user_id"/>
 	</resultMap>
 
-	<resultMap id="FullResultMapOnce" type="priv.yue.sboot.domain.User" extends="BaseResultMap">
+	<resultMap id="FullRMOnce" type="priv.yue.sboot.domain.User" extends="BaseRM">
 		<association property="dept" javaType="priv.yue.sboot.domain.Dept" >
 			<id column="dept_dept_id" jdbcType="BIGINT" property="deptId"/>
 			<result column="dept_pid" jdbcType="BIGINT" property="pid"/>
@@ -67,7 +67,7 @@
 		</collection>
 	</resultMap>
 
-	<select id="selectByUser" resultMap="FullResultMap">
+	<select id="selectPage" resultMap="FullRM">
 		select distinct(user.user_id) id, user.* from sys_user user
 		    left join sys_dept dept on user.dept_id = dept.dept_id
 		    left join sys_user_role sur on user.user_id = sur.user_id
@@ -84,7 +84,7 @@
 		</if>
 	</select>
 
-	<select id="selectByUserOnce" resultMap="FullResultMapOnce">
+	<select id="selectPageOnce" resultMap="FullRMOnce">
 		select user.*,
 		dept.dept_id as dept_dept_id,
 		dept.pid as dept_pid,
@@ -127,11 +127,12 @@
 		) user left join sys_dept dept on user.dept_id = dept.dept_id
 		left join sys_user_role sur on user.user_id = sur.user_id
 		left join sys_role role on sur.role_id = role.role_id
-		order by
-		user.create_time desc
+		<if test="map.orderBy != null and map.orderBy != ''">
+			order by ${map.orderBy}
+		</if>
 	</select>
 
-	<select id="selectByUserCount" resultType="long">
+	<select id="selectPageCount" resultType="int">
 		select COUNT(distinct(user.user_id)) from sys_user user
 		left join sys_dept dept on user.dept_id = dept.dept_id
 		left join sys_user_role sur on user.user_id = sur.user_id
@@ -145,19 +146,19 @@
 		</where>
 	</select>
 
-	<select id="selectByName" resultMap="FullResultMap">
+	<select id="selectByName" resultMap="FullRM">
 		select
 		<include refid="Base_Column_List"/>
 		from sys_user a where username = #{username} and deleted = 0
 	</select>
 
-	<select id="selectByNameNoRoles" resultMap="PartResultMap">
+	<select id="selectByNameNoRoles" resultMap="SimpleRM">
 		select
 		<include refid="Base_Column_List"/>
 		from sys_user where username = #{username} and deleted = 0
 	</select>
 
-	<select id="selectByPrimaryKey" resultMap="FullResultMap">
+	<select id="selectByPK" resultMap="FullRM">
 		select
 		<include refid="Base_Column_List"/>
 		from sys_user
@@ -165,11 +166,11 @@
 		and deleted = 0
 	</select>
 
-	<insert id="setRole">
+	<insert id="insertUserRole">
 		insert into sys_user_role (`user_id`, `role_id`) values (#{userId}, #{roleId})
 	</insert>
 
-	<insert id="deleteRole">
+	<insert id="deleteUserRole">
 		delete from sys_user_role where user_id = #{user_id}
 	</insert>
 

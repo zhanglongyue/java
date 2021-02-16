@@ -2,9 +2,7 @@ package priv.yue.sboot.service.dto;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.List;
 
 /**
  * dto基类
@@ -35,36 +33,19 @@ public class BaseDto {
     /**
      * 大于创建日期
      */
-    private Date createTimeBegin;
+    private String createTimeBegin;
     /**
      * 小于创建日期
      */
-    private Date createTimeEnd;
+    private String createTimeEnd;
     /**
      * 大于更新时间
      */
-    private Date updateTimeBegin;
+    private String updateTimeBegin;
     /**
      * 小于更新时间
      */
-    private Date updateTimeEnd;
-
-    @NotNull(groups = Query.class, message = "page不能为空")
-    private Integer page;
-
-    /**
-     * pageSize
-     */
-    @NotNull(groups = Query.class, message = "itemsPerPage不能为空")
-    private Integer itemsPerPage;
-
-    private String [] sortBy;
-
-    private boolean [] sortDesc;
-
-    private String [] groupBy;
-
-    private String [] groupDesc;
+    private String updateTimeEnd;
 
     private String search;
 }

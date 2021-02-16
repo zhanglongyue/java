@@ -1,9 +1,6 @@
 package priv.yue.sboot.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import priv.yue.sboot.domain.Menu;
 import priv.yue.sboot.domain.Role;
 
 import java.util.List;
@@ -17,12 +14,18 @@ import java.util.List;
 */
 public interface RoleMapper extends BaseMapper<Role> {
 
-    Role selectByPrimaryKey(Long roleId);
+    Role selectByPK(Long roleId);
 
-    List<Role> selectRolesByUser(Long userId);
+    List<Role> selectByUser(Long userId);
 
-    List<Role> selectRolesTreeByUser(Long userId);
+    List<Role> selectTreeByUser(Long userId);
 
     List<Role> selectAllByPid(Long pid);
+
+    int countUser(List<Long> ids);
+
+    int insertRoleMenu(Long menuId, Long roleId);
+
+    int deleteRoleMenu(Long roleId);
 
 }

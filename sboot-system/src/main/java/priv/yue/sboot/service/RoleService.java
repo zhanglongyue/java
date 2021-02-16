@@ -1,7 +1,9 @@
 package priv.yue.sboot.service;
 
 
+import priv.yue.sboot.domain.Dept;
 import priv.yue.sboot.domain.Role;
+import priv.yue.sboot.service.dto.RoleDto;
 
 import java.util.List;
 
@@ -14,10 +16,21 @@ import java.util.List;
  */
 public interface RoleService extends BaseService<Role> {
 
-    Role selectByPrimaryKey(Long roleId);
+    Role selectByPK(Long roleId);
 
-    List<Role> selectRolesByUser(Long userId);
+    List<Role> selectByUser(Long userId);
 
-    List<Role> selectRolesTreeByUser(Long userId);
+    List<Role> selectTreeByUser(Long userId);
 
+    List<Long> getChildrensIdsIncludeSelf(Long roleId);
+
+    List<Long> getChildrensIds(Long roleId);
+
+    List<Dept> getChildrens(Long roleId);
+
+    int countUser(List<Long> ids);
+
+    Role update(RoleDto roleDto);
+
+    Role save(RoleDto roleDto);
 }

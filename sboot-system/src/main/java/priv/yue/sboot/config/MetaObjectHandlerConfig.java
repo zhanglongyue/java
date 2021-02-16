@@ -23,18 +23,15 @@ public class MetaObjectHandlerConfig implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        log.info("start insert fill ....");
         this.strictInsertFill(metaObject, "createTime", Date.class, now());
         this.strictInsertFill(metaObject, "createBy", String.class, AuthUtils.getLoginUserName());
         this.strictInsertFill(metaObject, "deleted", Integer.class, 0);
         this.strictInsertFill(metaObject, "enabled", Integer.class, 1);
-        this.strictInsertFill(metaObject, "pid", Long.class, AuthUtils.getLoginUserDept().getDeptId());
         this.strictInsertFill(metaObject, "sort", Integer.class, 99);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        log.info("start update fill ....");
         this.strictUpdateFill(metaObject, "updateTime", Date.class, now());
         this.strictUpdateFill(metaObject, "updateBy", String.class, AuthUtils.getLoginUserName());
     }

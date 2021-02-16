@@ -5,16 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import priv.yue.sboot.domain.Dept;
-import priv.yue.sboot.domain.Menu;
-import priv.yue.sboot.domain.User;
-import priv.yue.sboot.domain.maps.DeptMap;
 import priv.yue.sboot.mapper.DeptMapper;
 import priv.yue.sboot.service.DeptService;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,31 +27,36 @@ import java.util.stream.Stream;
 public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implements DeptService {
 
     private DeptMapper deptMapper;
-    private DeptMap deptMap;
 
     public List<Dept> buildTree(List<Dept> depts){
         return buildTree(0L, depts, Dept::getDeptId, Dept::getPid, m -> m::setSubDept);
     }
 
-    public List<Long> getDeptAndChildrensIds(Long deptId) {
-        List<Dept> depts = deptMapper.selectAllByPid(deptId);
-        return Stream.concat(Stream.of(deptId),
-                flat(depts, Dept::getSubDept).stream().map(Dept::getDeptId)).collect(Collectors.toList());
+    public List<Long> getChildrensIdsIncludeSelf(Long deptId) {
+        List<Long> ids = getChildrensIds(deptId);
+        ids.add(deptId);
+        return ids;
     }
 
-    @Override
-    public List<Dept> getDeptAndChildrens(Long deptId) {
+    public List<Long> getChildrensIds(Long deptId) {
+        List<Dept> depts = deptMapper.selectAllByPid(deptId);
+        return flat(depts, Dept::getSubDept).stream().map(Dept::getDeptId).collect(Collectors.toList());
+    }
+
+    /**
+     * 只获取直系子类目
+     */
+    public List<Dept> getChildrens(Long deptId) {
+        // TODO 暂时没用到
         return null;
     }
 
-    @Override
-    public Dept selectByPrimaryKey(Long deptId) {
-        return deptMapper.selectByPrimaryKey(deptId);
+    public Dept selectByPK(Long deptId) {
+        return deptMapper.selectByPK(deptId);
     }
 
-    @Override
-    public List<Dept> selectAll(Map<String, Object> map) {
-        List<Dept> list = deptMapper.selectAll(map);
+    public List<Dept> selectAllByMap(Map<String, Object> map) {
+        List<Dept> list = deptMapper.selectAllByMap(map);
         return buildTree(list);
     }
 

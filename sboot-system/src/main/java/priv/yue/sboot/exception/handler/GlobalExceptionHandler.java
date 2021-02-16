@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,6 +70,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> badCredentialsException(IncorrectCredentialsException e){
         return buildResponseEntity(ApiError.error(HttpStatus.BAD_REQUEST.value(),"用户名或密码不正确"));
     }
+
+    /**
+     * IncorrectCredentialsException 无权限
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiError> UnauthorizedException(UnauthorizedException e){
+        return buildResponseEntity(ApiError.error(HttpStatus.BAD_REQUEST.value(),"权限不足"));
+    }
+
 
     /**
      * 处理自定义异常

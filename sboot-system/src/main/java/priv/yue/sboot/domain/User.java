@@ -76,14 +76,17 @@ public class User extends Model<User> implements Serializable {
     /**
      * 状态：1启用、0禁用
      */
+    @TableField(fill = FieldFill.INSERT)
     private Integer enabled;
     /**
      * 创建者
      */
+    @TableField(fill = FieldFill.INSERT)
     private String createBy;
     /**
      * 更新者
      */
+    @TableField(fill = FieldFill.UPDATE)
     private String updateBy;
     /**
      * 修改密码的时间
@@ -97,7 +100,7 @@ public class User extends Model<User> implements Serializable {
     /**
      * 更新时间
      */
-    @TableField(update = "now()")
+    @TableField(fill = FieldFill.UPDATE)
 	private Date updateTime;
     /**
      * 盐
@@ -109,6 +112,7 @@ public class User extends Model<User> implements Serializable {
      */
     @JsonIgnore
     @TableLogic
+    @TableField(fill = FieldFill.INSERT)
     private Integer deleted;
     /**
      * 登录失败次数

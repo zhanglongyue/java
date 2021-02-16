@@ -6,7 +6,7 @@
 		dept_id, pid, `path`, `name`, sort, enabled, create_by, update_by, create_time, update_time
 	</sql>
 
-	<resultMap id="BaseResultMap" type="priv.yue.sboot.domain.Dept">
+	<resultMap id="BaseRM" type="priv.yue.sboot.domain.Dept">
 		<id column="dept_id" jdbcType="BIGINT" property="deptId"/>
 		<result column="pid" jdbcType="BIGINT" property="pid"/>
 		<result column="path" jdbcType="VARCHAR" property="path"/>
@@ -19,16 +19,16 @@
 		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
 	</resultMap>
 
-	<resultMap id="FullResultMap" type="priv.yue.sboot.domain.Dept" extends="BaseResultMap">
+	<resultMap id="FullRM" type="priv.yue.sboot.domain.Dept" extends="BaseRM">
 		<association property="parentDept" javaType="priv.yue.sboot.domain.Dept" select="selectById" column="pid"/>
 		<collection property="subDept" ofType="priv.yue.sboot.domain.Dept" select="selectAllByPid" column="dept_id" />
 	</resultMap>
 
-	<resultMap id="PartResultMap" type="priv.yue.sboot.domain.Dept" extends="BaseResultMap">
+	<resultMap id="SimpleRM" type="priv.yue.sboot.domain.Dept" extends="BaseRM">
 		<association property="parentDept" javaType="priv.yue.sboot.domain.Dept" select="selectById" column="pid"/>
 	</resultMap>
 
-	<select id="selectByPrimaryKey" resultMap="PartResultMap">
+	<select id="selectByPK" resultMap="SimpleRM">
 		select
 		<include refid="Base_Column_List"/>
 		from sys_dept
@@ -36,7 +36,7 @@
 		and deleted = 0
 	</select>
 
-	<select id="selectAllByPid" resultMap="FullResultMap">
+	<select id="selectAllByPid" resultMap="FullRM">
 		select
 		<include refid="Base_Column_List"/>
 		from sys_dept
@@ -45,7 +45,7 @@
 		order by sort
 	</select>
 
-	<select id="selectAll" resultType="priv.yue.sboot.domain.Dept">
+	<select id="selectAllByMap" resultMap="SimpleRM">
 		select
 		<include refid="Base_Column_List"/>
 		from sys_dept

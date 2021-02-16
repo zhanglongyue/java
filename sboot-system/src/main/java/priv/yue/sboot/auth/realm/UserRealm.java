@@ -1,10 +1,7 @@
 package priv.yue.sboot.auth.realm;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import priv.yue.sboot.domain.User;
@@ -23,8 +20,10 @@ public class UserRealm extends AuthRealm {
         if (token.getPrincipal() == null) {
             return null;
         }
+        UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
         String username = token.getPrincipal().toString();
         LoginVo loginVo = userService.getLoginUserByName(username);
+        loginVo.setRememberMe(usernamePasswordToken.isRememberMe());
         User user = loginVo.getUser();
         if (ObjectUtils.isEmpty(user)) {
             return null;

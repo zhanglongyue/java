@@ -1,9 +1,7 @@
 package priv.yue.sboot.service;
 
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.ibatis.annotations.Param;
 import priv.yue.sboot.domain.User;
 import priv.yue.sboot.service.dto.UserDto;
 import priv.yue.sboot.vo.LoginVo;
@@ -20,23 +18,21 @@ import java.util.Map;
  */
 public interface UserService extends BaseService<User> {
 
-    User getUserById(Long userId);
+    User selectByPK(Long userId);
 
-    User getUserByName(String username);
+    User selectByName(String username);
 
     User checkUser(String username, String password);
 
     LoginVo getLoginUserByName(String username);
 
-    User insertUser(UserDto userDto);
+    User save(UserDto userDto);
 
-    User updateUser(UserDto userDto);
+    User update(UserDto userDto);
 
-    int deleteRole(Long userId);
+    Page<User> selectPage(Page<User> page, Map<String, Object> map);
 
-    Page<User> selectByUser(Page<User> page, Map<String, Object> map);
+    List<User> selectPageOnce(Map<String, Object> map);
 
-    List<User> selectByUserOnce(Map<String, Object> map);
-
-    Long selectByUserCount(Map<String, Object> map);
+    int selectPageCount(Map<String, Object> map);
 }

@@ -16,7 +16,7 @@
 			  and user.deleted = 0
 	</sql>
 
-	<resultMap id="BaseResultMap" type="priv.yue.sboot.domain.Role">
+	<resultMap id="BaseRM" type="priv.yue.sboot.domain.Role">
 		<id column="role_id" jdbcType="BIGINT" property="roleId"/>
 		<result column="name" jdbcType="VARCHAR" property="name"/>
 		<result column="pid" jdbcType="BIGINT" property="pid"/>
@@ -28,16 +28,23 @@
 		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
 	</resultMap>
 
-	<resultMap id="FullResultMap" type="priv.yue.sboot.domain.Role" extends="BaseResultMap">
+	<resultMap id="FullRM" type="priv.yue.sboot.domain.Role" extends="BaseRM">
+		<association property="parentRole" javaType="priv.yue.sboot.domain.Role" select="selectById" column="pid"/>
+		<collection property="subRole" ofType="priv.yue.sboot.domain.Role" select="selectAllByPid" column="role_id" />
+		<collection property="menus" ofType="priv.yue.sboot.domain.Menu"
+		            select="priv.yue.sboot.mapper.MenuMapper.selectByRole" column="role_id" />
+	</resultMap>
+
+	<resultMap id="PartRM" type="priv.yue.sboot.domain.Role" extends="BaseRM">
 		<association property="parentRole" javaType="priv.yue.sboot.domain.Role" select="selectById" column="pid"/>
 		<collection property="subRole" ofType="priv.yue.sboot.domain.Role" select="selectAllByPid" column="role_id" />
 	</resultMap>
 
-	<resultMap id="PartResultMap" type="priv.yue.sboot.domain.Role" extends="BaseResultMap">
+	<resultMap id="SimpleRM" type="priv.yue.sboot.domain.Role" extends="BaseRM">
 		<association property="parentRole" javaType="priv.yue.sboot.domain.Role" select="selectById" column="pid"/>
 	</resultMap>
 
-	<select id="selectAllByPid" resultMap="FullResultMap">
+	<select id="selectAllByPid" resultMap="PartRM">
 		select
 		<include refid="Base_Column_List"/>
 		from sys_role
@@ -45,20 +52,41 @@
 		and deleted = 0
 	</select>
 
-	<select id="selectRolesByUser" resultMap="PartResultMap">
+	<select id="selectByUser" resultMap="SimpleRM">
 		<include refid="selectByUser"/>
 	</select>
 
-	<select id="selectRolesTreeByUser" resultMap="FullResultMap">
+	<select id="selectTreeByUser" resultMap="PartRM">
 		<include refid="selectByUser"/>
 	</select>
 
-	<select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="PartResultMap">
+	<select id="selectByPK" resultMap="FullRM">
 		select
 		<include refid="Base_Column_List"/>
 		from sys_role
 		where role_id = #{roleId}
 		and deleted = 0
 	</select>
+
+	<select id="countUser" resultType="int">
+		select count(1)
+		from sys_role role
+			     left join sys_user_role sur on role.role_id = sur.role_id
+			     left join sys_user user on sur.user_id = user.user_id
+		where role.role_id = sur.role_id
+		  and sur.role_id in
+			<foreach collection="ids" index="index" item="item" separator="," open="(" close=")">
+				#{item}
+			</foreach>
+		  and user.deleted = 0
+	</select>
+
+	<insert id="insertRoleMenu">
+		insert into sys_role_menu (`menu_id`, `role_id`) values (#{menuId}, #{roleId})
+	</insert>
+
+	<insert id="deleteRoleMenu">
+		delete from sys_role_menu where role_id = #{role_id}
+	</insert>
 
 </mapper>

@@ -2,6 +2,7 @@ package priv.yue.sboot.service;
 
 
 import io.swagger.models.auth.In;
+import priv.yue.sboot.domain.Dept;
 import priv.yue.sboot.domain.Menu;
 
 import java.util.List;
@@ -21,12 +22,16 @@ public interface MenuService extends BaseService<Menu> {
 
     List<Menu> selectByUser(Long userId, Integer hidden);
 
-    List<Menu> selectTreeByUser(Long userId);
-
     List<Menu> selectByUser(Long userId);
 
-    Menu selectByPrimaryKey(Long menuId);
+    List<Menu> selectTreeByUser(Long userId);
 
-    List<Long> getMenuAndChildrensIds(Long menuId);
+    Menu selectByPK(Long menuId);
+
+    List<Long> getChildrensIdsIncludeSelf(Long menuId);
+
+    List<Long> getChildrensIds(Long menuId);
+
+    List<Dept> getChildrens(Long menuId);
 
 }

@@ -45,7 +45,7 @@ public class BaseController {
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < sortBy.length; i++) {
-            if (!sortBy[i].contains(".")) {
+            if (!sortBy[i].contains(".") && !tableAlias.equals("")) {
                 sb.append(tableAlias).append(".");
             }
             sb.append(StrUtil.toUnderlineCase(sortBy[i]));

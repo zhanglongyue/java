@@ -42,6 +42,7 @@ public class Role extends Model<Role> implements Serializable {
     /**
      * 父角色id
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long pid;
     /**
      * 描述
@@ -54,25 +55,29 @@ public class Role extends Model<Role> implements Serializable {
     /**
      * 创建者
      */
+    @TableField(fill = FieldFill.INSERT)
     private String createBy;
     /**
      * 更新者
      */
+    @TableField(fill = FieldFill.UPDATE)
     private String updateBy;
     /**
      * 创建日期
      */
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
     /**
      * 更新时间
      */
-    @TableField(update = "now()")
+    @TableField(fill = FieldFill.UPDATE)
 	private Date updateTime;
     /**
      * 是否删除
      */
     @JsonIgnore
     @TableLogic
+    @TableField(fill = FieldFill.INSERT)
     private Integer deleted;
     /**
      * 用户集合

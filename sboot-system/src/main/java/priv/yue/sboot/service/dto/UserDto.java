@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.List;
@@ -87,5 +88,8 @@ public class UserDto extends BaseDto implements Serializable {
 
     @NotEmpty(groups = Create.class, message = "角色不能空")
     private List<RoleDto> roles;
+
+    @Valid
+    private PageDto pager;
 
 }

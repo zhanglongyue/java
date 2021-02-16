@@ -15,12 +15,14 @@ import java.util.Map;
  */
 public interface DeptService extends BaseService<Dept> {
 
-    List<Long> getDeptAndChildrensIds(Long deptId);
+    List<Long> getChildrensIdsIncludeSelf(Long deptId);
 
-    List<Dept> getDeptAndChildrens(Long deptId);
+    List<Long> getChildrensIds(Long deptId);
 
-    Dept selectByPrimaryKey(Long deptId);
+    List<Dept> getChildrens(Long deptId);
 
-    List<Dept> selectAll(Map<String, Object> map);
+    Dept selectByPK(Long deptId);
+
+    List<Dept> selectAllByMap(Map<String, Object> map);
 
 }

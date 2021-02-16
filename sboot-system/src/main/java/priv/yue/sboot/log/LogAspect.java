@@ -1,65 +1,98 @@
 package priv.yue.sboot.log;
 
-import lombok.extern.slf4j.Slf4j;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.novelweb.tool.annotation.TaskCallback;
+import cn.novelweb.tool.annotation.log.OpLog;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.shiro.SecurityUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import priv.yue.sboot.domain.LogOp;
+import priv.yue.sboot.domain.User;
+import priv.yue.sboot.vo.LoginVo;
 
 /**
+ * 操作日志的注解实现类
+ *
  * @author ZhangLongYue
- * @since 2021/1/20 8:46
+ * @since 2021-02-02 11:06:03
  */
-@Component
 @Aspect
-@Slf4j
+@Component
 public class LogAspect {
-    String methodName;      // 方法名
-    long startTime;         // 开始时间
 
     /**
-     * 定义一个切入点.
-     * 解释下：
-     *
-     * ~ 第一个 * 代表任意修饰符及任意返回值.
-     * ~ 第二个 * 定义在web包或者子包
-     * ~ 第三个 * 任意方法
-     * ~ .. 匹配任意数量的参数.
+     * 配置切入点
      */
-    @Pointcut("execution( public * priv.yue.sboot.service..*.*(..))")
-    public void aopPointCut() {
+    @Pointcut("@annotation(cn.novelweb.tool.annotation.log.OpLog)")
+    public void opLog() {
     }
 
-    @Before("aopPointCut()")
-    public void doBefore(JoinPoint joinPoint) {
-        methodName = joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName();
-        startTime = System.currentTimeMillis();
-    }
+    private void handleLog(final JoinPoint joinPoint, final Exception e,
+                           Object res, long time) {
+        // 获得注解信息
+        OpLog opLog = LogAnnotation.getAnnotation(joinPoint, OpLog.class);
+        if (opLog == null) {
+            return;
+        }
 
-    @After("aopPointCut()")
-    public void doAfter() {
-        long E_time = System.currentTimeMillis() - startTime;
-        log.info("执行 " + methodName + " 耗时为：" + E_time + "ms");
-    }
+        // 初始化日志信息
+        LogOp logOp = Convert.convert(LogOp.class, LogAnnotation.initInfo(opLog.title(),
+                opLog.isGetIp(), e));
+        // 设置业务类型、类名、方法名等
+        logOp.setBusinessType(opLog.businessType());
+        logOp.setClassName(joinPoint.getTarget().getClass().getName());
+        logOp.setMethodName(joinPoint.getSignature().getName());
+        logOp.setRunTime(time);
 
-    @AfterReturning(returning = "object", pointcut = "aopPointCut()")
-    public void doAfterReturning(Object object) {
-        log.info("response={}", object.toString());
-    }
-
-    @Around("aopPointCut()")
-    public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable{
-        long start = System.currentTimeMillis();
         try {
-            Object result = joinPoint.proceed();
-            long end = System.currentTimeMillis();
-            log.error("+++++around " + joinPoint + "\tUse time : " + (end - start) + " ms!");
-            return result;
+            User user = ((LoginVo) SecurityUtils.getSubject().getPrincipal()).getUser();
+            logOp.setUserId(user.getUserId());
+            logOp.setDeptId(user.getDeptId());
+            logOp.setUsername(user.getUsername());
+        } catch (Exception exception) {
+        }
 
-        } catch (Throwable e) {
-            long end = System.currentTimeMillis();
-            log.error("+++++around " + joinPoint + "\tUse time : " + (end - start) + " ms with exception : " + e.getMessage());
+        logOp.setReturnValue(JSON.toJSONString(res));
+
+        // 是否需要保存URL的请求参数
+        if (opLog.isSaveRequestData()) {
+            ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
+                    RequestContextHolder.getRequestAttributes();
+            if (requestAttributes != null) {
+                logOp.setParameter(JSONObject.toJSONString(
+                        requestAttributes.getRequest().getParameterMap()));
+            } else {
+                logOp.setParameter("无法获取request信息");
+            }
+        }
+        // 异步执行任务回调
+        ThreadUtil.execAsync(() -> TaskCallback
+                .callback(LogOpCompletionHandler.class, logOp));
+    }
+
+    @Around("opLog()")
+    public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object res = null;
+        Exception exception = null;
+        long time = System.currentTimeMillis();
+        try {
+            res =  joinPoint.proceed();
+            return res;
+        } catch (Exception e) {
+            exception = e;
             throw e;
+        } finally {
+            time = System.currentTimeMillis() - time;
+            handleLog(joinPoint, exception, res, time);
         }
     }
 }

@@ -18,20 +18,27 @@ import java.util.Map;
 */
 public interface UserMapper extends BaseMapper<User> {
 
-    int setRole(Long userId, Long roleId);
+    int insertUserRole(Long userId, Long roleId);
 
-    int deleteRole(Long userId);
+    int deleteUserRole(Long userId);
 
-    User selectByPrimaryKey(Long id);
+    User selectByPK(Long id);
 
     User selectByName(String username);
 
     User selectByNameNoRoles(String username);
 
-    Page<User> selectByUser(Page<User> page, @Param("map") Map<String, Object> map);
+    Page<User> selectPage(Page<User> page, @Param("map") Map<String, Object> map);
 
-    List<User> selectByUserOnce(@Param("map") Map<String, Object> map);
+    /**
+     * 该方法通过嵌套查询完成
+     * 多表关联+主从表条件+分页+排序
+     */
+    List<User> selectPageOnce(@Param("map") Map<String, Object> map);
 
-    Long selectByUserCount(@Param("map") Map<String, Object> map);
+    /**
+     * 使用selectPageOnce自定义分页查询时，使用自定义的count查询总数
+     */
+    int selectPageCount(@Param("map") Map<String, Object> map);
 
 }

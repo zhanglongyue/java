@@ -1,6 +1,8 @@
 package priv.yue.sboot.controller;
 
 import cn.hutool.core.util.StrUtil;
+import cn.novelweb.tool.annotation.log.OpLog;
+import cn.novelweb.tool.annotation.log.pojo.FixedBusinessType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -42,26 +44,29 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
-public class LoginController extends BaseController{
+public class AuthController extends BaseController{
 
     private SbootConfig sbootConfig;
 
     private UserService userService;
 
     @ApiOperation("登录")
+    @OpLog(title = "认证", businessType = "登录", isSaveRequestData = false)
     @PostMapping("/login")
     public RestResponse<Object> login(AuthUserDto authUserDto){
         // 获取suject主体，并使用用户名、密码方式登录
         Subject subject = SecurityUtils.getSubject();
-        subject.login(new UsernamePasswordToken(authUserDto.getUsername(), authUserDto.getPassword()));
-
+        subject.login(new UsernamePasswordToken(authUserDto.getUsername(),
+                authUserDto.getPassword(), authUserDto.isRememberMe()));
         // 获取登录后信息
         LoginVo loginVo = (LoginVo) subject.getPrincipal();
 
         // 保存token及登录信息
         String newToken = UUID.randomUUID().toString();
+        Long tokenTime = authUserDto.isRememberMe() ? sbootConfig.getRemeberMeTimeout()
+                : sbootConfig.getDefaultTokenTimeout();
         RedisUtils.StringOps.setEx(Consts.SHIRO_TOKEN_PREFIX + newToken, JsonUtils.toJsonString(loginVo),
-                sbootConfig.getDefaultTokenTimeout(), TimeUnit.MILLISECONDS);
+                tokenTime, TimeUnit.MILLISECONDS);
 
         // 单一登录处理
         if (sbootConfig.getSingleLogin()) {
@@ -74,7 +79,7 @@ public class LoginController extends BaseController{
                 RedisUtils.KeyOps.delete(oldToken);
             }
             // 给用户设置一个新token
-            RedisUtils.StringOps.setEx(tokenKey, newToken, sbootConfig.getDefaultTokenTimeout(), TimeUnit.MILLISECONDS);
+            RedisUtils.StringOps.setEx(tokenKey, newToken, tokenTime, TimeUnit.MILLISECONDS);
         }
         return RestResponse.success(new HashMap<String, Object>() {{
             put("token", newToken);
@@ -106,7 +111,7 @@ public class LoginController extends BaseController{
     @ApiOperation("登出")
     @PostMapping("/logout")
     public RestResponse<Object> logout(HttpServletRequest request){
-        String token = request.getHeader("Access-Token");
+        String token = request.getHeader("Authorization");
         if (RedisUtils.KeyOps.delete(Consts.SHIRO_TOKEN_PREFIX + token)) {
             if (sbootConfig.getSingleLogin()) {
                 RedisUtils.KeyOps.delete(Consts.SHIRO_USER_PREFIX + getUser().getUserId());

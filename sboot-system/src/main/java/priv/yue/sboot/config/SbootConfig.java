@@ -26,4 +26,9 @@ public class SbootConfig {
      */
     private Long remeberMeTimeout = 1000L * 60 * 60 * 24 * 7;
 
+    /**
+     * 重置密码默认密码
+     */
+    private String defaultPassword = "888888";
+
 }

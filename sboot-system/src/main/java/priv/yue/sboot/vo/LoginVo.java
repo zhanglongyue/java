@@ -31,6 +31,8 @@ public class LoginVo implements GetAuthorizationAble {
 
     private Set<String> permissions;
 
+    private Boolean rememberMe;
+
     public Collection<String> getRolesStr() {
         return getRoles().stream().map(Role::getName).collect(Collectors.toSet());
     }
