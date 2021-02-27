@@ -39,3 +39,6 @@ build/
 
 mvnw
 mvnw.cmd
+
+### static ###
+static/**
