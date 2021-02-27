@@ -1,29 +1,25 @@
 package priv.yue.sboot.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import priv.yue.sboot.domain.Menu;
+import priv.yue.sboot.base.BaseServiceImpl;
 import priv.yue.sboot.domain.Role;
 import priv.yue.sboot.domain.User;
 import priv.yue.sboot.domain.maps.UserMap;
+import priv.yue.sboot.dto.UserDto;
 import priv.yue.sboot.exception.BadRequestException;
-import priv.yue.sboot.mapper.RoleMapper;
 import priv.yue.sboot.mapper.UserMapper;
 import priv.yue.sboot.service.DeptService;
-import priv.yue.sboot.service.MenuService;
 import priv.yue.sboot.service.RoleService;
 import priv.yue.sboot.service.UserService;
-import priv.yue.sboot.service.dto.UserDto;
 import priv.yue.sboot.utils.SaltUtils;
 import priv.yue.sboot.vo.LoginVo;
 
@@ -47,8 +43,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements UserService {
 
     private UserMapper userMapper;
-    private RoleMapper roleMapper;
-    private MenuService menuService;
     private DeptService deptService;
     private RoleService roleService;
     private UserMap userMap;
@@ -59,33 +53,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
     public User selectByName(String username) {
         return userMapper.selectByName(username);
-    }
-
-    public LoginVo getLoginUserByName(String username) {
-        LoginVo loginVo = new LoginVo();
-        User user = userMapper.selectByNameNoRoles(username);
-        if(user == null){
-            throw new UnknownAccountException();
-        }
-        if(user.getEnabled() == 0){
-            throw new AuthenticationException("账号被禁用");
-        }
-        List<Role> roles = roleMapper.selectByUser(user.getUserId());
-        List<Menu> menus = menuService.selectByUser(user.getUserId());
-        Set<String> permissions = new HashSet<>();
-        if (menus.size() > 0) {
-            permissions = menus.stream()
-                    .filter(m -> StrUtil.isNotBlank(m.getPermission()))
-                    .map(Menu::getPermission)
-                    .collect(Collectors.toSet());
-        }
-        // 过滤隐藏menu
-        menus = menus.stream().filter(v -> v.getHidden() == 0).collect(Collectors.toList());
-        loginVo.setUser(user);
-        loginVo.setRoles(roles);
-        loginVo.setPermissions(permissions);
-        loginVo.setMenus(menuService.buildTree(menus));
-        return loginVo;
     }
 
     public User save(UserDto userDto) {

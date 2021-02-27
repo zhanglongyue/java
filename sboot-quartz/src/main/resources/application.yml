@@ -1,0 +1,60 @@
+server:
+  port: 8082
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: sboot-quartz
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  quartz:
+    defaultJobGroupName: SBOOT_JOB_GROUP
+    defaultTriggerGroupName: SBOOT_TRIGGER_GROUP
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: clusteredScheduler
+            instanceId: AUTO
+          jobStore:
+            dataSource: qrtz
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: true
+            clusterCheckinInterval: 10000
+            useProperties: false
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 10
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: never
+    datasource:
+      qrtz:
+        connection-provider:
+          class: priv.yue.quartz.config.DruidConnectionProvider
+
+hibernate:
+  validator:
+    fail_fast
+
+shiro:
+  login-url: /auth/login
+  anons:
+    - /auth/login
+    - /auth/logout
+    - /auth/register
+    - /swagger-ui/**
+    - /swagger-resources/**
+    - /webjars/**
+    - /v3/**
+    - /images/**
+  authcs:
+    - /**
+  hash-algorithm: MD5
+  hash-iterations: 1024

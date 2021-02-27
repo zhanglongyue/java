@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import priv.yue.sboot.base.BaseServiceImpl;
 import priv.yue.sboot.domain.Dept;
 import priv.yue.sboot.mapper.DeptMapper;
 import priv.yue.sboot.service.DeptService;
@@ -11,7 +12,6 @@ import priv.yue.sboot.service.DeptService;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 部门服务接口实现

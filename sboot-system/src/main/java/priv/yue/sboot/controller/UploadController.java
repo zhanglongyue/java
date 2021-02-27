@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import priv.yue.sboot.common.RestResponse;
+import priv.yue.sboot.rest.RestResponse;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

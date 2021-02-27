@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import priv.yue.sboot.common.RestResponse;
+import priv.yue.sboot.base.BaseController;
+import priv.yue.sboot.rest.RestResponse;
 import priv.yue.sboot.domain.Dept;
 import priv.yue.sboot.domain.User;
 import priv.yue.sboot.domain.maps.DeptMap;
 import priv.yue.sboot.service.DeptService;
 import priv.yue.sboot.service.UserService;
-import priv.yue.sboot.service.dto.DeptDto;
+import priv.yue.sboot.dto.DeptDto;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.Map;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/dept")
-public class DeptController extends BaseController{
+public class DeptController extends BaseController {
 
     private DeptService deptService;
     private DeptMap deptMap;

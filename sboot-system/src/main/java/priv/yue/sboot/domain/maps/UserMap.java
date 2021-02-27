@@ -3,7 +3,7 @@ package priv.yue.sboot.domain.maps;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import priv.yue.sboot.domain.User;
-import priv.yue.sboot.service.dto.UserDto;
+import priv.yue.sboot.dto.UserDto;
 
 /**
  * User转换类

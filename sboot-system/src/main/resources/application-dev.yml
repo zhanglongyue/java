@@ -1,68 +1,33 @@
-server:
-  port: 8081
-  servlet:
-    context-path: /sboot
-
 spring:
-  web:
-    resources:
-      static-locations: classpath:/META-INF/resources/,classpath:/resources/,
-        classpath:/static/,classpath:/public/,file:static/
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/adminly?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8
+    url: jdbc:mysql://localhost:3306/sboot_system?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8
     username: root
     password: 123456
-    type: com.alibaba.druid.pool.DruidDataSource
-  thymeleaf:
-    cache: false
-    enabled: true
-    prefix: classpath:/templates/
-    suffix: .html
-    encoding: UTF-8
   redis:
     port: 6379
     host: 127.0.0.1
     connect-timeout: 5000
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-
-hibernate:
-  validator:
-    fail_fast
 
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    aggressive-lazy-loading: true
-
-shiro:
-  login-url: /auth/login
-  anons:
-    - /auth/login
-    - /auth/logout
-    - /auth/register
-    - /swagger-ui/**
-    - /swagger-resources/**
-    - /webjars/**
-    - /v3/**
-    - /images/**
-  authcs:
-    - /**
-  hash-algorithm: MD5
-  hash-iterations: 1024
-
-sboot:
-  single-login: false
-  default-token-timeout: 1800000
-  remeber-me-timeout: 604800000
 
 springfox:
   documentation:
     swagger-ui:
       enabled: true
 
+feign:
+  client:
+    config:
+      sboot-quartz:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
 
 #jwt:
 #  config:

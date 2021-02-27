@@ -2,6 +2,7 @@ package priv.yue.sboot.controller;
 
 import cn.novelweb.tool.annotation.log.OpLog;
 import cn.novelweb.tool.annotation.log.pojo.FixedBusinessType;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -12,11 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import priv.yue.sboot.common.RestResponse;
+import priv.yue.sboot.base.BaseController;
+import priv.yue.sboot.rest.RestResponse;
 import priv.yue.sboot.domain.Menu;
 import priv.yue.sboot.domain.maps.MenuMap;
 import priv.yue.sboot.service.MenuService;
-import priv.yue.sboot.service.dto.MenuDto;
+import priv.yue.sboot.dto.MenuDto;
 
 import java.util.List;
 
@@ -32,7 +34,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/menu")
-public class MenuController extends BaseController{
+public class MenuController extends BaseController {
 
     private final MenuService menuService;
     private MenuMap menuMap;
@@ -40,10 +42,12 @@ public class MenuController extends BaseController{
     @ApiOperation(value = "根据菜单名称查询菜单列表", notes = "只能查询当前用户所拥有的菜单")
     @OpLog(title = "菜单树", businessType = "查询")
     @PostMapping("/list")
-    @RequiresPermissions("menu:query")
+    @RequiresPermissions({"menu:query", "role:query"})
     public RestResponse<Object> list(){
         if (getUser().getUsername().equals("admin")) {
-            return RestResponse.success(menuService.buildTree(menuService.list()));
+            return RestResponse.success(menuService.buildTree(menuService.list(
+                    new QueryWrapper<Menu>().orderByAsc("sort")))
+            );
         }
         List<Menu> menuList = menuService.selectTreeByUser(getUser().getUserId());
         return RestResponse.success(menuList);

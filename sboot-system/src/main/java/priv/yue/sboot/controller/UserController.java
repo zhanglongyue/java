@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import priv.yue.sboot.common.RestResponse;
-import priv.yue.sboot.config.SbootConfig;
+import priv.yue.sboot.base.BaseController;
+import priv.yue.sboot.base.BaseDto;
+import priv.yue.sboot.constant.Consts;
 import priv.yue.sboot.domain.User;
+import priv.yue.sboot.dto.PageDto;
+import priv.yue.sboot.dto.UserDto;
+import priv.yue.sboot.rest.RestResponse;
 import priv.yue.sboot.service.UserService;
-import priv.yue.sboot.service.dto.BaseDto;
-import priv.yue.sboot.service.dto.PageDto;
-import priv.yue.sboot.service.dto.UserDto;
 import priv.yue.sboot.utils.SaltUtils;
 
 import javax.validation.groups.Default;
@@ -39,9 +40,7 @@ import java.util.Map;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/user")
-public class UserController extends BaseController{
-
-    private SbootConfig sbootConfig;
+public class UserController extends BaseController {
 
     private UserService userService;
 
@@ -148,10 +147,10 @@ public class UserController extends BaseController{
     public RestResponse<Object> resetPassword(@RequestParam("userId") Long userId){
         User user = userService.getById(userId);
         String salt = SaltUtils.getSalt(8);
-        Md5Hash hashPwd = new Md5Hash(sbootConfig.getDefaultPassword(), salt, 1024);
+        Md5Hash hashPwd = new Md5Hash(Consts.DEFAULT_PASSWORD, salt, 1024);
         user.setPassword(hashPwd.toHex()).setSalt(salt);
         userService.updateById(user);
-        return RestResponse.success(sbootConfig.getDefaultPassword());
+        return RestResponse.success(Consts.DEFAULT_PASSWORD);
     }
 
     @ApiOperation("修改密码")
@@ -172,5 +171,17 @@ public class UserController extends BaseController{
         }
         return RestResponse.success("密码修改成功");
     }
+
+    /*@PostMapping("/register")
+    public RestResponse<Object> register(User user){
+        String salt = SaltUtils.getSalt(8);
+        Md5Hash hashPwd = new Md5Hash(user.getPassword(), salt, 1024);
+        user.setPassword(hashPwd.toHex())
+            .setSalt(salt)
+            .setEnabled(1)
+            .setCreateTime(new Date());
+        userService.save(user);
+        return RestResponse.success(user);
+    }*/
 
 }

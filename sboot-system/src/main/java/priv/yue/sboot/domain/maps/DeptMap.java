@@ -3,7 +3,7 @@ package priv.yue.sboot.domain.maps;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import priv.yue.sboot.domain.Dept;
-import priv.yue.sboot.service.dto.DeptDto;
+import priv.yue.sboot.dto.DeptDto;
 
 /**
  * Dept转换类

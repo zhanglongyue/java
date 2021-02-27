@@ -2,9 +2,9 @@ package priv.yue.sboot.service;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import priv.yue.sboot.base.BaseService;
 import priv.yue.sboot.domain.User;
-import priv.yue.sboot.service.dto.UserDto;
-import priv.yue.sboot.vo.LoginVo;
+import priv.yue.sboot.dto.UserDto;
 
 import java.util.List;
 import java.util.Map;
@@ -23,8 +23,6 @@ public interface UserService extends BaseService<User> {
     User selectByName(String username);
 
     User checkUser(String username, String password);
-
-    LoginVo getLoginUserByName(String username);
 
     User save(UserDto userDto);
 

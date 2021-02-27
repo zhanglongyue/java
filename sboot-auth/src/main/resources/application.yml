@@ -1,0 +1,4 @@
+sboot:
+  single-login: false
+  default-token-timeout: 1800000
+  remeber-me-timeout: 604800000

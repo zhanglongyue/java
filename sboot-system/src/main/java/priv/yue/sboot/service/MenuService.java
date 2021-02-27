@@ -2,6 +2,7 @@ package priv.yue.sboot.service;
 
 
 import io.swagger.models.auth.In;
+import priv.yue.sboot.base.BaseService;
 import priv.yue.sboot.domain.Dept;
 import priv.yue.sboot.domain.Menu;
 

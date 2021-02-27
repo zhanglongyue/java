@@ -1,6 +1,7 @@
 package priv.yue.sboot.service;
 
 
+import priv.yue.sboot.base.BaseService;
 import priv.yue.sboot.domain.Dept;
 
 import java.util.List;

@@ -1,9 +1,10 @@
 package priv.yue.sboot.service;
 
 
+import priv.yue.sboot.base.BaseService;
 import priv.yue.sboot.domain.Dept;
 import priv.yue.sboot.domain.Role;
-import priv.yue.sboot.service.dto.RoleDto;
+import priv.yue.sboot.dto.RoleDto;
 
 import java.util.List;
 

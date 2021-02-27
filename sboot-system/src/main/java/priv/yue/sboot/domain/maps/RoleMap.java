@@ -3,7 +3,7 @@ package priv.yue.sboot.domain.maps;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import priv.yue.sboot.domain.Role;
-import priv.yue.sboot.service.dto.RoleDto;
+import priv.yue.sboot.dto.RoleDto;
 
 /**
  * Role转换类

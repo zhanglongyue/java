@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import priv.yue.sboot.base.BaseServiceImpl;
 import priv.yue.sboot.domain.Dept;
 import priv.yue.sboot.domain.Menu;
 import priv.yue.sboot.domain.Role;
 import priv.yue.sboot.domain.maps.RoleMap;
 import priv.yue.sboot.mapper.RoleMapper;
 import priv.yue.sboot.service.RoleService;
-import priv.yue.sboot.service.dto.RoleDto;
+import priv.yue.sboot.dto.RoleDto;
 
 import java.util.List;
 import java.util.stream.Collectors;

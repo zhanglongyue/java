@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import priv.yue.sboot.base.BaseServiceImpl;
 import priv.yue.sboot.domain.Dept;
 import priv.yue.sboot.domain.Menu;
 import priv.yue.sboot.mapper.MenuMapper;

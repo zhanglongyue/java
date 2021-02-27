@@ -1,3 +1,60 @@
+server:
+  port: 8081
+
 spring:
   profiles:
     active: dev
+  application:
+    name: sboot-system
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,
+        classpath:/static/,classpath:/public/,file:static/
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  thymeleaf:
+    cache: false
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+mybatis-plus:
+  configuration:
+    # true：只要调用任意具有懒加载特性的对象的任意一个属性将完整加载整个对象，即触发级联效果
+    # false：只加载调用的属性，不调用的属性不加载
+    aggressive-lazy-loading: true
+    # 懒加载全局开关，结合aggressive-lazy-loading可实现2种懒加载方式
+    lazy-loading-enabled: false
+
+shiro:
+  login-url: /auth/login
+  anons:
+    - /auth/login
+    - /auth/logout
+    - /auth/register
+    - /swagger-ui/**
+    - /swagger-resources/**
+    - /webjars/**
+    - /v3/**
+    - /images/**
+  authcs:
+    - /**
+  hash-algorithm: MD5
+  hash-iterations: 1024
+
+hibernate:
+  validator:
+    fail_fast
+
+feign:
+  client:
+    config:
+      sboot-quartz:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full

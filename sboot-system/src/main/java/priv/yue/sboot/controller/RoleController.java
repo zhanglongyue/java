@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import priv.yue.sboot.common.RestResponse;
+import priv.yue.sboot.base.BaseController;
+import priv.yue.sboot.rest.RestResponse;
 import priv.yue.sboot.domain.Role;
 import priv.yue.sboot.domain.maps.RoleMap;
 import priv.yue.sboot.service.RoleService;
-import priv.yue.sboot.service.dto.RoleDto;
+import priv.yue.sboot.dto.RoleDto;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/role")
-public class RoleController extends BaseController{
+public class RoleController extends BaseController {
     private final RoleService roleService;
     private RoleMap roleMap;
 

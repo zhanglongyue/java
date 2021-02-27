@@ -3,7 +3,7 @@ package priv.yue.sboot.domain.maps;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import priv.yue.sboot.domain.Menu;
-import priv.yue.sboot.service.dto.MenuDto;
+import priv.yue.sboot.dto.MenuDto;
 
 /**
  * Menu转换类
