@@ -29,10 +29,22 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
 		<!--sboot auth-->
 		<dependency>
 			<groupId>priv.yue.sboot</groupId>
 			<artifactId>sboot-auth</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!--sboot mq-->
+		<dependency>
+			<groupId>priv.yue.sboot</groupId>
+			<artifactId>sboot-mq</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

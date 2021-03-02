@@ -20,6 +20,11 @@ spring:
       url: jdbc:mysql://localhost:3306/sboot_quartz?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8
       username: root
       password: 123456
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: root
+    password: 123456
 
 mybatis-plus:
   configuration:

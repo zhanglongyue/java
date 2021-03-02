@@ -57,7 +57,7 @@ public class AuthController extends BaseController {
         String newToken = UUID.randomUUID().toString();
         Long tokenTime = authUserDto.isRememberMe() ? authConfig.getRemeberMeTimeout()
                 : authConfig.getDefaultTokenTimeout();
-        RedisUtils.StringOps.setEx(Consts.SHIRO_TOKEN_PREFIX + newToken, JsonUtils.toJsonString(loginVo),
+        RedisUtils.StringOps.setEx(Consts.SHIRO_TOKEN_PREFIX + newToken, JsonUtils.toJson(loginVo),
                 tokenTime, TimeUnit.MILLISECONDS);
 
         // 单一登录处理

@@ -1,0 +1,20 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: sboot-mq
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  rabbitmq:
+    listener:
+      simple:
+        acknowledge-mode: manual  # 默认为自动ack，设置为手动ack保证消费端消息不丢失
+    publisher-confirm-type: correlated  # 配置confirms模式
+    publisher-returns: true   # 配置returns模式，默认关闭，交换机发送到队列时进行回调，一般不需要开启
+
+mq:
+  config:
+    queue: sbootQueue
+    exchange: sbootExchange
+    routingKey: sboot.#

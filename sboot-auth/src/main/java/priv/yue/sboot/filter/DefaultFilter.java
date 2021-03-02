@@ -24,7 +24,7 @@ public class DefaultFilter extends FormAuthenticationFilter {
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setContentType("application/json");
         httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-        httpServletResponse.getWriter().write(JsonUtils.toJsonString(RestResponse.fail(HttpStatus.UNAUTHORIZED.value(), "用户未登录")).toString());
+        httpServletResponse.getWriter().write(JsonUtils.toJson(RestResponse.fail(HttpStatus.UNAUTHORIZED.value(), "用户未登录")).toString());
         return false;
     }
 }

@@ -31,7 +31,7 @@ public class TokenRealm extends AuthRealm {
         String userToken = (String) defaultToken.getPrincipal();
         LoginVo loginVo = null;
         try {
-            loginVo = JsonUtils.toObject(RedisUtils.StringOps.get(Consts.SHIRO_TOKEN_PREFIX + userToken), LoginVo.class);
+            loginVo = JsonUtils.jsonToBean(RedisUtils.StringOps.get(Consts.SHIRO_TOKEN_PREFIX + userToken), LoginVo.class);
         } catch (Exception e) {
             return null;
         }

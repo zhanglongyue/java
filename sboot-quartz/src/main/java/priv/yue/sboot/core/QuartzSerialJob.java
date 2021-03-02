@@ -5,16 +5,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.beans.BeanUtils;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
+import priv.yue.sboot.config.RabbitMQConfig;
 import priv.yue.sboot.domain.QuartzJob;
 import priv.yue.sboot.domain.QuartzLog;
+import priv.yue.sboot.message.Sender;
 import priv.yue.sboot.service.QuartzJobService;
 import priv.yue.sboot.service.QuartzLogService;
+import priv.yue.sboot.utils.JsonUtils;
 import priv.yue.sboot.utils.ThrowableUtils;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * 统一调度任务类，在此类中通过反射进行任务调度
@@ -30,6 +35,8 @@ public class QuartzSerialJob extends QuartzJobBean {
     private QuartzJobService quartzJobService;
 
     private QuartzLogService quartzLogService;
+
+    private Sender sender;
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
@@ -71,6 +78,7 @@ public class QuartzSerialJob extends QuartzJobBean {
             long times = System.currentTimeMillis() - startTime;
             quartzLog.setTime(times);
             quartzLogService.save(quartzLog);
+            sender.send(RabbitMQConfig.defaultExchange, RabbitMQConfig.routingKey, JsonUtils.toJson(quartzJob));
         }
     }
 }
