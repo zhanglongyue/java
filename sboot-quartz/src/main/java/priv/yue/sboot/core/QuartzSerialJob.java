@@ -1,12 +1,10 @@
 package priv.yue.sboot.core;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 import priv.yue.sboot.config.RabbitMQConfig;
@@ -18,8 +16,8 @@ import priv.yue.sboot.service.QuartzLogService;
 import priv.yue.sboot.utils.JsonUtils;
 import priv.yue.sboot.utils.ThrowableUtils;
 
+import javax.annotation.Resource;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * 统一调度任务类，在此类中通过反射进行任务调度
@@ -28,18 +26,23 @@ import java.util.UUID;
  */
 @Slf4j
 @Component
-@AllArgsConstructor
 @DisallowConcurrentExecution
 public class QuartzSerialJob extends QuartzJobBean {
 
+    @Resource
     private QuartzJobService quartzJobService;
 
+    @Resource
     private QuartzLogService quartzLogService;
 
+    @Resource
     private Sender sender;
 
+    @Value("${mq.config.quartzLogRoutingKey}")
+    private String quartzLogRoutingKey;
+
     @Override
-    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+    protected void executeInternal(JobExecutionContext context) {
         Long jobId = (Long) context.getMergedJobDataMap().get(QuartzJob.JOB_KEY);
         QuartzJob quartzJob = quartzJobService.getById(jobId);
 
@@ -78,7 +81,8 @@ public class QuartzSerialJob extends QuartzJobBean {
             long times = System.currentTimeMillis() - startTime;
             quartzLog.setTime(times);
             quartzLogService.save(quartzLog);
-            sender.send(RabbitMQConfig.defaultExchange, RabbitMQConfig.routingKey, JsonUtils.toJson(quartzJob));
+            // 执行失败后发送消息，消息将被WebSocketServer监听，并发送给前端，前端更新任务状态
+            sender.send(RabbitMQConfig.defaultExchange, quartzLogRoutingKey, quartzJob);
         }
     }
 }

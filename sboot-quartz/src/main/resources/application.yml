@@ -73,3 +73,4 @@ mq:
     queue: quartzQueue
     exchange: quartzExchange
     routingKey: quartz.#
+    quartzLogRoutingKey: quartz.log
