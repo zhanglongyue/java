@@ -1,8 +1,6 @@
 package priv.yue.sboot.log;
 
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.thread.ThreadUtil;
-import cn.novelweb.tool.annotation.TaskCallback;
 import cn.novelweb.tool.annotation.log.OpLog;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -12,12 +10,17 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import priv.yue.sboot.config.RabbitMQLogConfig;
 import priv.yue.sboot.domain.LogOp;
 import priv.yue.sboot.domain.User;
+import priv.yue.sboot.rabbit.sender.RabbitMQSender;
 import priv.yue.sboot.vo.LoginVo;
+
+import javax.annotation.Resource;
 
 /**
  * 操作日志的注解实现类
@@ -28,6 +31,9 @@ import priv.yue.sboot.vo.LoginVo;
 @Aspect
 @Component
 public class LogAspect {
+
+    @Resource
+    private RabbitMQSender rabbitMQSender;
 
     /**
      * 配置切入点
@@ -74,9 +80,13 @@ public class LogAspect {
                 logOp.setParameter("无法获取request信息");
             }
         }
-        // 异步执行任务回调
-        ThreadUtil.execAsync(() -> TaskCallback
-                .callback(LogOpCompletionHandler.class, logOp));
+
+        // 采用线程方式异步执行任务回调，TaskCallback.callback将会反射调用complete方法
+        /*ThreadUtil.execAsync(() -> TaskCallback.callback(LogOpServiceImpl.class, logOp));*/
+
+        // 采用MQ方式
+        rabbitMQSender.sendObject(RabbitMQLogConfig.EXCHANGE, "log.op", logOp);
+
     }
 
     @Around("opLog()")

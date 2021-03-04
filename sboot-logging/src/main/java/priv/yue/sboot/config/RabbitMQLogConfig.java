@@ -1,7 +1,6 @@
 package priv.yue.sboot.config;
 
 import org.springframework.amqp.core.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,16 +9,13 @@ import org.springframework.context.annotation.Configuration;
  * @since 2021/3/2 13:43
  */
 @Configuration
-public class SimpleRabbitMQConfig {
+public class RabbitMQLogConfig {
 
-    @Value("${mq.config.queue}")
-    public String defaultQueue;
+    public static final String QUEUE = "logQueue";
 
-    @Value("${mq.config.exchange}")
-    public String defaultExchange;
+    public static final String EXCHANGE = "logExchange";
 
-    @Value("${mq.config.routingKey}")
-    public String routingKey;
+    public static final String ROUTINGKEY = "log.#";
 
     @Bean
     public Queue queue() {
@@ -27,7 +23,7 @@ public class SimpleRabbitMQConfig {
         // exclusive:默认也是false，只能被当前创建的连接使用，而且当连接关闭后队列即被删除。此参考优先级高于durable
         // autoDelete:是否自动删除，当没有生产者或者消费者使用此队列，该队列会自动删除。
         // return new Queue(DEFAULT_QUEUE,true,true,false);
-        return QueueBuilder.durable(defaultQueue).build();
+        return QueueBuilder.durable(QUEUE).build();
     }
 
     /**
@@ -38,7 +34,7 @@ public class SimpleRabbitMQConfig {
      */
     @Bean
     public Exchange exchange() {
-        return ExchangeBuilder.topicExchange(defaultExchange).durable(true).build();
+        return ExchangeBuilder.topicExchange(EXCHANGE).durable(true).build();
     }
 
     /**
@@ -47,6 +43,6 @@ public class SimpleRabbitMQConfig {
      */
     @Bean
     public Binding bindingExchangeMessage(Queue queue, Exchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(routingKey).noargs();
+        return BindingBuilder.bind(queue).to(exchange).with(ROUTINGKEY).noargs();
     }
 }

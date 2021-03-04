@@ -1,4 +1,4 @@
-package priv.yue.sboot.callback;
+package priv.yue.sboot.rabbit.callback;
 
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

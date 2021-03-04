@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 import priv.yue.sboot.config.RabbitMQConfig;
+import priv.yue.sboot.config.RabbitMQLogConfig;
 import priv.yue.sboot.domain.QuartzJob;
 import priv.yue.sboot.domain.QuartzLog;
-import priv.yue.sboot.message.Sender;
+import priv.yue.sboot.rabbit.sender.RabbitMQSender;
 import priv.yue.sboot.service.QuartzJobService;
 import priv.yue.sboot.service.QuartzLogService;
-import priv.yue.sboot.utils.JsonUtils;
 import priv.yue.sboot.utils.ThrowableUtils;
 
 import javax.annotation.Resource;
@@ -36,10 +36,7 @@ public class QuartzSerialJob extends QuartzJobBean {
     private QuartzLogService quartzLogService;
 
     @Resource
-    private Sender sender;
-
-    @Value("${mq.config.quartzLogRoutingKey}")
-    private String quartzLogRoutingKey;
+    private RabbitMQSender rabbitMQSender;
 
     @Override
     protected void executeInternal(JobExecutionContext context) {
@@ -82,7 +79,7 @@ public class QuartzSerialJob extends QuartzJobBean {
             quartzLog.setTime(times);
             quartzLogService.save(quartzLog);
             // 执行失败后发送消息，消息将被WebSocketServer监听，并发送给前端，前端更新任务状态
-            sender.send(RabbitMQConfig.defaultExchange, quartzLogRoutingKey, quartzJob);
+            rabbitMQSender.sendJson(RabbitMQConfig.EXCHANGE, "quartz.log", quartzJob);
         }
     }
 }

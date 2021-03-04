@@ -70,7 +70,13 @@ shiro:
 
 mq:
   config:
-    queue: quartzQueue
-    exchange: quartzExchange
-    routingKey: quartz.#
-    quartzLogRoutingKey: quartz.log
+    quartz:
+      queue: quartzQueue
+      exchange: quartzExchange
+      routingKey: quartz.#
+      quartzLogRoutingKey: quartz.log
+    log:
+      queue: logQueue
+      exchange: logExchange
+      routingKey: log.#
+      logOpRoutingKey: log.op   # 系统操作日志

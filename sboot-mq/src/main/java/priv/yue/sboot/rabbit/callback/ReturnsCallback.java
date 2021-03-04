@@ -1,8 +1,7 @@
-package priv.yue.sboot.callback;
+package priv.yue.sboot.rabbit.callback;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 /**

@@ -11,6 +11,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
+import priv.yue.sboot.config.RabbitMQConfig;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
@@ -45,9 +46,9 @@ public class WebSocketServer {
     // 监听队列
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "${mq.config.queue}", autoDelete = "false", durable = "true"),
-            exchange = @Exchange(value = "${mq.config.exchange}", type = ExchangeTypes.TOPIC, durable = "true"),
-            key = "${mq.config.quartzLogRoutingKey}"
+            value = @Queue(value = RabbitMQConfig.QUEUE, autoDelete = "false", durable = "true"),
+            exchange = @Exchange(value = RabbitMQConfig.EXCHANGE, type = ExchangeTypes.TOPIC, durable = "true"),
+            key = RabbitMQConfig.ROUTINGKEY
         )
     )
     public void getMessage(String message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) {
