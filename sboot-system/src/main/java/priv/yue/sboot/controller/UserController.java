@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Md5Hash;
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
+import org.springframework.util.ResourceUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +25,16 @@ import priv.yue.sboot.dto.PageDto;
 import priv.yue.sboot.dto.UserDto;
 import priv.yue.sboot.rest.RestResponse;
 import priv.yue.sboot.service.UserService;
+import priv.yue.sboot.utils.JxlsExportUtils;
 import priv.yue.sboot.utils.SaltUtils;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.groups.Default;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,6 +68,27 @@ public class UserController extends BaseController {
         Page<User> page = new Page<>(pager.getPage(), pager.getItemsPerPage());
         page = userService.selectPage(page, map);
         return RestResponse.success(page);
+    }
+
+    @ApiOperation("导出用户数据")
+    @OpLog(title = "导出数据", businessType = FixedBusinessType.EXPORT)
+    @PostMapping("/export")
+    @RequiresPermissions("user:query")
+    public void export(@Validated({UserDto.Query.class, Default.class}) UserDto userDto, HttpServletResponse response) throws IOException {
+
+        Map<String,Object> map = new HashMap<>();
+        PageDto pager = userDto.getPager();
+        map.put("search", userDto.getSearch());
+        map.put("orderBy", getSortStr("user", pager.getSortBy(), pager.getSortDesc()));
+        map.put("path", getUser().getDept().getPath());
+        map.put("userDeptId", getUser().getDeptId());
+        Page<User> page = new Page<>(pager.getPage(), pager.getItemsPerPage());
+        page = userService.selectPage(page, map);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("items", page.getRecords());
+        String templateFileName = ResourceUtils.getURL("classpath:").getPath() + "static/excel_templates/user.xlsx";
+        JxlsExportUtils.doExcelExport(response, data, templateFileName, "用户信息");
     }
 
     /**
