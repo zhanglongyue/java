@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="priv.yue.logging.mapper.LogOpMapper">
+
+	<sql id="Base_Column_List">
+		`id`,INET_NTOA(`ip`) as ip,`location`,`browser`,`browser_version`,
+        `browser_engine`,`browser_engine_version`,`is_mobile`,`os`,
+        `platform`,`spider`,`request_uri`,`error_cause`,`error_msg`,`title`,
+        `status`,`create_time`,`business_type`,`class_name`,
+        `method_name`,`parameter`,`user_id`,`username`,`run_time`,`return_value`
+	</sql>
+
+	<!-- 搜索的参数块 -->
+	<sql id="searchCondition">
+		<if test="null != map.search and '' != map.search">
+			and concat_ws(logOp.username, logOp.user_id, logOp.ip,
+			    logOp.browser, logOp.platform, logOp.spider, logOp.request_uri, logOp.title) like "%"#{map.search}"%"
+		</if>
+		<if test="null != map.status and '' != map.status or 0 == map.status">
+			and logOp.`status` = #{map.status}
+		</if>
+		<if test="null != map.businessType and '' != map.businessType">
+			and logOp.`business_type` = #{map.businessType}
+		</if>
+		<if test="null != map.createTimeBegin and '' != map.createTimeBegin">
+			and STR_TO_DATE(logOp.`create_time`,'%Y-%m-%d') >= STR_TO_DATE(#{map.createTimeBegin},'%Y-%m-%d')
+		</if>
+		<if test="null != map.createTimeEnd and '' != map.createTimeEnd">
+			and STR_TO_DATE(#{map.createTimeEnd},'%Y-%m-%d') >= STR_TO_DATE(logOp.`create_time`,'%Y-%m-%d')
+		</if>
+	</sql>
+
+	<!-- 新增操作日志信息 -->
+	<insert id="insert">
+		insert into
+			sys_log_op (
+			`id`,`ip`,`location`,`spider`,`os`,`platform`,
+			`browser`,`browser_version`,`browser_engine`,
+			`browser_engine_version`,`is_mobile`,`request_uri`,
+			`title`,`error_msg`,`error_cause`,`status`,`create_time`,
+			`business_type`,`class_name`,`method_name`,`parameter`,
+			`user_id`,`username`,`dept_id`,`run_time`,`return_value`
+		)
+		values
+		(
+			#{id},INET_ATON(#{ip}),#{location},#{spider},#{os},#{platform},
+			#{browser},#{browserVersion},#{browserEngine},
+			#{browserEngineVersion},#{isMobile},#{requestUri},
+			#{title},#{errorMsg},#{errorCause},#{status},#{createTime},
+			#{businessType},#{className},#{methodName},#{parameter},
+ 			#{userId},#{username},#{deptId},#{runTime},#{returnValue}
+		)
+	</insert>
+
+	<!-- 根据条件查询系统用户操作日志信息 -->
+	<select id="selectPage" resultType="priv.yue.logging.domain.LogOp">
+		select
+			logOp.`id`,INET_NTOA(logOp.`ip`) as ip,logOp.`location`,logOp.`browser`,logOp.`browser_version`,
+			logOp.`browser_engine`,logOp.`browser_engine_version`,logOp.`is_mobile`,logOp.`os`,
+			logOp.`platform`,logOp.`spider`,logOp.`request_uri`,logOp.`error_cause`,logOp.`error_msg`,logOp.`title`,
+			logOp.`status`,logOp.`create_time`,logOp.`business_type`,logOp.`class_name`,
+			logOp.`method_name`,logOp.`parameter`,logOp.`user_id`,logOp.`username`,
+		    logOp.`run_time`,logOp.`return_value`,logOp.`dept_id`
+		from sys_log_op logOp
+		left join sys_dept dept on logOp.dept_id = dept.dept_id
+		<trim prefix="where" prefixOverrides="and">
+			<include refid="searchCondition"/>
+			and (dept.path like concat(#{map.path},#{map.userDeptId},',%') or dept.dept_id = #{map.userDeptId})
+		</trim>
+		<if test="map.orderBy != null and map.orderBy != ''">
+			order by ${map.orderBy}
+		</if>
+	</select>
+
+</mapper>

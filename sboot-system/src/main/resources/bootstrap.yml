@@ -1,0 +1,23 @@
+server:
+  port: 9890
+
+spring:
+  application:
+    name: sboot-system
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
+      config:
+        server-addr: localhost:8848
+        file-extension: yml
+        namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
+        extension-configs[0]:
+          data-id: sboot-common-dev.yml
+          refresh: true
+
+
+# 下面是config默认拉取的配置文件data-id格式
+# ${spring.application.name}-${spring/profile.active}.${spring.cloud.nacos.config.file-extension}
+

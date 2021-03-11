@@ -11,10 +11,14 @@
 	<modules>
 		<module>sboot-system</module>
 		<module>sboot-quartz</module>
-		<module>sboot-commons</module>
+		<module>sboot-common</module>
 		<module>sboot-logging</module>
 		<module>sboot-auth</module>
 		<module>sboot-mq</module>
+		<module>sboot-tools</module>
+		<module>sboot-gateway</module>
+		<module>sboot-logging-core</module>
+		<module>sboot-auth-core</module>
 	</modules>
 
 	<!-- 统一管理jar包版本 -->

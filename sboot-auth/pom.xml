@@ -12,35 +12,66 @@
 	<artifactId>sboot-auth</artifactId>
 
 	<dependencies>
-		<!--sboot logging-->
+
+		<!-- nacos 注册中心 -->
 		<dependency>
-			<groupId>priv.yue.sboot</groupId>
-			<artifactId>sboot-logging</artifactId>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+		</dependency>
+
+		<!-- nacos 配置中心 -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+		</dependency>
+
+		<!-- 数据源 -->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid-spring-boot-starter</artifactId>
+		</dependency>
+
+		<!-- sboot logging core -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>sboot-logging-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
+		<!-- sboot auth core -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>sboot-auth-core</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.crazycake</groupId>
-			<artifactId>shiro-redis</artifactId>
-			<version>3.3.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-ehcache</artifactId>
-			<version>1.7.0</version>
-		</dependency>
-
-		<!--swagger-->
+		<!-- swagger -->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-boot-starter</artifactId>
 			<version>3.0.0</version>
+		</dependency>
+
+		<!--JWT-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+
+		<!-- 热部署 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 	</dependencies>

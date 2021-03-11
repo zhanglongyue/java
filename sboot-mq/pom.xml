@@ -19,8 +19,8 @@
 
 		<!--sboot commons-->
 		<dependency>
-			<groupId>priv.yue.sboot</groupId>
-			<artifactId>sboot-commons</artifactId>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>sboot-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

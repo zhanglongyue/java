@@ -2,21 +2,24 @@ server:
   port: 8082
 
 spring:
-  main:
-    allow-bean-definition-overriding: true
   profiles:
     active: dev
   application:
     name: sboot-quartz
+#  main:
+#    allow-bean-definition-overriding: true
+
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+
   rabbitmq:
     listener:
       simple:
         acknowledge-mode: manual  # 默认为自动ack，设置为手动ack保证消费端消息不丢失
     publisher-confirm-type: correlated  # 配置confirms模式
     publisher-returns: true   # 配置returns模式，默认关闭，交换机发送到队列时进行回调，一般不需要开启
+
   quartz:
     defaultJobGroupName: SBOOT_JOB_GROUP
     defaultTriggerGroupName: SBOOT_TRIGGER_GROUP
@@ -47,6 +50,19 @@ spring:
         connection-provider:
           class: priv.yue.quartz.config.DruidConnectionProvider
 
+  mail:
+    host: smtp.qq.com
+    username: zhanglongyue@vip.qq.com
+    password: qdvinliatedvbife
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+    default-encoding: UTF-8
+
 hibernate:
   validator:
     fail_fast
@@ -67,16 +83,3 @@ shiro:
     - /**
   hash-algorithm: MD5
   hash-iterations: 1024
-
-mq:
-  config:
-    quartz:
-      queue: quartzQueue
-      exchange: quartzExchange
-      routingKey: quartz.#
-      quartzLogRoutingKey: quartz.log
-    log:
-      queue: logQueue
-      exchange: logExchange
-      routingKey: log.#
-      logOpRoutingKey: log.op   # 系统操作日志

@@ -3,9 +3,9 @@ package priv.yue.sboot.rabbit.sender;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
+import priv.yue.common.utils.JsonUtils;
 import priv.yue.sboot.rabbit.callback.ConfirmCallback;
 import priv.yue.sboot.rabbit.callback.ReturnsCallback;
-import priv.yue.sboot.utils.JsonUtils;
 
 import javax.annotation.Resource;
 import java.util.UUID;

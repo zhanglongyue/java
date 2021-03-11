@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="priv.yue.system.mapper.MenuMapper">
+    <sql id="Base_Column_List">
+        menu_id, pid, `type`, title, `name`, component, sort, icon, `path`,
+        iframe, `cache`, hidden, permission, create_by, update_by, create_time, update_time
+    </sql>
+
+    <resultMap id="BaseRM" type="priv.yue.common.domain.Menu">
+        <id column="menu_id" jdbcType="BIGINT" property="menuId" />
+        <result column="pid" jdbcType="BIGINT" property="pid" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="component" jdbcType="VARCHAR" property="component" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+        <result column="iframe" jdbcType="BIT" property="iframe" />
+        <result column="cache" jdbcType="BIT" property="cache" />
+        <result column="hidden" jdbcType="BIT" property="hidden" />
+        <result column="permission" jdbcType="VARCHAR" property="permission" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <resultMap id="FullRM" type="priv.yue.common.domain.Menu" extends="BaseRM">
+        <association property="parentMenu" javaType="priv.yue.common.domain.Menu" select="selectById" column="pid"/>
+        <collection property="subMenu" ofType="priv.yue.common.domain.Menu" select="selectAllByPid" column="menu_id" />
+    </resultMap>
+
+    <resultMap id="SimpleRM" type="priv.yue.common.domain.Menu" extends="BaseRM">
+        <association property="parentMenu" javaType="priv.yue.common.domain.Menu" select="selectById" column="pid"/>
+    </resultMap>
+
+    <select id="selectByPK" resultMap="SimpleRM">
+        select
+        <include refid="Base_Column_List" />
+        from sys_menu
+        where menu_id = #{menuId}
+        and deleted = 0
+    </select>
+
+    <select id="selectAllByPid" resultMap="FullRM">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_menu
+        where pid = #{pid}
+        and deleted = 0
+        order by sort
+    </select>
+
+    <select id="selectAll" resultMap="FullRM">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_menu
+        where deleted = 0
+        order by sort
+    </select>
+
+    <select id="selectByUser" resultMap="SimpleRM">
+        select menu.*
+        from sys_menu menu
+             left join sys_role_menu srm on menu.menu_id = srm.menu_id
+             left join sys_user_role sur on srm.role_id = sur.role_id
+        <where>
+            <if test="hidden != null">
+                and hidden = #{hidden}
+            </if>
+            <if test="type != null and type.length > 0">
+                and type in
+                <foreach collection="type" index="index" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            and sur.user_id = #{userId}
+            and deleted = 0
+        </where>
+        group by menu.menu_id
+        order by sort
+    </select>
+
+    <select id="selectPermissionsByUser" resultMap="BaseRM">
+        select
+            menu.permission
+        from
+            sys_menu menu
+                left join sys_role_menu srm on menu.menu_id = srm.menu_id
+                left join sys_user_role sur on srm.role_id = sur.role_id
+                left join sys_user user on user.user_id = sur.user_id
+        where
+            user.user_id = #{userid}
+          and menu.permission is not null
+          and menu.deleted = 0
+          and user.deleted = 0
+        group by
+            menu.menu_id
+    </select>
+
+    <select id="selectByRole" resultMap="SimpleRM">
+        select
+            menu.*
+        from
+            sys_menu menu
+                left join sys_role_menu srm on menu.menu_id = srm.menu_id
+                left join sys_role role on srm.role_id = role.role_id
+        where
+            srm.role_id = #{roleid}
+            and menu.deleted = 0
+            and role.deleted = 0
+        order by sort
+    </select>
+
+</mapper>

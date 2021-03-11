@@ -9,8 +9,8 @@ import org.jxls.util.JxlsHelper;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
-import priv.yue.sboot.domain.User;
-import priv.yue.sboot.service.UserService;
+import priv.yue.common.domain.User;
+import priv.yue.system.service.UserService;
 
 import javax.annotation.Resource;
 import java.io.FileOutputStream;
