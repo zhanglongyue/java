@@ -3,19 +3,20 @@ package priv.yue;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 
 /**
  * @author ZhangLongYue
- * @since 2021/3/9 20:01
+ * @since 2021/3/8 13:56
  */
-@SpringBootApplication
-@EnableDiscoveryClient
+
 @EnableOpenApi
-@MapperScan({"priv.yue.auth.mapper","priv.yue.logging.mapper"})
-public class AuthMain {
+@SpringBootApplication
+@MapperScan("priv.yue.sboot.mapper")
+public class ToolsApp {
+
     public static void main(String[] args) {
-        SpringApplication.run(AuthMain.class, args);
+        SpringApplication.run(ToolsApp.class, args);
     }
+
 }

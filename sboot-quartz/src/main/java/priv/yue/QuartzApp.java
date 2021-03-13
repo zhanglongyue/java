@@ -16,8 +16,8 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @EnableDiscoveryClient
 @EnableScheduling
 @MapperScan({"priv.yue.quartz.mapper"})
-public class QuartzMain {
+public class QuartzApp {
     public static void main(String[] args) {
-        SpringApplication.run(QuartzMain.class, args);
+        SpringApplication.run(QuartzApp.class, args);
     }
 }

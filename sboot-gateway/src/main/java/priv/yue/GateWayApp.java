@@ -1,22 +1,17 @@
 package priv.yue;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import springfox.documentation.oas.annotations.EnableOpenApi;
 
 /**
  * @author ZhangLongYue
- * @since 2021/3/11 10:15
+ * @since 2021/3/9 14:04
  */
-@EnableOpenApi
 @SpringBootApplication
 @EnableDiscoveryClient
-@MapperScan({"priv.yue.logging.mapper"})
-public class LoggingMain {
-
+public class GateWayApp {
     public static void main(String[] args) {
-        SpringApplication.run(LoggingMain.class, args);
+        SpringApplication.run(GateWayApp.class, args);
     }
 }

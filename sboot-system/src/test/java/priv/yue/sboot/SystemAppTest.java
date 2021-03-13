@@ -24,7 +24,7 @@ import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-class SystemMainTest {
+class SystemAppTest {
 
     @Resource
     private UserService userService;

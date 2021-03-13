@@ -12,10 +12,10 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @EnableDiscoveryClient
 @EnableFeignClients
 @MapperScan("priv.yue.system.mapper")
-public class SystemMain {
+public class SystemApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(SystemMain.class, args);
+        SpringApplication.run(SystemApp.class, args);
     }
 
 }

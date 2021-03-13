@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @since 2021/2/27 14:42
  */
 @Slf4j
-@ServerEndpoint("/websocket/{userId}") //把当前类标识成一个WebSocket的服务端，值是访问的URL地址
+@ServerEndpoint("/ws/quartz/{userId}") //把当前类标识成一个WebSocket的服务端，值是访问的URL地址
 @Component
 @Data
 public class WebSocketServer {
@@ -84,7 +84,7 @@ public class WebSocketServer {
 
     //连接成功
     @OnOpen
-    public void onOpen(@PathParam(value = "userId") String userId, Session session) {
+    public void onOpen(@PathParam("userId") String userId, Session session) {
         this.session = session;
         this.userId = userId;
         CopyOnWriteArraySet<WebSocketServer> sessions = webSocketSet.get(userId);

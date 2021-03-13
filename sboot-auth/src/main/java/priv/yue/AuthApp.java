@@ -8,14 +8,14 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 
 /**
  * @author ZhangLongYue
- * @since 2021/3/9 14:04
+ * @since 2021/3/9 20:01
  */
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableOpenApi
-@MapperScan("priv.yue.sboot.mapper")
-public class GateWayMain {
+@MapperScan({"priv.yue.auth.mapper","priv.yue.logging.mapper"})
+public class AuthApp {
     public static void main(String[] args) {
-        SpringApplication.run(GateWayMain.class, args);
+        SpringApplication.run(AuthApp.class, args);
     }
 }
