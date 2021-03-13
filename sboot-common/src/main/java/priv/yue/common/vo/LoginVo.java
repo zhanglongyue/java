@@ -7,6 +7,7 @@ import priv.yue.common.domain.Menu;
 import priv.yue.common.domain.Role;
 import priv.yue.common.domain.User;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +22,9 @@ import java.util.stream.Collectors;
  */
 @Getter
 @Setter
-public class LoginVo implements GetAuthorizationAble {
+public class LoginVo implements GetAuthorizationAble, Serializable {
+
+    private static final long serialVersionUID = 1682014306070909754L;
 
     private User user;
 

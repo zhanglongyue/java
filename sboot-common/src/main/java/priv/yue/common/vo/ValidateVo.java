@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * 验证信息封装类
  *
@@ -16,7 +18,9 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ValidateVo {
+public class ValidateVo implements Serializable {
+
+    private static final long serialVersionUID = 8675584597928619534L;
 
     /**
      * 验证错误的参数名称

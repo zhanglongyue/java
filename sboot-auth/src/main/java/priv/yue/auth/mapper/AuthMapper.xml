@@ -33,7 +33,7 @@
 	</resultMap>
 
 	<resultMap id="UserSimpleRM" type="priv.yue.common.domain.User" extends="UserBaseRM">
-		<association property="dept" select="priv.yue.sboot.mapper.DeptMapper.selectById" column="dept_id"/>
+		<association property="dept" javaType="priv.yue.common.domain.Dept" select="selectDeptById" column="dept_id"/>
 	</resultMap>
 
 	<select id="selectUserByName" resultMap="UserSimpleRM">
@@ -57,11 +57,7 @@
 		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
 	</resultMap>
 
-	<resultMap id="RoleSimpleRM" type="priv.yue.common.domain.Role" extends="RoleBaseRM">
-		<association property="parentRole" javaType="priv.yue.common.domain.Role" select="selectById" column="pid"/>
-	</resultMap>
-
-	<select id="selectRoleByUser" resultMap="RoleSimpleRM">
+	<select id="selectRoleByUser" resultMap="RoleBaseRM">
 		select role.*
 		from sys_role role
 			     left join sys_user_role sur on role.role_id = sur.role_id
@@ -94,11 +90,7 @@
 		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
 	</resultMap>
 
-	<resultMap id="MenuSimpleRM" type="priv.yue.common.domain.Menu" extends="MenuBaseRM">
-		<association property="parentMenu" javaType="priv.yue.common.domain.Menu" select="selectById" column="pid"/>
-	</resultMap>
-
-	<select id="selectMenuByUser" resultMap="MenuSimpleRM">
+	<select id="selectMenuByUser" resultMap="MenuBaseRM">
 		select menu.*
 		from sys_menu menu
 		left join sys_role_menu srm on menu.menu_id = srm.menu_id
@@ -109,6 +101,31 @@
 		</where>
 		group by menu.menu_id
 		order by sort
+	</select>
+
+
+	<!--DeptMapper-->
+
+	<resultMap id="DeptBaseRM" type="priv.yue.common.domain.Dept">
+		<id column="dept_id" jdbcType="BIGINT" property="deptId"/>
+		<result column="pid" jdbcType="BIGINT" property="pid"/>
+		<result column="path" jdbcType="VARCHAR" property="path"/>
+		<result column="name" jdbcType="VARCHAR" property="name"/>
+		<result column="sort" jdbcType="INTEGER" property="sort"/>
+		<result column="enabled" jdbcType="BIT" property="enabled"/>
+		<result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+		<result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+	</resultMap>
+
+	<select id="selectDeptById" resultMap="DeptBaseRM">
+		select dept.*
+		from sys_dept dept
+		<where>
+			and dept.dept_id = #{deptId}
+			and deleted = 0
+		</where>
 	</select>
 
 </mapper>

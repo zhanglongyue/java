@@ -12,6 +12,7 @@
 	<artifactId>sboot-logging-core</artifactId>
 
 	<dependencies>
+
 		<!--日志工具-->
 		<dependency>
 			<groupId>cn.novelweb</groupId>
