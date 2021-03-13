@@ -20,7 +20,7 @@ public class RealmConfig {
 
     /**
      * 注意这个realm需要在tokenRealm加载后加载，顺序不能改变，会影响spring封装List顺序
-     * 优先使用tokenRealm从redis中获取认证及授权信息，多realm时，shiro会按顺序进行认证，优先使用token
+     * 优先使用tokenRealm从redis中获取认证及授权信息，多realm时，shiro会按顺序进行认证，优先使用token方式
      * @param credentialsMatcher
      * @param cacheManager
      * @return
@@ -30,7 +30,7 @@ public class RealmConfig {
     public Realm userRealm(CredentialsMatcher credentialsMatcher, CacheManager cacheManager){
         UserRealm realm = new UserRealm();
         realm.setCredentialsMatcher(credentialsMatcher);
-        // 开启缓存管理器 使用redis时无需以下配置
+        // 开启缓存管理器 使用redis无需再配置CacheManager
         /*realm.setCacheManager(cacheManager);
         realm.setCachingEnabled(true);
         realm.setAuthenticationCachingEnabled(true);

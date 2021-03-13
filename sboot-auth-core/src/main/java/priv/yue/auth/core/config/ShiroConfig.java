@@ -24,6 +24,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import priv.yue.auth.core.filter.TokenFilter;
 import priv.yue.auth.core.pam.DefaultModularRealmAuthenticator;
 import priv.yue.auth.core.realm.TokenRealm;
@@ -132,11 +134,11 @@ public class ShiroConfig {
     }
 
     /**
-     * TokenRealm
-     * 注意这2个realm顺序不能改变，会影响spring封装List顺序
-     * 优先使用tokenRealm从redis中获取认证及授权信息
+     * TokenRealm 直接从redis获取用户信息
+     * 此realm必须优先加载，shiro的默认策略将按顺序进行认证，并返回第一个成功的认证
      */
     @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public Realm tokenRealm() {
         return new TokenRealm();
     }
