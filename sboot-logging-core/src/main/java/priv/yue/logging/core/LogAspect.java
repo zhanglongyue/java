@@ -90,18 +90,19 @@ public class LogAspect {
     }
 
     @Around("opLog()")
-    public Object doAround(ProceedingJoinPoint joinPoint) {
+    public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
         Object res = null;
-        Throwable throwable = null;
+        Exception exception = null;
         long time = System.currentTimeMillis();
         try {
             res =  joinPoint.proceed();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            throwable = e;
+            exception = e;
+            throw e;
         } finally {
             time = System.currentTimeMillis() - time;
-            handleLog(joinPoint, throwable, res, time);
+            handleLog(joinPoint, exception, res, time);
         }
         return res;
     }

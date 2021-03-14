@@ -57,6 +57,7 @@ public class UserController extends BaseController {
     @RequiresPermissions("user:query")
     @SentinelResource(value = "userList", fallback = "fallbackHandler", blockHandler = "blockHandler")
     public RestResult<Object> list(@Validated({UserDto.Query.class, Default.class}) UserDto userDto) {
+        int i = 10/0;
         Map<String,Object> map = new HashMap<>();
         PageDto pager = userDto.getPager();
         map.put("search", userDto.getSearch());
