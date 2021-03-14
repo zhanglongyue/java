@@ -2,6 +2,9 @@ package priv.yue.system.controller;
 
 import cn.novelweb.tool.annotation.log.OpLog;
 import cn.novelweb.tool.annotation.log.pojo.FixedBusinessType;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,6 +55,7 @@ public class UserController extends BaseController {
     @OpLog(title = "用户列表", businessType = "查询")
     @PostMapping("/list")
     @RequiresPermissions("user:query")
+    @SentinelResource(value = "userList", fallback = "fallbackHandler", blockHandler = "blockHandler")
     public RestResult<Object> list(@Validated({UserDto.Query.class, Default.class}) UserDto userDto) {
         Map<String,Object> map = new HashMap<>();
         PageDto pager = userDto.getPager();
@@ -64,12 +68,18 @@ public class UserController extends BaseController {
         return RestResultUtils.success(page);
     }
 
+    public RestResult<Object> fallbackHandler(UserDto userDto , Throwable e){
+        return RestResultUtils.failed(444, "异常", e.getMessage());
+    }
+    public RestResult<Object> blockHandler(UserDto userDto, BlockException e){
+        return RestResultUtils.failed(444, "Block异常", e.getMessage());
+    }
+
     @ApiOperation("导出用户数据")
     @OpLog(title = "导出数据", businessType = FixedBusinessType.EXPORT)
     @PostMapping("/export")
     @RequiresPermissions("user:query")
     public void export(@Validated({UserDto.Query.class, Default.class}) UserDto userDto, HttpServletResponse response) throws IOException {
-
         Map<String,Object> map = new HashMap<>();
         PageDto pager = userDto.getPager();
         map.put("search", userDto.getSearch());
@@ -149,7 +159,7 @@ public class UserController extends BaseController {
         User user = userService.getById(userId);
         userService.updateById(user.setEnabled(0));
         /**
-         * 如果要立即生效，可以将redis中的token删除
+         * 要立即生效，需要将redis中的token删除
          * todo
          */
         return RestResultUtils.success();

@@ -42,7 +42,7 @@ public class LogAspect {
     public void opLog() {
     }
 
-    private void handleLog(final JoinPoint joinPoint, final Exception e,
+    private void handleLog(final JoinPoint joinPoint, final Throwable e,
                            Object res, long time) {
         // 获得注解信息
         OpLog opLog = LogAnnotation.getAnnotation(joinPoint, OpLog.class);
@@ -90,19 +90,19 @@ public class LogAspect {
     }
 
     @Around("opLog()")
-    public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object doAround(ProceedingJoinPoint joinPoint) {
         Object res = null;
-        Exception exception = null;
+        Throwable throwable = null;
         long time = System.currentTimeMillis();
         try {
             res =  joinPoint.proceed();
-            return res;
-        } catch (Exception e) {
-            exception = e;
-            throw e;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throwable = e;
         } finally {
             time = System.currentTimeMillis() - time;
-            handleLog(joinPoint, exception, res, time);
+            handleLog(joinPoint, throwable, res, time);
         }
+        return res;
     }
 }

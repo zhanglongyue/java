@@ -5,10 +5,12 @@ import priv.yue.logging.model.LogOp;
 
 /**
  * 操作日志处理完成后的回调接口
+ * 建议通过mq方式做异步处理
  *
  * @author ZhangLongYue
  * @since 2021/2/2 11:09
  */
+@Deprecated
 public interface LogOpCompletionHandler {
 
     /**

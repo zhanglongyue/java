@@ -17,6 +17,7 @@ import priv.yue.common.base.BaseServiceImpl;
 import priv.yue.common.utils.JsonUtils;
 import priv.yue.common.utils.SpringBeanFactoryUtils;
 import priv.yue.logging.constant.Constants;
+import priv.yue.logging.core.LogOpCompletionHandler;
 import priv.yue.logging.domain.LogOp;
 import priv.yue.logging.mapper.LogOpMapper;
 import priv.yue.logging.service.LogOpService;
@@ -32,7 +33,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Service
 @Transactional
-public class LogOpServiceImpl extends BaseServiceImpl<LogOpMapper, LogOp> implements LogOpService {
+public class LogOpServiceImpl extends BaseServiceImpl<LogOpMapper, LogOp> implements LogOpService/*, LogOpCompletionHandler*/ {
 
     private LogOpMapper logOpMapper;
 

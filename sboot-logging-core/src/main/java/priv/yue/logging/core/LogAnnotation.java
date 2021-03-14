@@ -52,7 +52,7 @@ public class LogAnnotation {
      * @param e       异常信息
      * @return 返回带有默认数据的日志信息
      */
-    public static AccessLogInfo initInfo(final String title, final boolean isGetIp, final Exception e) {
+    public static AccessLogInfo initInfo(final String title, final boolean isGetIp, final Throwable e) {
         // 获取Request信息
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
                 RequestContextHolder.getRequestAttributes();
