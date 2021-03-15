@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2021/3/13 14:40
  */
 @Configuration
-public class ServerConfig {
+public class NettyServerConfig {
 
     /**
      * netty MaxHeaderSize 默认8k，这里设置大一些，不然用户信息过多会400

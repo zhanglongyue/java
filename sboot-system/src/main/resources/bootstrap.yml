@@ -10,9 +10,9 @@ spring:
         server-addr: localhost:8848
         namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
       config:
-        server-addr: localhost:8848
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
         file-extension: yml
-        namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
+        namespace: ${spring.cloud.nacos.discovery.namespace}
         extension-configs[0]:
           data-id: sboot-common-dev.yml
           refresh: true
