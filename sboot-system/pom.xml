@@ -35,6 +35,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- sentinel对nacos适配 使用nacos配置sentinel规则 -->
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-datasource-nacos</artifactId>

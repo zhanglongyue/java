@@ -3,8 +3,6 @@ package priv.yue.system.controller;
 import cn.novelweb.tool.annotation.log.OpLog;
 import cn.novelweb.tool.annotation.log.pojo.FixedBusinessType;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +23,8 @@ import priv.yue.system.constant.Constants;
 import priv.yue.system.dto.UserDto;
 import priv.yue.common.model.RestResult;
 import priv.yue.common.model.RestResultUtils;
+import priv.yue.system.handler.block.UserBlockHandler;
+import priv.yue.system.handler.fallback.UserFallbackHandler;
 import priv.yue.system.service.UserService;
 import priv.yue.common.utils.SaltUtils;
 import priv.yue.system.utils.JxlsExportUtils;
@@ -55,7 +55,9 @@ public class UserController extends BaseController {
     @OpLog(title = "用户列表", businessType = "查询")
     @PostMapping("/list")
     @RequiresPermissions("user:query")
-    @SentinelResource(value = "userList", fallback = "fallbackHandler", blockHandler = "blockHandler")
+    @SentinelResource(value = "userList", fallbackClass = UserFallbackHandler.class,
+            fallback = "fallbackHandler", blockHandlerClass = UserBlockHandler.class,
+            blockHandler = "blockHandler")
     public RestResult<Object> list(@Validated({UserDto.Query.class, Default.class}) UserDto userDto) {
         Map<String,Object> map = new HashMap<>();
         PageDto pager = userDto.getPager();
@@ -66,13 +68,6 @@ public class UserController extends BaseController {
         Page<User> page = new Page<>(pager.getPage(), pager.getItemsPerPage());
         page = userService.selectPage(page, map);
         return RestResultUtils.success(page);
-    }
-
-    public RestResult<Object> fallbackHandler(UserDto userDto , Throwable e){
-        return RestResultUtils.failed(444, "异常", e.getMessage());
-    }
-    public RestResult<Object> blockHandler(UserDto userDto, BlockException e){
-        return RestResultUtils.failed(444, "Block异常", e.getMessage());
     }
 
     @ApiOperation("导出用户数据")
