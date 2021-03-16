@@ -1,10 +1,10 @@
-package priv.yue.system.utils.vcode;
+package priv.yue.auth.utils.vcode;
 
 import cn.hutool.core.util.StrUtil;
-import priv.yue.common.exception.BadConfigurationException;
 import com.wf.captcha.*;
 import com.wf.captcha.base.Captcha;
 import lombok.Data;
+import priv.yue.common.exception.BadConfigurationException;
 
 import java.awt.*;
 import java.util.Objects;

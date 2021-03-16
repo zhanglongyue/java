@@ -1,4 +1,4 @@
-package priv.yue.system.utils.vcode;
+package priv.yue.auth.utils.vcode;
 
 /**
  * 验证码配置枚举

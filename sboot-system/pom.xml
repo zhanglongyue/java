@@ -42,21 +42,26 @@
             <artifactId>sentinel-datasource-nacos</artifactId>
         </dependency>
 
+        <!-- openfeign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
+        <!-- spring boot web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- hibernate validation -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
@@ -90,8 +95,6 @@
             <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
 
-
-
         <!--参数校验-->
 <!--        <dependency>-->
 <!--            <groupId>org.hibernate.validator</groupId>-->
@@ -103,13 +106,6 @@
 <!--            <artifactId>hibernate-validator-annotation-processor</artifactId>-->
 <!--            <version>6.1.6.Final</version>-->
 <!--        </dependency>-->
-
-        <!--验证码-->
-        <dependency>
-            <groupId>com.github.whvcse</groupId>
-            <artifactId>easy-captcha</artifactId>
-            <version>1.6.2</version>
-        </dependency>
 
         <!--swagger-->
         <dependency>

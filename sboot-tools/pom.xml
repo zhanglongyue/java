@@ -13,20 +13,20 @@
 
 	<dependencies>
 
-		<!--sboot auth 依赖关系 auth->logging->[common,mq] -->
+		<!-- sboot auth 依赖关系 auth->logging->[common,mq] -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>sboot-auth</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
-		<!--email-->
+		<!-- email -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
-		<!--热部署-->
+		<!-- 热部署 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
