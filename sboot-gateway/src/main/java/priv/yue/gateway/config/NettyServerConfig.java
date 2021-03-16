@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class NettyServerConfig {
 
     /**
-     * netty MaxHeaderSize 默认8k，这里设置大一些，不然用户信息过多会400
+     * netty MaxHeaderSize 默认8k，这里设置大一些，不然数据多了会400
      * https://github.com/spring-cloud/spring-cloud-gateway/issues/481#issuecomment-411433919
      */
     @Bean

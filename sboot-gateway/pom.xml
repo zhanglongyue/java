@@ -50,14 +50,10 @@
 			</exclusions>
 		</dependency>
 
-		<!-- sentinel对gateway的适配模块 -->
+		<!-- sentinel对gateway的适配模块 包含网关限流、API分组 -->
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.alibaba.csp</groupId>
-			<artifactId>sentinel-spring-cloud-gateway-adapter</artifactId>
 		</dependency>
 
 		<!-- sentinel对nacos适配 使用nacos配置sentinel规则 -->

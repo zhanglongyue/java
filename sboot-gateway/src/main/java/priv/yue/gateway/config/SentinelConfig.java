@@ -9,21 +9,15 @@ import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule;
 import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayParamFlowItem;
 import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayRuleManager;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.SentinelGatewayFilter;
-import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.GatewayCallbackManager;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.exception.SentinelGatewayBlockExceptionHandler;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
-import com.alibaba.nacos.common.model.RestResultUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.result.view.ViewResolver;
 
 import javax.annotation.PostConstruct;
@@ -33,13 +27,15 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * 此配置类非必须，参考官方配置
+ * https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81#spring-cloud-gateway
  * @author ZhangLongYue
  * @since 2021/3/15 15:48
  */
 @Configuration
 public class SentinelConfig {
 
-    private final List<ViewResolver> viewResolvers;
+    /*private final List<ViewResolver> viewResolvers;
     private final ServerCodecConfigurer serverCodecConfigurer;
 
     public SentinelConfig(ObjectProvider<List<ViewResolver>> viewResolversProvider,
@@ -55,21 +51,21 @@ public class SentinelConfig {
         return new SentinelGatewayBlockExceptionHandler(viewResolvers, serverCodecConfigurer);
     }
 
-    @Bean
+    @Bean("MySentinelGatewayFilter")
     @Order(-1)
-    public GlobalFilter MySentinelGatewayFilter() {
+    public GlobalFilter sentinelGatewayFilter() {
         return new SentinelGatewayFilter();
     }
 
     @PostConstruct
     public void doInit() {
-//        initGatewayRules();
-//        initCustomizedApis();
+        initGatewayRules();
+        initCustomizedApis();
     }
 
-    /**
-     * 初始化限流规则
-     */
+    *//**
+     * 初始化API分组
+     *//*
     private void initCustomizedApis() {
         Set<ApiDefinition> definitions = new HashSet<>();
         ApiDefinition api1 = new ApiDefinition("some_customized_api")
@@ -88,6 +84,10 @@ public class SentinelConfig {
         GatewayApiDefinitionManager.loadApiDefinitions(definitions);
     }
 
+    *//**
+     * 硬编码方式初始化限流规则
+     * 建议在nacos中配置
+     *//*
     private void initGatewayRules() {
         Set<GatewayFlowRule> rules = new HashSet<>();
         rules.add(new GatewayFlowRule("aliyun_route")
@@ -141,6 +141,6 @@ public class SentinelConfig {
                 )
         );
         GatewayRuleManager.loadRules(rules);
-    }
+    }*/
 
 }
