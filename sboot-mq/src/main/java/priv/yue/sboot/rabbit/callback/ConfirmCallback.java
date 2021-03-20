@@ -5,6 +5,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
 /**
+ * use
  * @author ZhangLongYue
  * @since 2021/3/2 10:27
  */

@@ -1,9 +1,9 @@
 server:
-  port: 9890
+  port: 9891
 
 spring:
   application:
-    name: sboot-system
+    name: sboot-auth
   cloud:
     nacos:
       discovery:
@@ -34,7 +34,7 @@ spring:
 
 ########################## Nacos默认拉取的配置文件说明 ##########################
 # ${spring.application.name}-${spring/profile.active}.${spring.cloud.nacos.config.file-extension}
-# 匹配以上格式，最终拉取的配置文件为 sboot-system-dev.yml
+# 匹配以上格式，最终拉取的配置文件为 sboot-auth-dev.yml
 
 
 

@@ -3,38 +3,36 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
-		<artifactId>sboot</artifactId>
+		<artifactId>sboot-logging</artifactId>
 		<groupId>priv.yue.sboot</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>sboot-mq</artifactId>
+	<artifactId>sboot-logging-core</artifactId>
 
 	<dependencies>
 
-		<!-- spring cloud stream -->
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-stream-rabbit</artifactId>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
+			<scope>compile</scope>
+			<optional>true</optional>
 		</dependency>
 
-		<!--sboot commons-->
+		<!--日志工具-->
+		<dependency>
+			<groupId>cn.novelweb</groupId>
+			<artifactId>tool</artifactId>
+			<version>1.3.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>sboot-common</artifactId>
+			<artifactId>sboot-mq</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
-		<!--使用stream替代-->
-		<!--
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency>
-		-->
-
 	</dependencies>
-
 
 </project>

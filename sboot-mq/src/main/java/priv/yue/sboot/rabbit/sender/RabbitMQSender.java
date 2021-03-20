@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import java.util.UUID;
 
 /**
+ * 通过spring.amqp完成rabbit消息发送
  * @author ZhangLongYue
  * @since 2021/3/2 11:22
  */

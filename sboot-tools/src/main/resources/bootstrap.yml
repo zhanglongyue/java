@@ -7,17 +7,47 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
-        namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
+        server-addr: ${nacos.addr}
+        namespace: ${nacos.namespace}
+        group: ${nacos.group}
       config:
-        server-addr: localhost:8848
+        server-addr: ${nacos.addr}
         file-extension: yml
-        namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
+        namespace: ${nacos.namespace}
+        group: ${nacos.group}
         extension-configs[0]:
-          data-id: sboot-common-dev.yml
+          data-id: sboot-common-redis-dev.yml
           refresh: true
 
 
-# 下面是config默认拉取的配置文件data-id格式
+########################## Nacos默认拉取的配置文件说明 ##########################
 # ${spring.application.name}-${spring/profile.active}.${spring.cloud.nacos.config.file-extension}
+# 匹配以上格式，最终拉取的配置文件为 sboot-system-dev.yml
 
+
+
+########################## 各环境配置 ##########################
+# 启动时加上 VM参数 -Dspring.profiles.active=dev 指定环境
+---
+spring:
+  profiles: dev
+nacos:
+  addr: localhost:8848
+  namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
+  group: DEFAULT_GROUP
+
+---
+spring:
+  profiles: pro
+nacos:
+  addr: localhost:8848
+  namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
+  group: DEFAULT_GROUP
+
+---
+spring:
+  profiles: test
+nacos:
+  addr: localhost:8848
+  namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
+  group: DEFAULT_GROUP

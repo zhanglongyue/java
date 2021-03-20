@@ -17,8 +17,6 @@
 		<module>sboot-mq</module>
 		<module>sboot-tools</module>
 		<module>sboot-gateway</module>
-		<module>sboot-logging-core</module>
-		<module>sboot-auth-core</module>
 	</modules>
 
 	<!-- 统一管理jar包版本 -->

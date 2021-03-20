@@ -3,38 +3,46 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
-		<artifactId>sboot</artifactId>
+		<artifactId>sboot-auth</artifactId>
 		<groupId>priv.yue.sboot</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>sboot-mq</artifactId>
+	<artifactId>sboot-auth-core</artifactId>
 
 	<dependencies>
 
-		<!-- spring cloud stream -->
+		<!-- shiro认证 -->
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-stream-rabbit</artifactId>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
 		</dependency>
 
-		<!--sboot commons-->
+		<!-- sboot common -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>sboot-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
-		<!--使用stream替代-->
-		<!--
+		<!-- spring web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		-->
+
+		<!-- shiro缓存 (没用到)-->
+		<dependency>
+			<groupId>org.crazycake</groupId>
+			<artifactId>shiro-redis</artifactId>
+			<version>3.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-ehcache</artifactId>
+			<version>1.7.0</version>
+		</dependency>
 
 	</dependencies>
-
-
 </project>

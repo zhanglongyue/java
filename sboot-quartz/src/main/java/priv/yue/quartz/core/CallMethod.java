@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
  * @since 2021/2/24 11:06
  */
 public class CallMethod {
+
     private Object target;
     private Method method;
     // 单个字符串参数，如有需要可以改成数组参数
