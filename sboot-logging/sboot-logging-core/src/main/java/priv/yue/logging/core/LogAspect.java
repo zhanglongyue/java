@@ -89,7 +89,7 @@ public class LogAspect {
         // rabbitMQSender.sendObject(Constants.EXCHANGE, "log.op", JsonUtils.toJson(logOp));
 
         // Stream方式
-        messageProvider.send(JsonUtils.toJson(logOp));
+        messageProvider.send(logOp);
 
     }
 

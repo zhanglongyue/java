@@ -50,7 +50,6 @@ public class LogListener {
             channel.basicAck(tag, false);
         } catch (Exception e) {
             log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
-        } finally {
             try {
                 //如果出现异常，则拒绝消息 可以重回队列 也可以丢弃 可以根据业务场景来
                 //方式一：可以批量处理用：basicNack，传三个参数
