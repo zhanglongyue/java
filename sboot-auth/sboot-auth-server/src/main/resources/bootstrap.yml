@@ -16,19 +16,24 @@ spring:
         namespace: ${nacos.namespace}
         group: ${nacos.group}
         extension-configs[0]:
-          data-id: sboot-common-db-dev.yml
+          data-id: sboot-common-db.yml
+          group: ${nacos.group}
           refresh: true
         extension-configs[1]:
-          data-id: sboot-common-redis-dev.yml
+          data-id: sboot-common-redis.yml
+          group: ${nacos.group}
           refresh: true
         extension-configs[2]:
-          data-id: sboot-common-rabbit-dev.yml
+          data-id: sboot-common-rabbit.yml
+          group: ${nacos.group}
           refresh: true
         extension-configs[3]:
-          data-id: sboot-common-stream-dev.yml
+          data-id: sboot-common-stream.yml
+          group: ${nacos.group}
           refresh: true
         extension-configs[4]:
-          data-id: sboot-common-stream-log-dev.yml
+          data-id: sboot-common-stream-log.yml
+          group: ${nacos.group}
           refresh: true
 
 
@@ -50,7 +55,7 @@ nacos:
 
 ---
 spring:
-  profiles: pro
+  profiles: prod
 nacos:
   addr: localhost:8848
   namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66

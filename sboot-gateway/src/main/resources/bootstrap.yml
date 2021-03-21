@@ -36,7 +36,7 @@ nacos:
 
 ---
 spring:
-  profiles: pro
+  profiles: prod
 nacos:
   addr: localhost:8848
   namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
@@ -49,6 +49,3 @@ nacos:
   addr: localhost:8848
   namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
   group: DEFAULT_GROUP
-
-
-

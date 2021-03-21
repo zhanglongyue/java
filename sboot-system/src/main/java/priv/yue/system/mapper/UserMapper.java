@@ -2,6 +2,7 @@ package priv.yue.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import priv.yue.common.domain.User;
 
@@ -15,6 +16,7 @@ import java.util.Map;
  * @since 2020-11-16 15:35:00
  * @description
 */
+@Mapper
 public interface UserMapper extends BaseMapper<User> {
 
     int insertUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);

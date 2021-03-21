@@ -1,6 +1,7 @@
 package priv.yue.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import priv.yue.common.domain.Menu;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * @since 2020-11-17 15:17:03
  * @description 由 Mybatisplus Code Generator 创建
 */
+@Mapper
 public interface MenuMapper extends BaseMapper<Menu> {
 
     Menu selectByPK(Long menuId);

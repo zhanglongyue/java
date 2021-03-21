@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import priv.yue.common.domain.User;
-import priv.yue.common.utils.JsonUtils;
 import priv.yue.common.vo.LoginVo;
 import priv.yue.logging.model.LogOp;
 import priv.yue.sboot.stream.IMessageProvider;
@@ -89,7 +88,7 @@ public class LogAspect {
         // rabbitMQSender.sendObject(Constants.EXCHANGE, "log.op", JsonUtils.toJson(logOp));
 
         // Stream方式
-        messageProvider.send(JsonUtils.toJson(logOp));
+        messageProvider.send(logOp);
 
     }
 
@@ -102,6 +101,7 @@ public class LogAspect {
             res =  joinPoint.proceed();
         } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
+            // 获取异常信息后抛出，只是为了记录，不改变原有异常处理逻辑
             exception = e;
             throw e;
         } finally {

@@ -1,6 +1,7 @@
 package priv.yue.quartz.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import priv.yue.quartz.domain.QuartzLog;
 
 /**
@@ -9,6 +10,7 @@ import priv.yue.quartz.domain.QuartzLog;
  * @author ZhangLongYue
  * @since 2021/2/20 15:26
  */
+@Mapper
 public interface QuartzLogMapper extends BaseMapper<QuartzLog> {
 
 }

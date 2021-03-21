@@ -16,7 +16,8 @@ spring:
         namespace: ${nacos.namespace}
         group: ${nacos.group}
         extension-configs[0]:
-          data-id: sboot-common-redis-dev.yml
+          data-id: sboot-common-redis.yml
+          group: ${nacos.group}
           refresh: true
 
 
@@ -38,7 +39,7 @@ nacos:
 
 ---
 spring:
-  profiles: pro
+  profiles: prod
 nacos:
   addr: localhost:8848
   namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66

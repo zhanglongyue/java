@@ -2,6 +2,7 @@ package priv.yue.quartz.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import priv.yue.quartz.domain.QuartzJob;
 
@@ -13,6 +14,7 @@ import java.util.Map;
  * @author ZhangLongYue
  * @since 2021/2/20 15:26
  */
+@Mapper
 public interface QuartzJobMapper extends BaseMapper<QuartzJob> {
 
 //    QuartzJob selectByPK(Long id);
