@@ -23,7 +23,7 @@ public class MessageProviderImpl implements IMessageProvider {
     private MessageChannel output;  // 消息发送通道
 
     @Override
-    public Boolean send(Object message) {
+    public Boolean send(String message) {
         Boolean success = output.send(MessageBuilder.withPayload(message).build());
         if (success) {
             log.info("向MQ发送消息: {}", message);

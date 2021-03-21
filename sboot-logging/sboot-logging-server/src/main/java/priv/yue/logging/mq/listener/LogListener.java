@@ -10,6 +10,7 @@ import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
+import priv.yue.common.utils.JsonUtils;
 import priv.yue.logging.domain.LogOp;
 import priv.yue.logging.service.LogOpService;
 
@@ -29,19 +30,19 @@ public class LogListener {
     private LogOpService logOpService;
 
     @StreamListener(Sink.INPUT)
-    public void asyncLog(Message<LogOp> message, @Header(AmqpHeaders.CHANNEL) Channel channel,
+    public void asyncLog(Message<String> message, @Header(AmqpHeaders.CHANNEL) Channel channel,
                          @Header(AmqpHeaders.DELIVERY_TAG) long tag) {
 
         log.info("接收到日志消息: {}", message);
 
-        LogOp logOp = message.getPayload();
-
-        String str = "0:0:0:0:0:0:0:1";
-        if (logOp.getIp().equals(str)) {
-            logOp.setIp("127.0.0.1");
-        }
-
         try {
+            LogOp logOp = JsonUtils.jsonToBean(message.getPayload(), LogOp.class);
+
+            String str = "0:0:0:0:0:0:0:1";
+            if (logOp.getIp().equals(str)) {
+                logOp.setIp("127.0.0.1");
+            }
+
             logOpService.save(logOp);
             // 手动ack
             // 参数1 deliveryTag（唯一标识 ID）：当一个消费者向 RabbitMQ 注册后，会建立起一个 Channel ，RabbitMQ 会用 basic.deliver 方法向消费者推送消息，这个方法携带了一个 delivery tag， 它代表了 RabbitMQ 向该 Channel 投递的这条消息的唯一标识 ID，是一个单调递增的正整数，delivery tag 的范围仅限于 Channel
@@ -49,6 +50,7 @@ public class LogListener {
             channel.basicAck(tag, false);
         } catch (Exception e) {
             log.error(ExceptionUtil.stacktraceToString(e, Integer.MAX_VALUE));
+        } finally {
             try {
                 //如果出现异常，则拒绝消息 可以重回队列 也可以丢弃 可以根据业务场景来
                 //方式一：可以批量处理用：basicNack，传三个参数
