@@ -7,10 +7,10 @@ MAINTAINER zhanglongyue
 # VOLUME /tmp
 
 # 复制jar到容器里
-ADD target/sboot-system-1.0-SNAPSHOT.jar sboot-system-1.0-SNAPSHOT.jar
+ADD target/sboot-logging-server-1.0-SNAPSHOT.jar sboot-logging-server-1.0-SNAPSHOT.jar
 
 # 并不会自动在宿主进行端口映射,只是声明容器打算使用的端口
-EXPOSE 9890
+EXPOSE 9892
 
 # 指定容器启动程序及参数   <ENTRYPOINT> "<CMD>"
-ENTRYPOINT ["java","-jar","-Dspring.profiles.active=k8s","sboot-system-1.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=k8s","sboot-logging-server-1.0-SNAPSHOT.jar"]

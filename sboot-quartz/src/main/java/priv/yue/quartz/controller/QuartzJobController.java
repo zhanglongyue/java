@@ -69,6 +69,20 @@ public class QuartzJobController extends BaseController {
         return RestResultUtils.success();
     }
 
+    @PostMapping("/createDefault")
+    @RequiresPermissions("quartz:add")
+    public RestResult<Object> createDefault() {
+        QuartzJobDto quartzJobDto = new QuartzJobDto();
+        quartzJobDto.setCronExpression("0/5 * * * * /");
+        quartzJobDto.setEnabled(1);
+        quartzJobDto.setJobName("test");
+        quartzJobDto.setMethodName("runException");
+        quartzJobDto.setBeanName("demoJob");
+        quartzJobDto.setDeptId(getUser().getDeptId());
+        quartzJobService.create(quartzJobDto);
+        return RestResultUtils.success();
+    }
+
     @ApiOperation("删除任务")
     @OpLog(title = "任务管理", businessType = FixedBusinessType.DELETE)
     @PostMapping("/delete")

@@ -1,0 +1,20 @@
+dataSourceKey: defaultDS
+destination: sboot
+groupId: g1
+esMapping:
+  _index: sys_dept
+  _id: _id
+  sql: "SELECT dept_id as _id, 
+          pid, 
+          path, 
+          `name`, 
+          sort, 
+          enabled, 
+          create_by, 
+          update_by, 
+          create_time, 
+          update_time, 
+          deleted
+        FROM
+          sys_dept"
+  commitBatch: 3000

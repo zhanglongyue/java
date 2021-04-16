@@ -1,0 +1,19 @@
+dataSourceKey: defaultDS
+destination: sboot
+groupId: g1
+esMapping:
+  _index: sys_role
+  _id: _id
+  sql: "SELECT role_id as _id, 
+          pid, 
+          `name`, 
+          description, 
+          data_scope, 
+          create_by, 
+          update_by, 
+          create_time, 
+          update_time, 
+          deleted
+        FROM
+          sys_role"
+  commitBatch: 3000

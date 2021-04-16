@@ -3,8 +3,6 @@ package priv.yue.logging.core;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.novelweb.tool.annotation.log.OpLog;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.aspectj.lang.JoinPoint;
@@ -68,14 +66,14 @@ public class LogAspect {
             log.error(ExceptionUtil.getMessage(exception));
         }
 
-        logOp.setReturnValue(JSON.toJSONString(res));
+        logOp.setReturnValue(JsonUtils.toJsonWithSingleQuotes(res));
 
         // 是否需要保存URL的请求参数
         if (opLog.isSaveRequestData()) {
             ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
                     RequestContextHolder.getRequestAttributes();
             if (requestAttributes != null) {
-                logOp.setParameter(JSONObject.toJSONString(
+                logOp.setParameter(JsonUtils.toJsonWithSingleQuotes(
                         requestAttributes.getRequest().getParameterMap()));
             } else {
                 logOp.setParameter("无法获取request信息");

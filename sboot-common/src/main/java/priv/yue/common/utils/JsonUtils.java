@@ -1,12 +1,15 @@
 package priv.yue.common.utils;
 
 import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.core.JsonFactoryBuilder;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -16,6 +19,7 @@ import java.util.Objects;
 public class JsonUtils {
 
     private static ObjectMapper mapper = new ObjectMapper();
+    private static JsonMapper jsonMapper = new JsonMapper(new JsonFactoryBuilder().quoteChar('\'').build());
 
     static {
         // mapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -45,6 +49,22 @@ public class JsonUtils {
         mapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
         mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         return mapper;
+    }
+
+    /**
+     * 使用单引号替代双引号，ES不允许文本带双引号（需要转义）
+     * 日志不需要做读取转换，所以使用单引号没有影响，但是注意这是非标准的json格式。
+     * https://github.com/FasterXML/jackson-core/issues/617#issuecomment-713236769
+     */
+    public static <T> String toJsonWithSingleQuotes(T t) {
+        if (Objects.isNull(t))
+            return null;
+        try {
+            return jsonMapper == null ? jsonMapper.writeValueAsString(t) : jsonMapper.writeValueAsString(t);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static <T> String toJson(T t) {

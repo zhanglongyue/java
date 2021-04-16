@@ -17,13 +17,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+import static java.net.InetAddress.getLocalHost;
+
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 class SystemAppTest {
 
     @Resource
@@ -58,6 +61,11 @@ class SystemAppTest {
                 JxlsHelper.getInstance().processTemplate(is, os, context);
             }
         }
+    }
+
+    @Test
+    void getHost() throws UnknownHostException {
+        System.out.println(getLocalHost());
     }
 
 }

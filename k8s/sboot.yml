@@ -1,0 +1,314 @@
+
+
+######################################## 定义命令空间 ########################################
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sboot
+
+#############################################################################################
+
+
+
+
+######################################## 定义外部服务 ########################################
+
+###### mysql服务 ######
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: mysql-service
+  namespace: sboot
+subsets:
+  - addresses:
+      - ip: 172.29.6.248  # 外部服务的IP
+    ports:
+      - port: 3306        # 外部服务的PORT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  namespace: sboot
+spec:
+  clusterIP: 10.96.0.100  # 固定集群IP,不然Service重新创建时IP会随机分配,spring配置数据库连接时使用此IP
+  ports:
+    - port: 3306          # 该Service的PORT,spring配置数据库使用此端口,结合IP,最终mysql地址为10.96.0.100:3306
+      targetPort: 3306    # 对应上面Endpoints的端口,
+      protocol: TCP
+
+
+###### rabbit服务 ######
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: rabbit-service
+  namespace: sboot
+subsets:
+  - addresses:
+      - ip: 172.29.6.248
+    ports:
+      - port: 5672
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbit-service
+  namespace: sboot
+spec:
+  clusterIP: 10.96.0.101
+  ports:
+    - port: 5672
+      targetPort: 5672
+      protocol: TCP
+
+
+###### redis服务 ######
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: redis-service
+  namespace: sboot
+subsets:
+  - addresses:
+      - ip: 172.29.6.248
+    ports:
+      - port: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: sboot
+spec:
+  clusterIP: 10.96.0.102
+  ports:
+    - port: 6379
+      targetPort: 6379
+      protocol: TCP
+
+
+###### sentinel服务 ######
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: sentinel-service
+  namespace: sboot
+subsets:
+  - addresses:
+      - ip: 172.29.6.248
+    ports:
+      - port: 8858
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sentinel-service
+  namespace: sboot
+spec:
+  clusterIP: 10.96.0.103
+  ports:
+    - port: 8858
+      targetPort: 8858
+      protocol: TCP
+
+
+###### nacos服务 ######
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: nacos-service
+  namespace: sboot
+subsets:
+  - addresses:
+      - ip: 172.29.6.248
+    ports:
+      - port: 8848
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-service
+  namespace: sboot
+spec:
+  clusterIP: 10.96.0.104
+  ports:
+    - port: 8848
+      targetPort: 8848
+      protocol: TCP
+
+#############################################################################################
+
+
+
+
+
+######################################### 定义微服务 #########################################
+
+###### sboot-gateway的Service 网关暴露给集群外部访问
+---
+apiVersion: v1
+kind: Service #首字母一定要大写
+metadata:
+  name: sboot-gateway-k8s #服务名称，注意不要出现大写字母
+  namespace: sboot
+spec:
+#服务类型，默认是ClusterIp集群内部容器访问地址，会生成一个虚拟IP 与pod不在一个网段
+#NodePort会在宿主机上映射一个端口，供外部应用访问模式，就是开放端口给外部访问服务
+#LoadBalancer使用负载均衡，三者的功能是叠加的，如loadBalancer=clusterIp+NodePort+负载均衡
+  type: NodePort
+  selector:
+    app: sboot-gateway-k8s #对应pod.yml内的标签名
+  ports:
+    - protocol: TCP
+      nodePort: 31111 #集群开放的端口，端口号应该>=30000
+      port: 9898 #service的端口
+      targetPort: 9898 #docker容器本身开放的端口
+
+
+
+###### sboot-gateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sboot-gateway-k8s #pod名，自定义
+  namespace: sboot
+  labels:
+    app: sboot-gateway-k8s #标注 
+    k8s.kuboard.cn/layer: gateway
+spec:
+  replicas: 1 #一个镜像生成pod个数，可以用做负载均衡
+  selector:
+    matchLabels:
+      app: sboot-gateway-k8s
+  template:
+    metadata:
+      labels:
+        app: sboot-gateway-k8s #pod标签，用于service识别不同的pod
+    spec:
+      imagePullSecrets:
+        - name: sboot-secret  # 该密钥需要通过kubectl create secret docker-registry生成
+      containers:
+        - image: registry.cn-shenzhen.aliyuncs.com/sboot/sboot-gateway:1.0 #容器使用的镜像，如果是本地镜像保证每台机器上都要有
+          name: sboot-gateway-k8s
+          #拉取策略，Aways远程拉取，Never只从本地拉取，默认IfNotPresent优先本地拉取，没有就远程
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9898 #容器的端口
+              protocol: TCP
+
+
+
+###### sboot-auth
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sboot-auth-k8s #pod名，自定义
+  namespace: sboot
+  labels:
+    app: sboot-auth-k8s #标注 
+    k8s.kuboard.cn/layer: svc
+spec:
+  replicas: 1 #一个镜像生成pod个数，可以用做负载均衡
+  selector:
+    matchLabels:
+      app: sboot-auth-k8s
+  template:
+    metadata:
+      labels:
+        app: sboot-auth-k8s #pod标签，用于service识别不同的pod
+    spec:
+      imagePullSecrets:
+        - name: sboot-secret
+      containers:
+        - image: registry.cn-shenzhen.aliyuncs.com/sboot/sboot-auth:1.0 #容器使用的镜像，如果是本地镜像保证每台机器上都要有
+          name: sboot-auth-k8s
+          #拉取策略，Aways远程拉取，Never只从本地拉取，默认IfNotPresent优先本地拉取，没有就远程
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9891 #容器的端口
+              protocol: TCP
+
+
+
+###### sboot-logging
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sboot-logging-k8s #pod名，自定义
+  namespace: sboot
+  labels:
+    app: sboot-logging-k8s #标注 
+    k8s.kuboard.cn/layer: svc
+spec:
+  replicas: 1 #一个镜像生成pod个数，可以用做负载均衡
+  selector:
+    matchLabels:
+      app: sboot-logging-k8s
+  template:
+    metadata:
+      labels:
+        app: sboot-logging-k8s #pod标签，用于service识别不同的pod
+    spec:
+      imagePullSecrets:
+        - name: sboot-secret
+      containers:
+        - image: registry.cn-shenzhen.aliyuncs.com/sboot/sboot-logging:1.0 #容器使用的镜像，如果是本地镜像保证每台机器上都要有
+          name: sboot-logging-k8s
+          #拉取策略，Aways远程拉取，Never只从本地拉取，默认IfNotPresent优先本地拉取，没有就远程
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9892 #容器的端口
+              protocol: TCP
+
+
+
+###### sboot-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sboot-system-k8s #pod名，自定义
+  namespace: sboot
+  labels:
+    app: sboot-system-k8s #标注 
+    k8s.kuboard.cn/layer: svc
+spec:
+  replicas: 1 #一个镜像生成pod个数，可以用做负载均衡
+  selector:
+    matchLabels:
+      app: sboot-system-k8s
+  template:
+    metadata:
+      labels:
+        app: sboot-system-k8s #pod标签，用于service识别不同的pod
+    spec:
+      imagePullSecrets:
+        - name: sboot-secret
+      containers:
+        - image: registry.cn-shenzhen.aliyuncs.com/sboot/sboot-system:1.0 #容器使用的镜像，如果是本地镜像保证每台机器上都要有
+          name: sboot-system-k8s
+          #拉取策略，Aways远程拉取，Never只从本地拉取，默认IfNotPresent优先本地拉取，没有就远程
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9890 #容器的端口
+              protocol: TCP
+          volumeMounts:
+            - name: sboot-system-pvc
+              mountPath: "/static"
+      volumes:
+        - name: sboot-system-pvc
+          persistentVolumeClaim:
+            claimName: sboot-system-pvc
+
+#############################################################################################

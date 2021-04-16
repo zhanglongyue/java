@@ -8,6 +8,7 @@ import priv.yue.system.dto.DeptDto;
 
 /**
  * Dept转换类
+ * unmappedSourcePolicy = ReportingPolicy.IGNORE 忽略未映射的属性并且不获取任何输出警告
  *
  * @author ZhangLongYue
  * @description

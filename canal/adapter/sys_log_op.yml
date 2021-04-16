@@ -1,0 +1,35 @@
+dataSourceKey: defaultDS
+destination: sboot
+groupId: g1
+esMapping:
+  _index: sys_log_op
+  _id: _id
+  sql: "SELECT id as _id,
+          INET_NTOA(ip) as ip,
+          location,
+          business_type,
+          class_name,
+          parameter,
+          method_name,
+          spider,
+          os,
+          platform,
+          browser,
+          browser_version,
+          browser_engine,
+          browser_engine_version,
+          is_mobile,
+          request_uri,
+          title,
+          error_msg,
+          error_cause,
+          `status`,
+          create_time,
+          user_id,
+          username,
+          run_time,
+          return_value,
+          dept_id
+        FROM
+          sys_log_op"
+  commitBatch: 3000

@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: sboot-logging
+  elasticsearch:
+    rest:
+      uris: 127.0.0.1:9200
   cloud:
     nacos:
       discovery:
@@ -63,4 +66,12 @@ spring:
 nacos:
   addr: localhost:8848
   namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
+  group: DEFAULT_GROUP
+
+---
+spring:
+  profiles: k8s
+nacos:
+  addr: 10.96.0.104:8848
+  namespace: k8s
   group: DEFAULT_GROUP

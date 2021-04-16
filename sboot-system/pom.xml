@@ -11,7 +11,14 @@
     <artifactId>sboot-system</artifactId>
 
     <dependencies>
-        <!--alibaba nacos-->
+
+        <!-- alibaba seata -->
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- alibaba nacos -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
@@ -115,11 +122,11 @@
         </dependency>
 
         <!--热部署-->
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
-        </dependency>
+        </dependency>-->
 
         <!-- 实体转换 -->
         <dependency>

@@ -1,0 +1,28 @@
+dataSourceKey: defaultDS
+destination: sboot
+groupId: g1
+esMapping:
+  _index: sys_menu
+  _id: _id
+  sql: "SELECT menu_id as _id,
+          deleted, 
+          update_time, 
+          create_time, 
+          update_by, 
+          create_by, 
+          permission, 
+          hidden, 
+          `cache`, 
+          iframe, 
+          path, 
+          icon, 
+          sort, 
+          component, 
+          `name`, 
+          title, 
+          type, 
+          pid, 
+          menu_id
+        FROM
+          sys_menu"
+  commitBatch: 3000

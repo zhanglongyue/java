@@ -51,6 +51,12 @@
 			<version>${project.version}</version>
 		</dependency>
 
+		<!-- spring data elasticsearch -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-elasticsearch</artifactId>
+		</dependency>
+
 		<!--数据源-->
 		<dependency>
 			<groupId>com.baomidou</groupId>

@@ -1,0 +1,29 @@
+dataSourceKey: defaultDS
+destination: sboot
+groupId: g1
+esMapping:
+  _index: sys_user
+  _id: _id
+  sql: "SELECT user_id as _id,
+          username, 
+          dept_id, 
+          nick_name, 
+          gender, 
+          phone, 
+          email, 
+          avatar_name, 
+          avatar_path, 
+          `password`, 
+          salt, 
+          is_admin, 
+          enabled, 
+          fails, 
+          create_by, 
+          update_by, 
+          pwd_reset_time, 
+          create_time, 
+          update_time, 
+          deleted
+        FROM
+          sys_user"
+  commitBatch: 3000

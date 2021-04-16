@@ -11,9 +11,9 @@ import priv.yue.common.model.RestResult;
  */
 @Component
 @FeignClient("sboot-quartz")
-public interface QuartzConsumerService {
+public interface TestSeataService {
 
-    @PostMapping("/quartzJob/create")
+    @PostMapping("/seata/testSeata")
     RestResult<Object> create();
 
 }
