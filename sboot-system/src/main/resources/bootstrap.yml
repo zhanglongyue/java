@@ -39,6 +39,10 @@ spring:
           data-id: sboot-common-seata.yml
           group: ${nacos.group}
           refresh: true
+        extension-configs[6]:
+          data-id: sboot-common-logback.yml
+          group: ${nacos.group}
+          refresh: true
 
 
 ########################## Nacos默认拉取的配置文件说明 ##########################

@@ -33,7 +33,7 @@
 		</dependency>
 
 		<!-- shiro缓存 (没用到)-->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.crazycake</groupId>
 			<artifactId>shiro-redis</artifactId>
 			<version>3.3.1</version>
@@ -42,7 +42,7 @@
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-ehcache</artifactId>
 			<version>1.7.0</version>
-		</dependency>
+		</dependency>-->
 
 	</dependencies>
 </project>

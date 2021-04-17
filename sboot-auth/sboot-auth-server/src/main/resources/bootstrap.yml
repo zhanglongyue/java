@@ -35,6 +35,10 @@ spring:
           data-id: sboot-common-stream-log.yml
           group: ${nacos.group}
           refresh: true
+        extension-configs[5]:
+          data-id: sboot-common-logback.yml
+          group: ${nacos.group}
+          refresh: true
 
 
 ########################## Nacos默认拉取的配置文件说明 ##########################

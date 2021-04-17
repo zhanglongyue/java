@@ -15,6 +15,10 @@ spring:
         file-extension: yml
         namespace: ${nacos.namespace}
         group: ${nacos.group}
+        extension-configs[0]:
+          data-id: sboot-common-logback.yml
+          group: ${nacos.group}
+          refresh: true
 
 
 

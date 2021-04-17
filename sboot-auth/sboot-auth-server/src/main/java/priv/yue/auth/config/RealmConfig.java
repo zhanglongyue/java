@@ -27,7 +27,7 @@ public class RealmConfig {
      */
     @Bean
     @DependsOn("tokenRealm")
-    public Realm userRealm(CredentialsMatcher credentialsMatcher, CacheManager cacheManager){
+    public Realm userRealm(CredentialsMatcher credentialsMatcher/*, CacheManager cacheManager*/){
         UserRealm realm = new UserRealm();
         realm.setCredentialsMatcher(credentialsMatcher);
         // 开启缓存管理器 使用redis无需再配置CacheManager
