@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="priv.yue.activiti.mapper.LeaveMapper">
+
+    <resultMap id="BaseRM" type="priv.yue.activiti.domain.Leave">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="procInstId" column="proc_inst_id" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="reason" column="reason" jdbcType="VARCHAR"/>
+            <result property="startTime" column="start_time" jdbcType="INTEGER"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="days" column="days" jdbcType="VARCHAR"/>
+            <result property="hours" column="hours" jdbcType="VARCHAR"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,dept_id,proc_inst_id,
+        user_id,reason,start_time,
+        end_time,days,hours,
+        username,status,create_by,
+        update_by,create_time,update_time,
+    </sql>
+
+    <select id="selectPage" resultMap="BaseRM">
+        select `leave`.*
+        from sboot_workflow.wf_leave `leave`
+        left join sboot_system.sys_user user on user.user_id = `leave`.user_id
+        left join sboot_system.sys_dept dept on user.dept_id = dept.dept_id
+        <where>
+            <if test="map.search != null and map.search != ''">
+                and `leave`.username like "%"#{map.search}"%"
+            </if>
+            and (dept.path like concat(#{map.path},#{map.userDeptId},',%') or dept.dept_id = #{map.userDeptId})
+            and user.deleted = 0
+        </where>
+        <if test="map.orderBy != null and map.orderBy != ''">
+            order by ${map.orderBy}
+        </if>
+    </select>
+
+</mapper>

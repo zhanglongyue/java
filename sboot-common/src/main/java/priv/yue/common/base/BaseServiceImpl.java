@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * @description
  * @since 2020/12/23 9:09
  */
-public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, T> {
+public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, T> implements GetCurrUser{
 
     /**
      * 将一个集合转换成树结构，支持多根节点

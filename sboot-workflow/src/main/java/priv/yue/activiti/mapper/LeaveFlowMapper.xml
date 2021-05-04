@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="priv.yue.activiti.mapper.LeaveFlowMapper">
+
+    <resultMap id="BaseResultMap" type="priv.yue.activiti.domain.LeaveFlow">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="deptId" column="dept_id" jdbcType="BIGINT"/>
+            <result property="procInstId" column="proc_inst_id" jdbcType="VARCHAR"/>
+            <result property="taskId" column="task_id" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="result" column="result" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,dept_id,proc_inst_id,
+        task_id,user_id,result,
+        remark,username,create_by,
+        update_by,create_time,update_time
+    </sql>
+</mapper>

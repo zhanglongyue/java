@@ -12,17 +12,9 @@ import priv.yue.common.vo.LoginVo;
  * @description
  * @since 2020/12/25 10:31
  */
-public class BaseController {
+public class BaseController implements GetCurrUser{
 
     private static final String DEFAULT_ORDER_BY = "create_time desc";
-
-    public static User getUser(){
-        return getLoginVo().getUser();
-    }
-
-    public static LoginVo getLoginVo(){
-        return (LoginVo) SecurityUtils.getSubject().getPrincipal();
-    }
 
     /**
      * 根据前端返回的排序字段拼接order by

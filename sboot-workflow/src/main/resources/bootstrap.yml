@@ -1,9 +1,9 @@
 server:
-  port: 9893
+  port: 9895
 
 spring:
   application:
-    name: sboot-quartz
+    name: sboot-workflow
   cloud:
     nacos:
       discovery:
@@ -16,23 +16,23 @@ spring:
         namespace: ${nacos.namespace}
         group: ${nacos.group}
         extension-configs[0]:
-          data-id: sboot-common-redis.yml
+          data-id: sboot-common-logback.yml
           group: ${nacos.group}
           refresh: true
         extension-configs[1]:
-          data-id: sboot-common-rabbit.yml
+          data-id: sboot-common-redis.yml
           group: ${nacos.group}
           refresh: true
         extension-configs[2]:
-          data-id: sboot-common-stream.yml
+          data-id: sboot-common-rabbit.yml
           group: ${nacos.group}
           refresh: true
         extension-configs[3]:
-          data-id: sboot-common-stream-log.yml
+          data-id: sboot-common-stream.yml
           group: ${nacos.group}
           refresh: true
         extension-configs[4]:
-          data-id: sboot-common-logback.yml
+          data-id: sboot-common-stream-log.yml
           group: ${nacos.group}
           refresh: true
 
@@ -68,4 +68,3 @@ nacos:
   addr: localhost:8848
   namespace: 8cb6f1af-d79d-4969-a272-ad470f474c66
   group: DEFAULT_GROUP
-

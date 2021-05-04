@@ -296,4 +296,36 @@ public class LogOp implements Serializable {
     public void setReturnValue(String returnValue) {
         this.returnValue = returnValue;
     }
+
+    @Override
+    public String toString() {
+        return "LogOp{" +
+                "id=" + id +
+                ", ip='" + ip + '\'' +
+                ", location='" + location + '\'' +
+                ", browser='" + browser + '\'' +
+                ", browserVersion='" + browserVersion + '\'' +
+                ", browserEngine='" + browserEngine + '\'' +
+                ", browserEngineVersion='" + browserEngineVersion + '\'' +
+                ", isMobile=" + isMobile +
+                ", os='" + os + '\'' +
+                ", platform='" + platform + '\'' +
+                ", spider='" + spider + '\'' +
+                ", requestUri='" + requestUri + '\'' +
+                ", errorCause='" + errorCause + '\'' +
+                ", errorMsg='" + errorMsg + '\'' +
+                ", title='" + title + '\'' +
+                ", status=" + status +
+                ", createTime=" + createTime +
+                ", businessType='" + businessType + '\'' +
+                ", className='" + className + '\'' +
+                ", methodName='" + methodName + '\'' +
+                ", parameter='" + parameter + '\'' +
+                ", userId=" + userId +
+                ", username='" + username + '\'' +
+                ", deptId=" + deptId +
+                ", runTime=" + runTime +
+                ", returnValue='" + returnValue + '\'' +
+                '}';
+    }
 }

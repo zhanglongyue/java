@@ -37,7 +37,6 @@ public class Dept extends Model<Dept> implements Serializable {
     /**
      * 上级部门
      */
-    @TableField(fill = FieldFill.INSERT)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long pid;
     /**

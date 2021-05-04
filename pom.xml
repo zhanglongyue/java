@@ -17,6 +17,7 @@
 		<module>sboot-mq</module>
 		<module>sboot-tools</module>
 		<module>sboot-gateway</module>
+		<module>sboot-workflow</module>
 	</modules>
 
 	<!-- 统一管理jar包版本 -->
@@ -27,7 +28,7 @@
 		<druid.version>1.1.22</druid.version>
 		<mysql.version>8.0.22</mysql.version>
 		<lombok.version>1.18.16</lombok.version>
-		<mybatis.plus.version>3.4.0</mybatis.plus.version>
+		<mybatis.plus.version>3.4.2</mybatis.plus.version>
 		<spring.cloud.alibaba.version>2.2.5.RELEASE</spring.cloud.alibaba.version>
 		<spring.boot.version>2.3.2.RELEASE</spring.boot.version>
 		<spring.cloud.version>Hoxton.SR8</spring.cloud.version>
@@ -35,6 +36,8 @@
 		<shiro.version>1.7.0</shiro.version>
 		<fastjson.version>1.2.75</fastjson.version>
 		<jackson.version>2.11.1</jackson.version>
+		<logstash.version>6.6</logstash.version>
+		<activiti.version>7.0.0.SR1</activiti.version>
 	</properties>
 
 	<!-- 子模块继承之后，提供作用：锁定版本+子modlue不用写groupId和version  -->
@@ -125,6 +128,20 @@
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-annotations</artifactId>
 				<version>${jackson.version}</version>
+			</dependency>
+
+			<!-- logstash -->
+			<dependency>
+				<groupId>net.logstash.logback</groupId>
+				<artifactId>logstash-logback-encoder</artifactId>
+				<version>${logstash.version}</version>
+			</dependency>
+
+			<!-- workflow -->
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-spring-boot-starter</artifactId>
+				<version>${activiti.version}</version>
 			</dependency>
 
 		</dependencies>
