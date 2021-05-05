@@ -7,12 +7,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +28,8 @@ import priv.yue.common.model.RestResult;
 import priv.yue.common.model.RestResultUtils;
 
 import javax.validation.groups.Default;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author ZhangLongYue
@@ -102,42 +100,6 @@ public class LeaveController extends BaseController {
         leaveActivitiService.update(leaveDto);
         return RestResultUtils.success();
     }
-
-    @ApiOperation("获取当前任务可处理方式")
-    @OpLog(title = "请假单处理", businessType = "查询")
-    @PostMapping("/getHandleType")
-    @RequiresPermissions("leave:handle")
-    public RestResult<Object> getHandleType(@RequestParam("procInstId") String procInstId){
-        activitiService.getHandleType(procInstId);
-        return RestResultUtils.success();
-    }
-
-//    @ApiOperation("提交申请")
-//    @OpLog(title = "请假申请", businessType = FixedBusinessType.UPDATE)
-//    @PostMapping("/submit")
-//    @RequiresPermissions("leave:submit")
-//    public RestResult<Object> submit(@RequestParam("procInstId") String procInstId){
-//        leaveService.submit(procInstId);
-//        return RestResultUtils.success();
-//    }
-//
-//    @ApiOperation("提交申请")
-//    @OpLog(title = "请假取消", businessType = FixedBusinessType.UPDATE)
-//    @PostMapping("/submit")
-//    @RequiresPermissions("leave:submit")
-//    public RestResult<Object> submit(@RequestParam("procInstId") String procInstId){
-//        leaveService.submit(procInstId);
-//        return RestResultUtils.success();
-//    }
-//
-//    @ApiOperation("驳回")
-//    @OpLog(title = "驳回", businessType = FixedBusinessType.UPDATE)
-//    @PostMapping("/reject")
-//    @RequiresPermissions("leave:reject")
-//    public RestResult<Object> reject(@RequestParam("procInstId") String procInstId){
-//        leaveService.reject(procInstId);
-//        return RestResultUtils.success();
-//    }
 
     @ApiOperation("请假单处理")
     @OpLog(title = "请假单管理", businessType = "处理")

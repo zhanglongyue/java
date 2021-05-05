@@ -1,7 +1,5 @@
 package priv.yue.activiti.service.impl;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -9,13 +7,9 @@ import org.activiti.engine.task.Task;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import priv.yue.activiti.domain.Leave;
-import priv.yue.activiti.domain.maps.LeaveMap;
 import priv.yue.activiti.dto.LeaveDto;
-import priv.yue.activiti.mapper.LeaveMapper;
 import priv.yue.activiti.service.ActivitiService;
 import priv.yue.activiti.service.LeaveActivitiService;
-import priv.yue.activiti.service.LeaveService;
-import priv.yue.common.base.BaseServiceImpl;
 import priv.yue.common.exception.BadRequestException;
 
 import java.util.HashMap;
@@ -41,7 +35,6 @@ public class LeaveActivitiServiceImpl extends LeaveServiceImpl implements LeaveA
         // 保存请假单
         Leave leave = leaveMap.toEntity(leaveDto);
         leave.setUserId(getUser().getUserId())
-                .setStatus("提交申请")
                 .setDeptId(getUser().getDeptId())
                 .setUsername(getUser().getUsername());
         // 计算天数
