@@ -58,7 +58,7 @@ public class LeaveActivitiServiceImpl extends LeaveServiceImpl implements LeaveA
     public Leave update(LeaveDto leaveDto) {
         Leave leave = leaveMap.toEntity(leaveDto);
         Task task = activitiService.getActiveTask(leave.getProcInstId());
-        if (!task.getName().equals("提交申请")) {
+        if (task == null || !task.getName().equals("提交申请")) {
             throw new BadRequestException("已申请状态无法修改");
         }
         leaveMapper.updateById(leave);

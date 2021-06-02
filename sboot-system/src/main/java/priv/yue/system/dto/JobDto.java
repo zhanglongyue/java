@@ -1,9 +1,9 @@
-package priv.yue.activiti.dto;
+package priv.yue.system.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.hibernate.validator.constraints.Range;
 import priv.yue.common.base.BaseDto;
 import priv.yue.common.dto.PageDto;
 
@@ -12,55 +12,50 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
+ * Job前端传参封装验证
+ *
  * @author ZhangLongYue
- * @since 2021/5/2 9:10
+ * @description
+ * @since 2020/12/15 16:28
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class LeaveDto extends BaseDto implements Serializable{
+@NoArgsConstructor
+public class JobDto extends BaseDto implements Serializable {
 
+    private static final long serialVersionUID = 2931340157290757281L;
     /**
      * ID
      */
     @Null(groups = Create.class, message = "id必须为空")
     @NotNull(groups = Update.class, message = "id不能为空")
-    private Long id;
+    private Long jobId;
     /**
-     * 部门名称
+     * 部门id
      */
+    @NotNull(groups = Create.class, message = "部门不能为空")
     private Long deptId;
     /**
-     * 流程实例id
-     */
-    private String procInstId;
-    /**
-     * 请假原因
+     * 用户名
      */
     @NotBlank(groups = Create.class, message = "名称不能为空")
-    private String reason;
+    private String name;
+
     /**
-     * 请假开始时间
+     * 排序
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date startTime;
+    @Range(min = 1, max = 999, message = "必须在{min}-{max}之间")
+    private Integer sort;
+
     /**
-     * 请假结束时间
+     * 状态：1启用、0禁用
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date endTime;
-    /**
-     * 请假天数
-     */
-    private Integer days;
-    /**
-     * 请假小时数
-     */
-    private Integer hours;
+    @Range(min = 0, max = 1, message = "只能为0或1")
+    private Integer enabled;
 
     @Valid
     private PageDto pager;
+
 }

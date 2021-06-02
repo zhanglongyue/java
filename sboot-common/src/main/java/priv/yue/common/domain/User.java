@@ -125,6 +125,11 @@ public class User extends Model<User> implements Serializable {
     @TableField(exist = false)
     private Dept dept;
     /**
+     * 岗位
+     */
+    @TableField(exist = false)
+    private Job job;
+    /**
      * 角色集合
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)

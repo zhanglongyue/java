@@ -33,7 +33,7 @@ public class UserDto extends BaseDto implements Serializable {
     @NotNull(groups = Update.class, message = "id不能为空")
     private Long userId;
     /**
-     * 部门名称
+     * 部门id
      */
     @NotNull(groups = Create.class, message = "部门不能为空")
     private Long deptId;

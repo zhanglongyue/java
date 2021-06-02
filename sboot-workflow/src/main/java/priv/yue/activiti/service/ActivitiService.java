@@ -1,6 +1,5 @@
 package priv.yue.activiti.service;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.bpmn.model.BpmnModel;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -78,7 +78,10 @@ public class ActivitiService {
         // 获取节点出口线段
         List<SequenceFlow> outgoingFlows = ((UserTask) flowElement).getOutgoingFlows();
         // 根据线段集合构造处理方式的String集合
-        return outgoingFlows.stream().map(FlowElement::getName).collect(Collectors.toList());
+        return outgoingFlows.stream()
+                .map(FlowElement::getName)
+                .sorted(Comparator.comparing(name->name))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -98,17 +101,10 @@ public class ActivitiService {
         List<HistoricActivityInstance> list = historyService // 历史相关Service
                 .createHistoricActivityInstanceQuery() // 创建历史活动实例查询
                 .processInstanceId(procInstId) // 执行流程实例id
-                .finished()
+                // .finished() // 只查询已结束的流程节点
+                .orderByHistoricActivityInstanceStartTime()
+                .asc()
                 .list();
-        for (HistoricActivityInstance hai : list) {
-            System.out.println("活动ID:" + hai.getId());
-            System.out.println("流程实例ID:" + hai.getProcessInstanceId());
-            System.out.println("活动名称：" + hai.getActivityName());
-            System.out.println("办理人：" + hai.getAssignee());
-            System.out.println("开始时间：" + hai.getStartTime());
-            System.out.println("结束时间：" + hai.getEndTime());
-            System.out.println("=================================");
-        }
         return list;
     }
 
