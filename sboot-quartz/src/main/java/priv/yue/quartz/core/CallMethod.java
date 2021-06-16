@@ -15,7 +15,6 @@ public class CallMethod {
 
     private Object target;
     private Method method;
-    // 单个字符串参数，如有需要可以改成数组参数
     private String params;
 
     public CallMethod(String beanName, String methodName, String params) throws NoSuchMethodException {
